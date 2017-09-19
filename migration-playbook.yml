@@ -1,0 +1,28 @@
+---
+# Ansible playbook that recreates in Site Factory sites on our infrastructure.
+# https://github.com/SU-SWS/drupal-caravan
+# ============================================================================
+#
+# This playbook will create a new site in Acquia Cloud Site Factory, and
+# then sync a site from the SWS legacy hosting platform to the newly created
+# site.
+#
+# Can be run with: ansible-playbook -i inventory/sites migration-playbook.yml
+#
+# KNOWN ISSUES:
+# --
+#
+# PLAY 1: Migrate sites from SWS infrastructure to Site Factory
+# =============================================================
+- hosts: groups,depts,people
+  connection: local
+
+  vars_files:
+    - ../migration_vars.yml
+
+  roles:
+    - setup-factorysite
+    - setup-factorysite-local
+    - sync-factorysite
+    - cleanup-factorysite-local
+  serial: 12
