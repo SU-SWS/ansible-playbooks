@@ -1,5 +1,5 @@
 [people]
-#hyperboy sitename="hyperboy"
-jaaker sitename="jaaker"
+#hyperboy
+jaaker
 [depts]
-eao sitename="eao" vhost="eao"
+eao vhost="eao"

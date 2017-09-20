@@ -7,7 +7,7 @@
 # a directory on locahost, where we can temporarily sync a site database and files.
 #
 # INPUTS:
-# sitename
+# inventory_hostname
 #
 # OUTPUTS:
 # --
@@ -21,7 +21,7 @@
 # KNOWN ISSUES:
 # --
 #
-- name: Create sitename directory in tmp
+- name: Create inventory_hostname directory in tmp
   file:
-    path: "/tmp/{{ sitename }}"
+    path: "/tmp/{{ inventory_hostname }}"
     state: absent
