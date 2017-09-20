@@ -18,7 +18,7 @@
   connection: local
 
   vars_files:
-    - migration_vars.yml
+    - ../migration_vars.yml
 
   roles:
     - setup-factorysite
