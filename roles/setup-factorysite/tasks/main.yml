@@ -7,7 +7,7 @@
 # a host 
 #
 # INPUTS:
-#   sitename
+#   hostname
 #   profile
 #   stack
 #   stack_id
@@ -49,7 +49,7 @@
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
     body:
-      site_name: "{{ sitename }}"
+      site_name: "{{ hostname }}"
       install_profile: "{{ profile }}"
       codebase: "{{ stack_id }}"
       group_ids: 126
@@ -57,12 +57,12 @@
     body_format: json
     return_content: yes
   register: site_created
-  when: sitename not in existing_sites | json_query('json.sites[*].site')
+  when: hostname not in existing_sites | json_query('json.sites[*].site')
 
 - name: Display ACSF site id
   debug:
     msg: "{{ site_created | json_query('json.id') }}"
 
 - pause: minutes=6
-  when: sitename not in existing_sites | json_query('json.sites[*].site')
+  when: hostname not in existing_sites | json_query('json.sites[*].site')
 # - name: Check task

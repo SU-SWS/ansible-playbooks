@@ -2,10 +2,13 @@
 # https://github.com/SU-SWS/drupal-caravan
 # ========================================
 #
-sitename: ""
+
+# These should be in group_vars
 profile: "stanford"
 stack: "cardinal"
 stack_id: "2"
+
+# These can stay here
 localhost_home: ""
 acquia_username: ""
 acquia_api_key: ""

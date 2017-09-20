@@ -8,7 +8,7 @@
 # Site Factory.
 #
 # INPUTS:
-#   sitename
+#   hostname
 #   server_alias
 #   site_prefix
 #   stack
@@ -39,60 +39,60 @@
   register: factory_sites
 
 - name: Download copy of database from sites
-  shell: "drush @{{ server_alias }}.{{ site_prefix }}_{{ sitename }} sql-dump > /tmp/{{ sitename }}/dbdump.sql"
+  shell: "drush @{{ server_alias }}.{{ site_prefix }}_{{ hostname }} sql-dump > /tmp/{{ hostname }}/dbdump.sql"
 
 - name: Drop database in Site Factory and install new database
-  shell: "drush @acsf.{{ stack }}.{{ sitename }} {{ item }}"
+  shell: "drush @acsf.{{ stack }}.{{ hostname }} {{ item }}"
   with_items:
     - "-y sql-drop"
-    - "sqlc < /tmp/{{ sitename }}/dbdump.sql"
+    - "sqlc < /tmp/{{ hostname }}/dbdump.sql"
     - "-y updb"
 
 - name: Set site up as a Department site
-  shell: "drush @acsf.{{ stack }}.{{ sitename }} {{ item }}"
+  shell: "drush @acsf.{{ stack }}.{{ hostname }} {{ item }}"
   with_items:
     - "vset install_profile stanford_dept"
     - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
   when: dept_site == "TRUE"
 
 - name: Do post-database-restore tasks
-  shell: "drush @acsf.{{ stack }}.{{ sitename }} {{ item }}"
+  shell: "drush @acsf.{{ stack }}.{{ hostname }} {{ item }}"
   with_items:
     - "-y en acsf stanford_ssp"
 #    - "sspwmd"
 
 - name: Find any absolute paths and replace them - people sites
-  shell: "drush @acsf.{{ stack }}.{{ sitename }} {{ item }}"
+  shell: "drush @acsf.{{ stack }}.{{ hostname }} {{ item }}"
   with_items:
-    - "sar -y 'http://people.stanford.edu/{{ sitename }}/' '/'"
-    - "sar -y 'https://people.stanford.edu/{{ sitename }}/' '/'"
-    - "sar -y '/{{ sitename }}/' '/'"
-    - "sarm -y 'http://people.stanford.edu/{{ sitename }}/' ''"
-    - "sarm -y 'https://people.stanford.edu/{{ sitename }}/' ''"
-    - "sarm -y '/{{ sitename }}/' ''"
-    - "sarl -y 'http://people.stanford.edu/{{ sitename }}/' ''"
-    - "sarl -y 'https://people.stanford.edu/{{ sitename }}/' ''"
-    - "sarl -y '/{{ sitename }}/' ''"
+    - "sar -y 'http://people.stanford.edu/{{ hostname }}/' '/'"
+    - "sar -y 'https://people.stanford.edu/{{ hostname }}/' '/'"
+    - "sar -y '/{{ hostname }}/' '/'"
+    - "sarm -y 'http://people.stanford.edu/{{ hostname }}/' ''"
+    - "sarm -y 'https://people.stanford.edu/{{ hostname }}/' ''"
+    - "sarm -y '/{{ hostname }}/' ''"
+    - "sarl -y 'http://people.stanford.edu/{{ hostname }}/' ''"
+    - "sarl -y 'https://people.stanford.edu/{{ hostname }}/' ''"
+    - "sarl -y '/{{ hostname }}/' ''"
   when:
     site_prefix == "dp"
 
 - name: Find any absolute paths and replace them - group and dept sites
-  shell: "drush @acsf.{{ stack }}.{{ sitename }} {{ item }}"
+  shell: "drush @acsf.{{ stack }}.{{ hostname }} {{ item }}"
   with_items:
-    - "sar -y 'http://sites.stanford.edu/{{ sitename }}/' '/'"
-    - "sar -y 'https://sites.stanford.edu/{{ sitename }}/' '/'"
-    - "sar -y '/{{ sitename }}/' '/'"
-    - "sarm -y 'http://sites.stanford.edu/{{ sitename }}/' ''"
-    - "sarm -y 'https://sites.stanford.edu/{{ sitename }}/' ''"
-    - "sarm -y '/{{ sitename }}/' ''"
-    - "sarl -y 'http://sites.stanford.edu/{{ sitename }}/' ''"
-    - "sarl -y 'https://sites.stanford.edu/{{ sitename }}/' ''"
-    - "sarl -y '/{{ sitename }}/' ''"
+    - "sar -y 'http://sites.stanford.edu/{{ hostname }}/' '/'"
+    - "sar -y 'https://sites.stanford.edu/{{ hostname }}/' '/'"
+    - "sar -y '/{{ hostname }}/' '/'"
+    - "sarm -y 'http://sites.stanford.edu/{{ hostname }}/' ''"
+    - "sarm -y 'https://sites.stanford.edu/{{ hostname }}/' ''"
+    - "sarm -y '/{{ hostname }}/' ''"
+    - "sarl -y 'http://sites.stanford.edu/{{ hostname }}/' ''"
+    - "sarl -y 'https://sites.stanford.edu/{{ hostname }}/' ''"
+    - "sarl -y '/{{ hostname }}/' ''"
   when:
     site_prefix == "ds"
 
 - name: Find any vhost absolute paths and replace them
-  shell: "drush @acsf.{{ stack }}.{{ sitename }} {{ item }}"
+  shell: "drush @acsf.{{ stack }}.{{ hostname }} {{ item }}"
   with_items:
     - "sar -y 'http://{{ vhost }}.stanford.edu/' '/'"
     - "sar -y 'https://{{ vhost }}.stanford.edu/' '/'"
@@ -104,17 +104,17 @@
     vhost != ""
 
 - name: Get public files directory
-  shell: "drush @acsf.{{ stack }}.{{ sitename }} status --fields='File directory path' --field-labels=0"
+  shell: "drush @acsf.{{ stack }}.{{ hostname }} status --fields='File directory path' --field-labels=0"
   register: file_public_path
 
 - name: Replace sites/default/files with path to files directory
-  shell: "drush @acsf.{{ stack }}.{{ sitename }} sar -y 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "drush @acsf.{{ stack }}.{{ hostname }} sar -y 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
 
 - name: Copy files from Sites to local
-  shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ sitename }}/files/* /tmp/{{ sitename }}/files/."
+  shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ hostname }}/files/* /tmp/{{ hostname }}/files/."
 
 - name: Copy files from local to Site Factory
-  shell: "drush -y rsync /tmp/{{ sitename }}/files/ @acsf.{{ stack }}.{{ sitename }}:%files/"
+  shell: "drush -y rsync /tmp/{{ hostname }}/files/ @acsf.{{ stack }}.{{ hostname }}:%files/"
 
 - name: Add vhost as domain
   uri:
@@ -126,7 +126,7 @@
     body_format: json
     body:
       domain_name: "{{ vhost }}.stanford.edu"
-  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + sitename + \"'].id\") }}"
+  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + hostname + \"'].id\") }}"
   when:
     vhost != ""
 
@@ -137,5 +137,5 @@
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
     force_basic_auth: yes
-  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + sitename + \"'].id\") }}"
+  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + hostname + \"'].id\") }}"
 

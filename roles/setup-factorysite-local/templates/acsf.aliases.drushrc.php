@@ -2,8 +2,8 @@
 ### Wildcard for ACSF: Stanford & Cardinal
 ###
 ### Examples:
-### @acsf.[stack].[sitename]
-### @acsf.[dev|test].[stack].[sitename]
+### @acsf.[stack].[hostname]
+### @acsf.[dev|test].[stack].[hostname]
 ###
 ### @acsf.cardinal.sheatest
 ### @acsf.dev.cardinal.sheatest

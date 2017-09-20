@@ -7,7 +7,7 @@
 # a directory on locahost, where we can temporarily sync a site database and files.
 #
 # INPUTS:
-# sitename
+# hostname
 # stack
 # localhost_home
 #
@@ -23,15 +23,15 @@
 # KNOWN ISSUES:
 # --
 #
-- name: Create sitename directory in tmp
+- name: Create hostname directory in tmp
   file:
-    path: "/tmp/{{ sitename }}"
+    path: "/tmp/{{ hostname }}"
     state: directory
     mode: 0755
 
-- name: Create sitename directory in tmp
+- name: Create hostname directory in tmp
   file:
-    path: "/tmp/{{ sitename }}/files"
+    path: "/tmp/{{ hostname }}/files"
     state: directory
     mode: 0755
 
