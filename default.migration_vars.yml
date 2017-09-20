@@ -7,6 +7,9 @@
 profile: "stanford"
 stack: "cardinal"
 stack_id: "2"
+server: "sites2"
+server_alias: "sse"
+site_prefix: "ds"
 
 # These can stay here
 localhost_home: ""
