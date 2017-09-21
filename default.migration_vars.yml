@@ -1,18 +1,24 @@
-# Defaults used for migration playbook.
+# Personal or local values for migration playbook.
 # https://github.com/SU-SWS/drupal-caravan
-# ========================================
+# ================================================
 #
-
-# These should be in group_vars
-profile: "stanford"
-stack: "cardinal"
-stack_id: "2"
-server: "sites2"
-server_alias: "sse"
-site_prefix: "ds"
-
-# These can stay here
+# Save a copy of this file to the ansible-playbooks root directory
+# and name it, migration_vars.yml.
+#
+# Enter the path to your user's home directory on your local machine.
+# Example: "/Users/johndoe"
 localhost_home: ""
+#
+# Enter your Acquia username. This is the name as it appears on your
+# Acquia profile page once logged in.
+# Example: "John Doe"
 acquia_username: ""
+#
+# Enter your Site Factory API Key. This is found in Site Factory, by going
+# to your profile and then clicking Security.
 acquia_api_key: ""
+#
+# Enter your SUNetID. This will be used to log into our existing servers
+# and download copies of production sites.
+# Example: jdoe
 sunetid: ""

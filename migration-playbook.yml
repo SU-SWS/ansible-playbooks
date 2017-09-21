@@ -21,8 +21,8 @@
     - migration_vars.yml
 
   roles:
-    - setup-factorysite
-    - setup-factorysite-local
-    - sync-factorysite
-    - cleanup-factorysite-local
+    - setup-site
+    - setup-local
+    - sync-site
+    - cleanup-local
   serial: 12
