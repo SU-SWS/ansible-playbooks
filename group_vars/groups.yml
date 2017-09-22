@@ -21,6 +21,11 @@ stack: "cardinal"
 # stack is ID: `2` and `stanford` stack is ID: `1`.
 stack_id: "2"
 #
+# Enter the Site Factory Group ID or ID's within which this site should
+# appear in the Site Factory dashboard.
+# Example: "126,127" or "126"
+group_ids: 126
+#
 # Enter the server from which we should pull the live site's database and
 # and files. Unless the sites are people sites, we'll probably want to
 # pull copies from `sites2`.

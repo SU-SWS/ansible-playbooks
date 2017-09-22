@@ -8,7 +8,6 @@
 #
 # INPUTS:
 # inventory_hostname
-# stack
 # localhost_home
 #
 # OUTPUTS:
