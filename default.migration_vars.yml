@@ -28,7 +28,9 @@ localhost_home: ""
 # Example: "John Doe"
 acquia_username: ""
 #
-# Enter your Site Factory API Key. This is found in Site Factory, by going
+# Enter your Site Factory API Key for the environment against which you
+# will run the migration playbook. API Key's differ between the Site Factory
+# environments. This is found in Site Factory, by going
 # to your profile and then clicking Security.
 acquia_api_key: ""
 #
