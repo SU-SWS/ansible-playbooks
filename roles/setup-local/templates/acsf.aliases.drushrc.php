@@ -2,8 +2,8 @@
 ### Wildcard for ACSF: Stanford & Cardinal
 ###
 ### Examples:
-### @acsf.[stack].[inventory_hostname]
-### @acsf.[dev|test].[stack].[inventory_hostname]
+### @acsf.[stack].[sitename]
+### @acsf.[dev|test].[stack].[sitename]
 ###
 ### @acsf.cardinal.sheatest
 ### @acsf.dev.cardinal.sheatest
@@ -83,7 +83,7 @@ $aliases["test." . $stack . "." . $site] = array(
   'ac-site' => $stack,
   'ac-env' => '01test',
   'ac-realm' => 'enterprise-g1',
-  'uri' => $site . '-test.stanford.acsitefactory.com',
+  'uri' => $site . '.test-stanford.acsitefactory.com',
   'remote-host' => $stack . '01test.ssh.enterprise-g1.acquia-sites.com',
   'remote-user' => $stack . '.01test',
   'path-aliases' => array(
@@ -97,7 +97,7 @@ $aliases["dev." . $stack . "." . $site] = array(
   'ac-site' => $stack,
   'ac-env' => '01dev',
   'ac-realm' => 'enterprise-g1',
-  'uri' => $site . '-dev.stanford.acsitefactory.com',
+  'uri' => $site . '.dev-stanford.acsitefactory.com',
   'remote-host' => $stack . '01dev.ssh.enterprise-g1.acquia-sites.com',
   'remote-user' => $stack . '.01dev',
   'path-aliases' => array(
