@@ -18,7 +18,8 @@
 #   dept_site
 #
 # OUTPUTS:
-# --
+#   factory_sites
+#   files_public_path
 #
 # ALTERNATIVE ROLES:
 # --
@@ -103,14 +104,14 @@
     - "sarl -y 'http://{{ vhost }}.stanford.edu/' ''"
     - "sarl -y 'https://{{ vhost }}.stanford.edu/' ''"
   when:
-    vhost != ""
+    vhost is defined
 
 - name: Get public files directory
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='File directory path' --field-labels=0"
   register: file_public_path
 
 - name: Replace sites/default/files with path to files directory
-  shell: "drush @{{ drush_alias_environment }}.}{{ stack }}.{{ inventory_hostname }} sar -y 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} sar -y 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
 
 - name: Copy files from Sites to local
   shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/* /tmp/{{ inventory_hostname }}/files/."
@@ -130,7 +131,7 @@
       domain_name: "{{ vhost }}.stanford.edu"
   with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + inventory_hostname + \"'].id\") }}"
   when:
-    vhost != ""
+    vhost is defined
 
 - name: Clear site cache
   uri:
