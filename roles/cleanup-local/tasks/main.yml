@@ -7,7 +7,7 @@
 # remove the local copy of a site's database and files from your /tmp directory.
 #
 # INPUTS:
-# inventory_hostname
+#   inventory_hostname
 #
 # OUTPUTS:
 # --

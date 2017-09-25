@@ -40,8 +40,8 @@
   register: existing_sites
 
 - name: Display all site names
-  debug: var=item
-    verbosity: 1
+  debug:
+    var: item
   with_items: "{{ existing_sites | json_query('json.sites[*].site') }}"
 
 - name: Create new site on Site Factory
@@ -63,7 +63,6 @@
 
 - name: Display ACSF site id
   debug:
-    verbosity: 1
     msg: "{{ site_created | json_query('json.id') }}"
 
 - pause: minutes=6

@@ -11,17 +11,13 @@
 # `dev-stanford` would be the dev environment. The environment you choose
 # needs to match the environment choice below.
 sitefactory_environment: "test-stanford"
-
+#
 # Enter the enviroment drush alias prefix that you would like to run this
 # migration playbook against. `acsf` would be production. `acsf.test` would
 # be the test, or staging environment. And `acsf.dev` would be the dev
 # environment. The environment you choose needs to match the environment
 # choice above.
 drush_alias_environment: "acsf.test"
-
-# Enter the path to your user's home directory on your local machine.
-# Example: "/Users/johndoe"
-localhost_home: ""
 #
 # Enter your Acquia username. This is the name as it appears on your
 # Acquia profile page once logged in.
