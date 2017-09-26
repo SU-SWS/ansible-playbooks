@@ -117,7 +117,7 @@
   shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/* /tmp/{{ inventory_hostname }}/files/."
 
 - name: Copy files from local to Site Factory
-  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @acsf.{{ stack }}.{{ inventory_hostname }}:%files/"
+  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }}:%files/"
 
 - name: Add vhost as domain
   uri:
