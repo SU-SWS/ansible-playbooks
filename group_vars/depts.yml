@@ -38,8 +38,8 @@ server: "sites2"
 server_alias: "sse"
 #
 # We had a convention on Stanford Sites of prefixing sitenames with `dp` for
-# people sites and `ds` for other types of sites. Some older sites are
-# prefixed with `dr`. Enter which prefix we should use for this in this group.
+# people sites and `ds` for other types of sites. Enter which prefix we should
+# use for this in this group.
 site_prefix: "ds"
 #
 # Department sites get extra treatment during the migration process. Help us

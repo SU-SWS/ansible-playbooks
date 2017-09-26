@@ -19,7 +19,7 @@ Installation
 2. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
 3. `cd ansible-playbooks`
 4. Look at the `/inventory` directory and either modify or create a file that includes only the sites you want to migrate, grouped by their site type.
-5. Make sure you have an active Kerberos ticket.
+5. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary).
 6. Run: `ansible-playbook -i inventory/[inventory-filename] -c local migration-playbook.yml` with the inventory you created or modified.
 
 Troubleshooting

@@ -32,16 +32,15 @@ group_ids: 126
 server: "people2"
 #
 # We'll be using drush aliases to download the live site's database and
-# files. Enter the alias we should be using for sites in this group. Unless
-# the sites are people sites, we'll probably want to use `sse`. People sites
+# files. Enter the alias we should be using for sites in this group. People sites
 # should use `ppl`.
 server_alias: "ppl"
 #
 # We had a convention on Stanford Sites of prefixing sitenames with `dp` for
-# people sites and `ds` for other types of sites. Some older sites are
-# prefixed with `dr`. Enter which prefix we should use for this in this group.
+# people sites and `ds` for other types of sites. Enter which prefix we should
+# use for this in this group.
 site_prefix: "dp"
 #
-# Department sites get extra treatment during the migration process. Help us
-# skip this for non-department sites, by setting this value to FALSE.
+# Department sites get extra treatment during the migration process. There shouldn't
+# be any department sites in the [people] group, so this value should be set to FALSE.
 dept_site: "FALSE"
