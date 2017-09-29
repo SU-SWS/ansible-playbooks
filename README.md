@@ -10,17 +10,24 @@ Changelog: [Changelog.txt](CHANGELOG.txt)
 Description
 ---
 
-Documentation coming soon.
+This is a small collection of Ansible roles that we are using to migrate sites from one server to another.
 
 Installation
 ---
 
-Documentation coming soon.
+1. If not already installed, `pip install ansible` or `brew install ansible`
+2. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
+3. `cd ansible-playbooks`
+4. Look at the `/inventory` directory and either modify or create a file that includes only the sites you want to migrate, grouped by their site type.
+5. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary).
+6. Run: `ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml` with the inventory you created or modified.
 
 Troubleshooting
 ---
 
-Documentation coming soon.
+If a task fails, you can re-run the playbook from where it failed with: `ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml --start-at-task="name of the task you want to start from"`.
+
+You can also add `-v(vvv)` for more debug information. 
 
 Contribution / Collaboration
 ---

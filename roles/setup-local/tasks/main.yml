@@ -7,9 +7,7 @@
 # a directory on locahost, where we can temporarily sync a site database and files.
 #
 # INPUTS:
-# inventory_hostname
-# stack
-# localhost_home
+#   inventory_hostname
 #
 # OUTPUTS:
 # --
@@ -38,4 +36,4 @@
 - name: Update drush aliases
   template:
     src: "acsf.aliases.drushrc.php"
-    dest: "{{ localhost_home }}/.drush/acsf.aliases.drushrc.php"
+    dest: "~/.drush/acsf.aliases.drushrc.php"

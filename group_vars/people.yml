@@ -1,6 +1,46 @@
-vhost: ""
+# [people] specific values for migration playbook.
+# https://github.com/SU-SWS/drupal-caravan
+# ================================================
+#
+# These values will be used when Ansible runs the migration playbook
+# against hosts listed under the [people] inventory group.
+#
+# Enter the profile you would like Site Factory to install initially, when
+# creating the site. Note, this value is kind of irrelevant because all
+# Site Factory sites on the same stack run off the same codebase.  And which
+# profile a site uses will be saved in the database we load from production.
+# So there's not point in waiting for `stanford_sites_jumpstart_academic` to
+# install before blowing away that database.
 profile: "stanford"
+#
+# We are only migrating Drupal 7 sites, so we will only be migrating sites
+# to the `cardinal` stack.
+stack: "cardinal"
+#
+# The Site Factory API requires that we pass it the stack ID. The `cardinal`
+# stack is ID: `2` and `stanford` stack is ID: `1`.
+stack_id: "2"
+#
+# Enter the Site Factory Group ID or ID's within which this site should
+# appear in the Site Factory dashboard.
+# Example: "126,127" or "126"
+group_ids: 126
+#
+# Enter the server from which we should pull the live site's database and
+# and files. Unless the sites are people sites, we'll probably want to
+# pull copies from `sites2`.
 server: "people2"
+#
+# We'll be using drush aliases to download the live site's database and
+# files. Enter the alias we should be using for sites in this group. People sites
+# should use `ppl`.
 server_alias: "ppl"
+#
+# We had a convention on Stanford Sites of prefixing sitenames with `dp` for
+# people sites and `ds` for other types of sites. Enter which prefix we should
+# use for this in this group.
 site_prefix: "dp"
+#
+# Department sites get extra treatment during the migration process. There shouldn't
+# be any department sites in the [people] group, so this value should be set to FALSE.
 dept_site: "FALSE"

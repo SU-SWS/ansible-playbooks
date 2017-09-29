@@ -1,18 +1,36 @@
-# Defaults used for migration playbook.
+# Personal or local values for migration playbook.
 # https://github.com/SU-SWS/drupal-caravan
-# ========================================
+# ================================================
 #
-
-# These should be in group_vars
-profile: "stanford"
-stack: "cardinal"
-stack_id: "2"
-server: "sites2"
-server_alias: "sse"
-site_prefix: "ds"
-
-# These can stay here
-localhost_home: ""
+# Save a copy of this file to the ansible-playbooks root directory
+# and name it, migration_vars.yml.
+#
+# Enter the environment sub-domain that you would like to run this
+# migration playbook against. `stanford` would be the production environment
+# `test-stanford` would be the test, or staging environment. And
+# `dev-stanford` would be the dev environment. The environment you choose
+# needs to match the environment choice below.
+sitefactory_environment: "test-stanford"
+#
+# Enter the enviroment drush alias prefix that you would like to run this
+# migration playbook against. `acsf` would be production. `acsf.test` would
+# be the test, or staging environment. And `acsf.dev` would be the dev
+# environment. The environment you choose needs to match the environment
+# choice above.
+drush_alias_environment: "acsf.test"
+#
+# Enter your Acquia username. This is the name as it appears on your
+# Acquia profile page once logged in.
+# Example: "John Doe"
 acquia_username: ""
+#
+# Enter your Site Factory API Key for the environment against which you
+# will run the migration playbook. API Key's may differ between the Site Factory
+# environments. This is found in Site Factory, by going
+# to your profile and then clicking Security.
 acquia_api_key: ""
+#
+# Enter your SUNetID. This will be used to log into our existing servers
+# and download copies of production sites.
+# Example: jdoe
 sunetid: ""
