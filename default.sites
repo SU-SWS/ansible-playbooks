@@ -7,7 +7,7 @@
 # Group sites on sites.stanford.edu (no Stanford-branded themes). See
 # group_vars/groups.yml for defaults.
 [groups]
-#cees vhost="cees"
+#ssds vhost="ssds"
 
 # Department sites on sites.stanford.edu (Stanford-branded themes). See
 # group_vars/depts.yml for defaults.
