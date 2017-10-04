@@ -30,12 +30,11 @@
 
 - name: Check if site exists on Site Factory
   uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites"
+    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites?limit=100"
     method: GET
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
     force_basic_auth: yes
-    body_format: json
     return_content: yes
   register: existing_sites
 
