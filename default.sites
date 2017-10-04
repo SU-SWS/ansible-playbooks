@@ -1,0 +1,15 @@
+# Default inventory file. Copy this and put it in the "inventory" directory.
+
+# Personal sites on people.stanford.edu. See group_vars/people.yml for defaults.
+[people]
+#jbickar
+
+# Group sites on sites.stanford.edu (no Stanford-branded themes). See
+# group_vars/groups.yml for defaults.
+[groups]
+#cees vhost="cees"
+
+# Department sites on sites.stanford.edu (Stanford-branded themes). See
+# group_vars/depts.yml for defaults.
+[depts]
+#swsblog vhost="swsblog"
