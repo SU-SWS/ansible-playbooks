@@ -1,5 +1,5 @@
 # Personal or local values for migration playbook.
-# https://github.com/SU-SWS/drupal-caravan
+# https://github.com/SU-SWS/ansible-playbooks
 # ================================================
 #
 # Save a copy of this file to the ansible-playbooks root directory
