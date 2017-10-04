@@ -62,7 +62,7 @@
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
   with_items:
     - "-y en acsf stanford_ssp"
-#    - "sspwmd"
+    - "sspwmd"
 
 - name: Find any absolute paths and replace them - people sites
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
@@ -141,4 +141,3 @@
     password: "{{ acquia_api_key }}"
     force_basic_auth: yes
   with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + inventory_hostname + \"'].id\") }}"
-
