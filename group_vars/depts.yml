@@ -5,22 +5,6 @@
 # These values will be used when Ansible runs the migration playbook
 # against hosts listed under the [depts] inventory group.
 #
-# Enter the profile you would like Site Factory to install initially, when
-# creating the site. Note, this value is kind of irrelevant because all
-# Site Factory sites on the same stack run off the same codebase.  And which
-# profile a site uses will be saved in the database we load from production.
-# So there's not point in waiting for `stanford_sites_jumpstart_academic` to
-# install before blowing away that database.
-profile: "stanford"
-#
-# We are only migrating Drupal 7 sites, so we will only be migrating sites
-# to the `cardinal` stack.
-stack: "cardinal"
-#
-# The Site Factory API requires that we pass it the stack ID. The `cardinal`
-# stack is ID: `2` and `stanford` stack is ID: `1`.
-stack_id: "2"
-#
 # Enter the Site Factory Group ID or ID's within which this site should
 # appear in the Site Factory dashboard.
 # Example: "126,127" or "126"
