@@ -60,12 +60,8 @@
   register: site_created
   when: inventory_hostname not in existing_sites | json_query('json.sites[*].site')
 
-- name: Display ACSF site id
-  debug:
-    msg: "{{ site_created | json_query('json.id') }}"
-
-- pause: minutes=6
-  when: site_created | int
+- pause:
+    minutes: 6
 
 - name: Check drush can bootstrap site
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='Drupal bootstrap' --field-labels=0"
