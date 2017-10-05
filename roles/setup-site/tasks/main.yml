@@ -28,20 +28,13 @@
 # KNOWN ISSUES:
 # --
 
-- name: Check if site exists on Site Factory
-  uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites?limit=100"
-    method: GET
-    user: "{{ acquia_username }}"
-    password: "{{ acquia_api_key }}"
-    force_basic_auth: yes
-    return_content: yes
-  register: existing_sites
+- name: Check if site is installed on Site Factory
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='Drupal bootstrap' --field-labels=0"
+  register: bootstrap_successful
 
-- name: Display all site names
+- name: Bootstrap status
   debug:
-    var: item
-  with_items: "{{ existing_sites | json_query('json.sites[*].site') }}"
+    msg: "{{ bootstrap_successful | json_query('stdout') }}"
 
 - name: Create new site on Site Factory
   uri:
@@ -58,12 +51,29 @@
     body_format: json
     return_content: yes
   register: site_created
-  when: inventory_hostname not in existing_sites | json_query('json.sites[*].site')
+  when: bootstrap_successful | json_query('stdout') is not defined
 
-- name: Display ACSF site id
-  debug:
-    msg: "{{ site_created | json_query('json.id') }}"
+- name: Wait for site to install
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='Drupal bootstrap' --field-labels=0"
+  async: 360
+  poll: 0
+  register: async_play
+  when: bootstrap_successful | json_query('stdout') is not defined
 
-- pause: minutes=6
-  when: inventory_hostname not in existing_sites | json_query('json.sites[*].site')
-# - name: Check task
+- name: Check install results
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  register: async_jobs
+  until: async_jobs.finished
+  with_items:
+    - "{{ async_play }}"
+  retries: 10
+  delay: 5
+  when: bootstrap_successful | json_query('stdout') is not defined
+
+- debug: msg="{{ bootstrap_successful | json_query('stdout') }} or {{ async_jobs | json_query('results[*].stdout') }}"
+
+- name: Fail the play if result was not success
+  fail: msg="Not able to grab a value for Drupal Bootstrap, which suggests your site may not be setup in ACSF."
+  when: "' Successful ' not in bootstrap_successful | json_query('stdout') and
+        ' Successful ' not in async_jobs | json_query('results[*].stdout')"
