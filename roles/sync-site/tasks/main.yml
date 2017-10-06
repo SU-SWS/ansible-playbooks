@@ -49,19 +49,21 @@
   with_items:
     - "-y sql-drop"
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
-    - "-y updb"
 
 - name: Set site up as a Department site
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
   with_items:
     - "vset install_profile stanford_dept"
+    - "cc all"
     - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
   when: dept_site == "TRUE"
 
 - name: Do post-database-restore tasks
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
   with_items:
-    - "-y en acsf stanford_ssp"
+    - "-y updb"
+    - "-y en acsf nobots stanford_ssp"
+    - "-y dis googleanalytics pingdom_rum"
     - "sspwmd"
 
 - name: Find any absolute paths and replace them - people sites
