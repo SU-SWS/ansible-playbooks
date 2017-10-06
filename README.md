@@ -18,16 +18,17 @@ Installation
 1. If not already installed, `pip install ansible` or `brew install ansible`
 2. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
 3. `cd ansible-playbooks`
-4. Look at the `/inventory` directory and either modify or create a file that includes only the sites you want to migrate, grouped by their site type.
-5. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary).
-6. Run: `ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml` with the inventory you created or modified.
+4. Copy default.sites into the `/inventory` directory and modify it to include only the sites you want to migrate, grouped by their site type. You can name it whatever you wish.
+5. Copy `default.migration_vars.yml` into the root `ansible-playbooks` directory and populate it with your information.
+6. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary).
+7. Run: `ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml` with the inventory you created or modified.
 
 Troubleshooting
 ---
 
 If a task fails, you can re-run the playbook from where it failed with: `ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml --start-at-task="name of the task you want to start from"`.
 
-You can also add `-v(vvv)` for more debug information. 
+You can also add `-v(vvv)` for more debug information.
 
 Contribution / Collaboration
 ---
