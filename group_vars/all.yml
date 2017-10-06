@@ -11,7 +11,7 @@
 # profile a site uses will be saved in the database we load from production.
 # So there's not point in waiting for `stanford_sites_jumpstart_academic` to
 # install before blowing away that database.
-profile: "minimal"
+profile: "testing"
 #
 # We are only migrating Drupal 7 sites, so we will only be migrating sites
 # to the `cardinal` stack.
