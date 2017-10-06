@@ -1,6 +1,6 @@
 ---
 # Ansible role for setting up localhost to accomodate migration.
-# https://github.com/SU-SWS/drupal-caravan
+# https://github.com/SU-SWS/ansible-playbooks
 # =============================================================
 #
 # The purpose of this role is to instantiate a STATE, in this case the state of

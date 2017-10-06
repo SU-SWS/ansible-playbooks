@@ -1,6 +1,6 @@
 ---
 # Ansible playbook that recreates in Site Factory sites on our infrastructure.
-# https://github.com/SU-SWS/drupal-caravan
+# https://github.com/SU-SWS/ansible-playbooks
 # ============================================================================
 #
 # This playbook will create a new site in Acquia Cloud Site Factory, and

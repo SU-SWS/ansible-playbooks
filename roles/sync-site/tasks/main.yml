@@ -1,6 +1,6 @@
 ---
 # Ansible role for syncing the database and files between Sites and Site Factory.
-# https://github.com/SU-SWS/drupal-caravan
+# https://github.com/SU-SWS/ansible-playbooks
 # =====================================================================
 #
 # This role syncs the database from Sites to Site Factory. To do this,

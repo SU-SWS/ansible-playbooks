@@ -1,5 +1,5 @@
 # [all] specific values for migration playbook.
-# https://github.com/SU-SWS/drupal-caravan
+# https://github.com/SU-SWS/ansible-playbooks
 # =============================================
 #
 # These values will be used when Ansible runs the migration playbook
