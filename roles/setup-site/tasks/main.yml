@@ -50,7 +50,7 @@
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
     body:
-      site_name: "{{ inventory_hostname }}"
+      site_name: "{{ inventory_hostname | regex_replace('[^a-z1-9]') }}"
       install_profile: "{{ profile }}"
       codebase: "{{ stack_id }}"
       group_ids: 126
