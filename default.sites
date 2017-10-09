@@ -7,9 +7,9 @@
 # Group sites on sites.stanford.edu (no Stanford-branded themes). See
 # group_vars/groups.yml for defaults.
 [groups]
-#ssds vhost="ssds"
+#designingforvr vhost="designingforvr"
 
 # Department sites on sites.stanford.edu (Stanford-branded themes). See
 # group_vars/depts.yml for defaults.
 [depts]
-#swsblog vhost="swsblog"
+#ssds vhost="ssds"
