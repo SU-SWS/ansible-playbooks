@@ -12,4 +12,4 @@
 # Department sites on sites.stanford.edu (Stanford-branded themes). See
 # group_vars/depts.yml for defaults.
 [depts]
-#swsblog vhost="swsblog"
+#ssds vhost="ssds"
