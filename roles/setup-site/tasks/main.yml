@@ -28,6 +28,11 @@
 # KNOWN ISSUES:
 # --
 
+- name: Sanitize inventory_hostname
+  set_fact:
+    acsf_site_name: "{{ inventory_hostname | regex_replace('[^a-z1-9]') }}"
+    cacheable: TRUE
+
 - name: Check if site exists on Site Factory
   uri:
     url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites?limit=100"
@@ -50,7 +55,7 @@
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
     body:
-      site_name: "{{ inventory_hostname | regex_replace('[^a-z1-9]') }}"
+      site_name: "{{ acsf_site_name }}"
       install_profile: "{{ profile }}"
       codebase: "{{ stack_id }}"
       group_ids: 126
@@ -58,13 +63,13 @@
     body_format: json
     return_content: yes
   register: site_created
-  when: inventory_hostname not in existing_sites | json_query('json.sites[*].site')
+  when: acsf_site_name not in existing_sites | json_query('json.sites[*].site')
 
 - pause:
     minutes: 4
 
 - name: Check drush can bootstrap site
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='Drupal bootstrap' --field-labels=0"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='Drupal bootstrap' --field-labels=0"
   async: 360
   poll: 2
   register: async_play
