@@ -116,7 +116,7 @@
     vhost is defined
 
 - name: Get public files directory
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='File directory path' --field-labels=0 --strict=0"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='File directory path' --field-labels=0 --strict=0"
   register: file_public_path
 
 - name: Replace sites/default/files with path to files directory
