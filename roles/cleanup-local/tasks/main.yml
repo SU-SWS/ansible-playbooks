@@ -21,7 +21,7 @@
 # KNOWN ISSUES:
 # --
 #
-- name: Create inventory_hostname directory in tmp
+- name: Remove inventory_hostname directory in tmp
   file:
     path: "/tmp/{{ inventory_hostname }}"
     state: absent

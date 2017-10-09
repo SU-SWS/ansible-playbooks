@@ -27,7 +27,7 @@
     state: directory
     mode: 0755
 
-- name: Create inventory_hostname directory in tmp
+- name: Create inventory_hostname/files directory in tmp
   file:
     path: "/tmp/{{ inventory_hostname }}/files"
     state: directory

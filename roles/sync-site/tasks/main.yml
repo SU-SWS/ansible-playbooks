@@ -8,6 +8,7 @@
 # Site Factory.
 #
 # INPUTS:
+#   acsf_site_name
 #   inventory_hostname
 #   sitefactory_environment
 #   drush_alias_environment
@@ -32,7 +33,7 @@
 
 - name: Get list of sites on Site Factory
   uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites"
+    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites?limit=100"
     method: GET
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
@@ -41,17 +42,23 @@
     return_content: yes
   register: factory_sites
 
+- name: Set acsf_site_name from inventory_hostname if it is undefined.
+  set_fact:
+    acsf_site_name: "{{ inventory_hostname | regex_replace('[^a-z1-9]') }}"
+    cacheable: TRUE
+  when: acsf_site_name is undefined
+
 - name: Download copy of database from sites
   shell: "drush @{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }} sql-dump > /tmp/{{ inventory_hostname }}/dbdump.sql"
 
 - name: Drop database in Site Factory and install new database
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
   with_items:
     - "-y sql-drop"
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
 
 - name: Set site up as a Department site
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
   with_items:
     - "vset install_profile stanford_dept"
     - "cc all"
@@ -59,7 +66,7 @@
   when: dept_site == "TRUE"
 
 - name: Do post-database-restore tasks
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
   with_items:
     - "-y updb"
     - "-y en acsf nobots stanford_ssp"
@@ -67,7 +74,7 @@
     - "sspwmd"
 
 - name: Find any absolute paths and replace them - people sites
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
   with_items:
     - "sar -y 'http://people.stanford.edu/{{ inventory_hostname }}/' '/'"
     - "sar -y 'https://people.stanford.edu/{{ inventory_hostname }}/' '/'"
@@ -82,7 +89,7 @@
     site_prefix == "dp"
 
 - name: Find any absolute paths and replace them - group and dept sites
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
   with_items:
     - "sar -y 'http://sites.stanford.edu/{{ inventory_hostname }}/' '/'"
     - "sar -y 'https://sites.stanford.edu/{{ inventory_hostname }}/' '/'"
@@ -97,7 +104,7 @@
     site_prefix == "ds"
 
 - name: Find any vhost absolute paths and replace them
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
   with_items:
     - "sar -y 'http://{{ vhost }}.stanford.edu/' '/'"
     - "sar -y 'https://{{ vhost }}.stanford.edu/' '/'"
@@ -109,17 +116,17 @@
     vhost is defined
 
 - name: Get public files directory
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='File directory path' --field-labels=0 --strict=0"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='File directory path' --field-labels=0 --strict=0"
   register: file_public_path
 
 - name: Replace sites/default/files with path to files directory
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} sar -y 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
 
 - name: Copy files from Sites to local
   shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/* /tmp/{{ inventory_hostname }}/files/."
 
 - name: Copy files from local to Site Factory
-  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }}:%files/"
+  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/"
 
 - name: Add vhost as domain
   uri:
@@ -131,9 +138,24 @@
     body_format: json
     body:
       domain_name: "{{ vhost }}.stanford.edu"
-  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + inventory_hostname + \"'].id\") }}"
+  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
   when:
     vhost is defined
+
+# Waiting to find out via Acquia ticket #624799 if this is possible
+# - name: Add inventory_hostname as domain
+#   uri:
+#     url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ item }}/add"
+#     method: POST
+#     user: "{{ acquia_username }}"
+#     password: "{{ acquia_api_key }}"
+#     force_basic_auth: yes
+#     body_format: json
+#     body:
+#       domain_name: "{{ inventory_hostname }}.{{ sitefactory_environment }}.acsitefactory.com"
+#     return_content: yes
+#   register: inventory_hostname_domain_response
+#   with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
 
 - name: Clear site cache
   uri:
@@ -142,4 +164,4 @@
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
     force_basic_auth: yes
-  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + inventory_hostname + \"'].id\") }}"
+  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
