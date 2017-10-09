@@ -1,6 +1,6 @@
 ---
 # Ansible role for creating a site on Site Factory
-# https://github.com/SU-SWS/drupal-caravan
+# https://github.com/SU-SWS/ansible-playbooks
 # ================================================
 #
 # The purpose of this role is to instantiate a STATE, in this case the
@@ -30,12 +30,11 @@
 
 - name: Check if site exists on Site Factory
   uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites"
+    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites?limit=100"
     method: GET
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
     force_basic_auth: yes
-    body_format: json
     return_content: yes
   register: existing_sites
 
@@ -61,10 +60,12 @@
   register: site_created
   when: inventory_hostname not in existing_sites | json_query('json.sites[*].site')
 
-- name: Display ACSF site id
-  debug:
-    msg: "{{ site_created | json_query('json.id') }}"
+- pause:
+    minutes: 1
 
-- pause: minutes=6
-  when: inventory_hostname not in existing_sites | json_query('json.sites[*].site')
-# - name: Check task
+- name: Check drush can bootstrap site
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
+  retries: 10
+  delay: 50
+  register: bootstrap_status
+  until: bootstrap_status.stdout | search('Successful')

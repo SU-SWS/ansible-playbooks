@@ -1,6 +1,6 @@
 ---
 # Ansible role for syncing the database and files between Sites and Site Factory.
-# https://github.com/SU-SWS/drupal-caravan
+# https://github.com/SU-SWS/ansible-playbooks
 # =====================================================================
 #
 # This role syncs the database from Sites to Site Factory. To do this,
@@ -49,20 +49,22 @@
   with_items:
     - "-y sql-drop"
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
-    - "-y updb"
 
 - name: Set site up as a Department site
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
   with_items:
     - "vset install_profile stanford_dept"
+    - "cc all"
     - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
   when: dept_site == "TRUE"
 
 - name: Do post-database-restore tasks
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
   with_items:
-    - "-y en acsf stanford_ssp"
-#    - "sspwmd"
+    - "-y updb"
+    - "-y en acsf nobots stanford_ssp"
+    - "-y dis googleanalytics pingdom_rum"
+    - "sspwmd"
 
 - name: Find any absolute paths and replace them - people sites
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} {{ item }}"
@@ -107,7 +109,7 @@
     vhost is defined
 
 - name: Get public files directory
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='File directory path' --field-labels=0"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='File directory path' --field-labels=0 --strict=0"
   register: file_public_path
 
 - name: Replace sites/default/files with path to files directory
@@ -141,4 +143,3 @@
     password: "{{ acquia_api_key }}"
     force_basic_auth: yes
   with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + inventory_hostname + \"'].id\") }}"
-
