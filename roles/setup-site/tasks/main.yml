@@ -61,29 +61,11 @@
   when: inventory_hostname not in existing_sites | json_query('json.sites[*].site')
 
 - pause:
-    minutes: 4
+    minutes: 1
 
 - name: Check drush can bootstrap site
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='Drupal bootstrap' --field-labels=0"
-  async: 360
-  poll: 2
-  register: async_play
-
-- name: Retry drush check to bootstrap site
-  async_status:
-    jid: "{{ item.ansible_job_id }}"
-  register: async_jobs
-  until: async_jobs.finished
-  with_items:
-    - "{{ async_play }}"
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ inventory_hostname }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
   retries: 10
   delay: 50
-
-- debug: msg="{{ async_jobs | json_query('results[*].stdout') }}"
-
-- name: Fail the play if result was not success
-  set_fact:
-    found: True
-  with_items:
-    - "{{ async_jobs | json_query('results[*].stdout') }}"
-  when: item | search('Successful')
+  register: bootstrap_status
+  until: bootstrap_status.stdout | search('Successful')
