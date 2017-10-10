@@ -1,0 +1,50 @@
+---
+# Ansible role for asserting server customizations are in place.
+# https://github.com/SU-SWS/ansible-playbooks
+# =============================================================
+#
+# The purpose of this role is to instantiate a STATE, in this case the state of
+# a directory on locahost, where we can temporarily sync a site database and files.
+#
+# INPUTS:
+#   inventory_hostname
+#
+# OUTPUTS:
+# --
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+#
+
+- name: Update .bashrc
+  template:
+    src: ".bashrc"
+    dest: "~/.bashrc"
+
+- name: Ensure that ~/.drush directory exists
+  file:
+    path: "~/.drush"
+    state: directory
+    mode: 0755
+
+- name: Update drushrc.php
+  template:
+    src: "drushrc.php"
+    dest: "~/.drush/drushrc.php"
+
+- name: Clone drush registry_rebuild
+  git:
+    repo: 'https://git.drupal.org/project/registry_rebuild.git'
+    dest: ~/.drush/registry_rebuild
+    version: 7.x-2.5
+
+- name: Clone drush_user_list
+  git:
+    repo: 'https://git.drupal.org/project/drush_user_list.git'
+    dest: ~/.drush/drush_user_list
