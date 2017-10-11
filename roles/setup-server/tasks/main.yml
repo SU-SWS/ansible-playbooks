@@ -48,3 +48,8 @@
   git:
     repo: 'https://git.drupal.org/project/drush_user_list.git'
     dest: ~/.drush/drush_user_list
+
+- name: Clone drush sar
+  git:
+    repo: 'https://github.com/sherakama/sar
+    dest: ~/.drush/sar
