@@ -27,6 +27,11 @@
     src: ".bashrc"
     dest: "~/.bashrc"
 
+- name: Update .bash_profile
+  template:
+    src: ".bash_profile"
+    dest: "~/.bash_profile"
+
 - name: Ensure that ~/.drush directory exists
   file:
     path: "~/.drush"
@@ -51,5 +56,5 @@
 
 - name: Clone drush sar
   git:
-    repo: 'https://github.com/sherakama/sar
+    repo: 'https://github.com/sherakama/sar'
     dest: ~/.drush/sar

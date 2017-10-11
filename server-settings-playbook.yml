@@ -16,7 +16,6 @@
 # ====================================
 # - hosts: dev,test,prod
 - hosts: dev
-#  connection: local
 
   vars_files:
     - server_vars.yml
