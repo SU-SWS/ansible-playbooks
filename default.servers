@@ -3,15 +3,15 @@
 
 # Dev servers
 [dev]
-cardinal01dev.ssh.enterprise-g1.acquia-sites.com user=cardinal.01dev
-stanford01dev.ssh.enterprise-g1.acquia-sites.com user=stanford.01dev
+cardinal01dev.ssh.enterprise-g1.acquia-sites.com ansible_user=cardinal.01dev
+stanford01dev.ssh.enterprise-g1.acquia-sites.com ansible_user=stanford.01dev
 
 # Test servers
 [test]
-cardinal01test.ssh.enterprise-g1.acquia-sites.com user=cardinal.01test
-stanford01test.ssh.enterprise-g1.acquia-sites.com user=stanford.01test
+cardinal01test.ssh.enterprise-g1.acquia-sites.com ansible_user=cardinal.01test
+stanford01test.ssh.enterprise-g1.acquia-sites.com ansible_user=stanford.01test
 
 # Prod servers
 [prod]
-cardinal01live.ssh.enterprise-g1.acquia-sites.com user=cardinal.01live
-stanford01live.ssh.enterprise-g1.acquia-sites.com user=stanford.01live
+cardinal01live.ssh.enterprise-g1.acquia-sites.com ansible_user=cardinal.01live
+stanford01live.ssh.enterprise-g1.acquia-sites.com ansible_user=stanford.01live
