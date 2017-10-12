@@ -2,3 +2,4 @@
 *.DS_Store
 *.retry
 migration_vars.yml
+server_vars.yml
