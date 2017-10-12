@@ -15,7 +15,7 @@
 # PLAY 1: Set up server customizations
 # ====================================
 # - hosts: dev,test,prod
-- hosts: dev
+- hosts: all
 
   vars_files:
     - server_vars.yml
