@@ -1,0 +1,49 @@
+---
+# Ansible role for creating Backtrac projects from an inventory.
+# https://github.com/SU-SWS/ansible-playbooks
+# ================================================================
+#
+# The purpose of this role is to create Backtrac projects via the API.
+#
+# INPUTS:
+#   backtrac_api_key
+#   inventory_hostname
+#   prod_url
+#   stage_url
+#   paths
+#
+# OUTPUTS:
+# --
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+#
+#- name: Check if project exists on Backtrac
+
+- name: Create backtrac projects from an inventory
+  uri:
+    url: "https://backtrac.io/api/project"
+    method: POST
+    headers:
+      x-api-key: "{{ backtrac_api_key }}"
+    body_format: json
+    body:
+      title: "{{ inventory_hostname }}"
+      prod:
+        url: "{{ prod_url }}"
+      stage:
+        url: "{{ stage_url }}"
+#      uris: "{{ paths }}"
+    force_basic_auth: yes
+    return_content: yes
+  register: existing_sites
+
+- name: Print out return json
+  debug:
+    msg: "{{ existing_sites }}"

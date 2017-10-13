@@ -1,0 +1,6 @@
+# Default inventory file for Backtrac.
+# Copy this and put it in the "inventory" directory.
+
+#dekaslab prod_url="https://dekaslab.stanford.edu/" stage_url="http://dekaslab.stanford.acsitefactory.com/" paths="people,research,publications,opportunities"
+dekaslab prod_url="https://dekaslab.stanford.edu/" stage_url="http://dekaslab.stanford.acsitefactory.com/"
+
