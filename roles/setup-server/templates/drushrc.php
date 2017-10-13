@@ -1,3 +1,3 @@
 <?php
 $command_specific['sqlq'] = array('extra' => '-t');
-//$options['default-major'] = "7";
+{% if major_version == 7 %}$options['default-major'] = "7";{% endif %}
