@@ -45,16 +45,21 @@
 
 - name: Clone drush registry_rebuild
   git:
-    repo: 'https://git.drupal.org/project/registry_rebuild.git'
-    dest: ~/.drush/registry_rebuild
-    version: 7.x-2.5
+    repo: "https://git.drupal.org/project/registry_rebuild.git"
+    dest: "~/.drush/registry_rebuild"
+    version: "7.x-2.5"
 
 - name: Clone drush_user_list
   git:
-    repo: 'https://git.drupal.org/project/drush_user_list.git'
-    dest: ~/.drush/drush_user_list
+    repo: "https://git.drupal.org/project/drush_user_list.git"
+    dest: "~/.drush/drush_user_list"
 
 - name: Clone drush sar
   git:
-    repo: 'https://github.com/sherakama/sar'
-    dest: ~/.drush/sar
+    repo: "https://github.com/sherakama/sar"
+    dest: "~/.drush/sar"
+
+- name: Clone drush_active_users
+  git:
+    repo: "https://github.com/jrglasgow/drush_active_users"
+    dest: "~/.drush/drush_active_users"
