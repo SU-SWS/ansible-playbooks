@@ -63,6 +63,7 @@
     - "vset install_profile stanford_dept"
     - "cc all"
     - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
+    - "rr"
   when: dept_site == "TRUE"
 
 - name: Do post-database-restore tasks
@@ -121,12 +122,12 @@
 
 - name: Print file_public_path
   debug:
-    msg: "File public path: {{ file_public_path }}"
+    msg: "File public path: {{ file_public_path.stdout }}"
 
 - name: Be sure response does not include drush warnings
   fail:
     msg: "There appear to be drush warning messages cluttering the file_public_path variable"
-  when: file_public_path | search('Inordertofixthis')
+  when: file_public_path.stdout | search('The following module is missing')
 
 - name: Replace sites/default/files with path to files directory
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
