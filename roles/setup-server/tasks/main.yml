@@ -57,15 +57,9 @@
 - name: Clone drush sar
   git:
     repo: "https://github.com/sherakama/sar"
-    dest: ~/.drush/sar"
+    dest: "~/.drush/sar"
 
 - name: Clone drush_active_users
   git:
     repo: "https://github.com/jrglasgow/drush_active_users"
     dest: "~/.drush/drush_active_users"
-
-- name: Define Drupal 7 as the default major version for D7 stacks
-  lineinfile:
-    path: "~/.drush/drushrc.php"
-    line: '$options["default-major"] = "7";'
-  when: major_version == "7"
