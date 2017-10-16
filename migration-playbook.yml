@@ -21,13 +21,13 @@
     - migration_vars.yml
 
   roles:
-    - setup-site
-    - setup-local
-    - sync-site
-    - cleanup-local
+    - { role: setup-local }
+    - { role: setup-site, tags: setup-site }
+    - { role: download-site, tags: [download-site,setup-site] }
+    - { role: upload-site, tags: [upload-site,setup-site,download-site] }
   serial: 12
 
-  post-tasks:
+  post_tasks:
   - name: Remove inventory_hostname directory in tmp
     file:
       path: "/tmp/{{ inventory_hostname }}"
