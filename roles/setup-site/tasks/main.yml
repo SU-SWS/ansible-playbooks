@@ -27,27 +27,6 @@
 #
 # KNOWN ISSUES:
 # --
-
-- name: Sanitize inventory_hostname
-  set_fact:
-    acsf_site_name: "{{ inventory_hostname | regex_replace('[^a-z1-9]') }}"
-    cacheable: TRUE
-
-- name: Check if site exists on Site Factory
-  uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites?limit=100"
-    method: GET
-    user: "{{ acquia_username }}"
-    password: "{{ acquia_api_key }}"
-    force_basic_auth: yes
-    return_content: yes
-  register: existing_sites
-
-- name: Display all site names
-  debug:
-    var: item
-  with_items: "{{ existing_sites | json_query('json.sites[*].site') }}"
-
 - name: Create new site on Site Factory
   uri:
     url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites"
@@ -67,10 +46,18 @@
 
 - pause:
     minutes: 1
+  notify: Check drush can bootstrap site
 
-- name: Check drush can bootstrap site
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
-  retries: 10
-  delay: 50
-  register: bootstrap_status
-  until: bootstrap_status.stdout | search('Successful')
+- name: Add vhost as domain
+  uri:
+    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ item }}/add"
+    method: POST
+    user: "{{ acquia_username }}"
+    password: "{{ acquia_api_key }}"
+    force_basic_auth: yes
+    body_format: json
+    body:
+      domain_name: "{{ vhost }}.stanford.edu"
+  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
+  when:
+    vhost is defined

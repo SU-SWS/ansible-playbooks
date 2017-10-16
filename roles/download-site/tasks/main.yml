@@ -1,0 +1,32 @@
+---
+# Ansible role for syncing the database and files between Sites and Site Factory.
+# https://github.com/SU-SWS/ansible-playbooks
+# =====================================================================
+#
+# This role syncs the database from Sites to Site Factory. To do this,
+# it will first save a copy locally and then rsync the local copy to
+# Site Factory.
+#
+# INPUTS:
+#   inventory_hostname
+#   server_alias
+#   site_prefix
+#   server
+#
+# OUTPUTS:
+# --
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+- name: Download copy of database from sites
+  shell: "drush @{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }} sql-dump > /tmp/{{ inventory_hostname }}/dbdump.sql"
+
+- name: Copy files from Sites to local
+  shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/* /tmp/{{ inventory_hostname }}/files/."

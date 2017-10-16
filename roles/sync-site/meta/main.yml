@@ -1,2 +1,4 @@
 ---
-dependencies: []
+dependencies:
+  - { role: get-sitename }
+  - { role: download-site }

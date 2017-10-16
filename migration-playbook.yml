@@ -26,3 +26,9 @@
     - sync-site
     - cleanup-local
   serial: 12
+
+  post-tasks:
+  - name: Remove inventory_hostname directory in tmp
+    file:
+      path: "/tmp/{{ inventory_hostname }}"
+      state: absent
