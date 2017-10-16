@@ -1,7 +1,7 @@
 ---
-# Ansible role for creating a site on Site Factory
+# Ansible role for creating a site on Site Factory.
 # https://github.com/SU-SWS/ansible-playbooks
-# ================================================
+# =================================================
 #
 # The purpose of this role is to instantiate a STATE, in this case the
 # existence of a site in Site Factory.
@@ -16,7 +16,6 @@
 #   acquia_api_key
 #
 # OUTPUTS:
-#   existing_sites
 #   site_created
 #
 # ALTERNATIVE ROLES:
@@ -46,7 +45,6 @@
 
 - pause:
     minutes: 1
-  notify: Check drush can bootstrap site
 
 - name: Add vhost as domain
   uri:

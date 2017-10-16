@@ -1,10 +1,10 @@
 ---
-# Ansible role for creating a site on Site Factory
+# Ansible role for checking whether a site is in the Factory.
 # https://github.com/SU-SWS/ansible-playbooks
-# ================================================
+# ===========================================================
 #
-# The purpose of this role is to instantiate a STATE, in this case the
-# existence of a site in Site Factory.
+# The purpose of this role is to instantiate a STATE, in this case the state
+# in which acsf_site_name and existing_sites have values.
 #
 # INPUTS:
 #   inventory_hostname
@@ -13,8 +13,8 @@
 #   acquia_api_key
 #
 # OUTPUTS:
+#   acsf_site_name
 #   existing_sites
-#   site_created
 #
 # ALTERNATIVE ROLES:
 # --
@@ -30,7 +30,7 @@
     acsf_site_name: "{{ inventory_hostname | regex_replace('[^a-z1-9]') }}"
     cacheable: TRUE
 
-- name: Check if site exists on Site Factory
+- name: Get list of sites on Site Factory
   uri:
     url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites?limit=100"
     method: GET

@@ -1,7 +1,0 @@
----
-- name: Check drush can bootstrap site
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
-  retries: 10
-  delay: 50
-  register: bootstrap_status
-  until: bootstrap_status.stdout | search('Successful')

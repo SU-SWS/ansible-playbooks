@@ -34,8 +34,8 @@
 
   roles:
     - { role: setup-local }
-    - { role: setup-site, tags: setup-site }
-    - { role: download-site, tags: [download-site,setup-site] }
+    - { role: download-site, tags: [download-site] }
+    - { role: setup-site, tags: [setup-site,download-site] }
     - { role: upload-site, tags: [upload-site,setup-site,download-site] }
   serial: 12
 

@@ -1,11 +1,12 @@
 ---
-# Ansible role for syncing the database and files between Sites and Site Factory.
+# Ansible role for uploading the database and files to Site Factory.
 # https://github.com/SU-SWS/ansible-playbooks
-# =====================================================================
+# ==================================================================
 #
-# This role syncs the database from Sites to Site Factory. To do this,
-# it will first save a copy locally and then rsync the local copy to
-# Site Factory.
+# This role uploads the database and files from local to Site Factory. It also
+# runs a number of tasks to transform the database in such a way that images
+# and absolute paths will work in the new ACSF environment. If any part of this
+# role fails for a site, restart from the tag "upload-site".
 #
 # INPUTS:
 #   acsf_site_name
@@ -19,7 +20,6 @@
 #   dept_site
 #
 # OUTPUTS:
-#   existing_sites
 #   files_public_path
 #
 # ALTERNATIVE ROLES:

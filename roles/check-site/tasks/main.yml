@@ -1,0 +1,32 @@
+---
+# Ansible role for checking whether drush can access a site in Site Factory.
+# https://github.com/SU-SWS/ansible-playbooks
+# ==========================================================================
+#
+# The purpose of this role is to run a TASK, in this case, to run drush status
+# to be sure we get a response from the site. Drush will need to access the
+# site in order to upload and update the database.
+#
+# INPUTS:
+#   drush_alias_environment
+#   stack
+#   acsf_site_name
+#
+# OUTPUTS:
+#   bootstrap_status
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+- name: Check drush can bootstrap site
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
+  retries: 10
+  delay: 50
+  register: bootstrap_status
+  until: bootstrap_status.stdout | search('Successful')

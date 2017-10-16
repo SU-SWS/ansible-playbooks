@@ -1,16 +1,18 @@
 ---
-# Ansible role for syncing the database and files between Sites and Site Factory.
+# Ansible role for downloading the database and files from Sites.
 # https://github.com/SU-SWS/ansible-playbooks
-# =====================================================================
+# ===============================================================
 #
-# This role syncs the database from Sites to Site Factory. To do this,
-# it will first save a copy locally and then rsync the local copy to
-# Site Factory.
+# This role saves a copy of the site database and files from Sites to your
+# local directory in /tmp. I would call this a TASK role, since we don't know
+# what state your directory and files might be in. But they should exactly
+# match what's on Sites.
 #
 # INPUTS:
 #   inventory_hostname
 #   server_alias
 #   site_prefix
+#   sunetid
 #   server
 #
 # OUTPUTS:
