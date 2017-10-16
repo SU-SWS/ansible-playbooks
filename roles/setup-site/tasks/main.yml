@@ -58,6 +58,6 @@
     body_format: json
     body:
       domain_name: "{{ vhost }}.stanford.edu"
-  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
+  with_items: "{{ existing_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
   when:
     vhost is defined

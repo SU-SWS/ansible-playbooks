@@ -9,6 +9,18 @@
 #
 # Can be run with: ansible-playbook -i inventory/sites migration-playbook.yml
 #
+# RE-STARTING:
+# If you need to restart the site-migration process, use --tags "" instead of
+# --start-at-task="". Tags allow us to re-start at a safe place in the
+# playbook and rely on dependencies to grab variables required for a role.
+#
+# Example:
+# ansible-playbook -i inventory/sites migration-playbook.yml --tags "download-site"
+#
+# Re-running this playbook with the "download-site" tag, will run download-site,
+# get-sitename (because get-sitename is a dependency of upload-site), then
+# upload-site.
+#
 # KNOWN ISSUES:
 # --
 #
