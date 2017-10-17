@@ -5,10 +5,10 @@
 ### @acsf.[stack].[acsf_site_name]
 ### @acsf.[dev|test].[stack].[acsf_site_name]
 ###
-### @acsf.cardinal.sheatest
-### @acsf.dev.cardinal.sheatest
-### @acsf.stanford.jsa2071012
-### @acsf.test.stanford.jsa2071012
+### @acsf.cardinald7.sheatest
+### @acsf.dev.cardinald7.sheatest
+### @acsf.cardinalsites.jsa2071012
+### @acsf.test.cardinalsites.jsa2071012
 
 // Fron the top of the Acquia exports.
 if (!isset($drush_major_version)) {
@@ -69,7 +69,7 @@ $aliases[$stack . "." . $site] = array(
   'ac-site' => $stack,
   'ac-env' => '01live',
   'ac-realm' => 'enterprise-g1',
-  'uri' => $site . '.stanford.acsitefactory.com',
+  'uri' => $site . '.cardinalsites.acsitefactory.com',
   'remote-host' => $stack . '01live.ssh.enterprise-g1.acquia-sites.com',
   'remote-user' => $stack . '.01live',
   'path-aliases' => array(
@@ -83,7 +83,7 @@ $aliases["test." . $stack . "." . $site] = array(
   'ac-site' => $stack,
   'ac-env' => '01test',
   'ac-realm' => 'enterprise-g1',
-  'uri' => $site . '.test-stanford.acsitefactory.com',
+  'uri' => $site . '.test-cardinalsites.acsitefactory.com',
   'remote-host' => $stack . '01test.ssh.enterprise-g1.acquia-sites.com',
   'remote-user' => $stack . '.01test',
   'path-aliases' => array(
@@ -97,7 +97,7 @@ $aliases["dev." . $stack . "." . $site] = array(
   'ac-site' => $stack,
   'ac-env' => '01dev',
   'ac-realm' => 'enterprise-g1',
-  'uri' => $site . '.dev-stanford.acsitefactory.com',
+  'uri' => $site . '.dev-cardinalsites.acsitefactory.com',
   'remote-host' => $stack . '01dev.ssh.enterprise-g1.acquia-sites.com',
   'remote-user' => $stack . '.01dev',
   'path-aliases' => array(
