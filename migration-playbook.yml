@@ -37,10 +37,5 @@
     - { role: download-site, tags: [download-site] }
     - { role: setup-site, tags: [setup-site,download-site] }
     - { role: upload-site, tags: [upload-site,setup-site,download-site] }
+    - { role: cleanup-local, tags: [cleanup-local,upload-site,setup-site,download-site] }
   serial: 12
-
-  post_tasks:
-  - name: Remove inventory_hostname directory in tmp
-    file:
-      path: "/tmp/{{ inventory_hostname }}"
-      state: absent
