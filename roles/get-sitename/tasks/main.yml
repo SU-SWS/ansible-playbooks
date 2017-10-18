@@ -1,0 +1,46 @@
+---
+# Ansible role for checking whether a site is in the Factory.
+# https://github.com/SU-SWS/ansible-playbooks
+# ===========================================================
+#
+# The purpose of this role is to instantiate a STATE, in this case the state
+# in which acsf_site_name and existing_sites have values.
+#
+# INPUTS:
+#   inventory_hostname
+#   sitefactory_environment
+#   acquia_username
+#   acquia_api_key
+#
+# OUTPUTS:
+#   acsf_site_name
+#   existing_sites
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+- name: Sanitize inventory_hostname
+  set_fact:
+    acsf_site_name: "{{ inventory_hostname | regex_replace('[^a-z1-9]') }}"
+    cacheable: TRUE
+
+- name: Get list of sites on Site Factory
+  uri:
+    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites?limit=100"
+    method: GET
+    user: "{{ acquia_username }}"
+    password: "{{ acquia_api_key }}"
+    force_basic_auth: yes
+    return_content: yes
+  register: existing_sites
+
+#- name: Display all site names
+#  debug:
+#    var: item
+#  with_items: "{{ existing_sites | json_query('json.sites[*].site') }}"

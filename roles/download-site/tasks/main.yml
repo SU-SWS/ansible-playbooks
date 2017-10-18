@@ -1,0 +1,34 @@
+---
+# Ansible role for downloading the database and files from Sites.
+# https://github.com/SU-SWS/ansible-playbooks
+# ===============================================================
+#
+# This role saves a copy of the site database and files from Sites to your
+# local directory in /tmp. I would call this a TASK role, since we don't know
+# what state your directory and files might be in. But they should exactly
+# match what's on Sites.
+#
+# INPUTS:
+#   inventory_hostname
+#   server_alias
+#   site_prefix
+#   sunetid
+#   server
+#
+# OUTPUTS:
+# --
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+- name: Download copy of database from sites
+  shell: "drush @{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }} sql-dump > /tmp/{{ inventory_hostname }}/dbdump.sql"
+
+- name: Copy files from Sites to local
+  shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/* /tmp/{{ inventory_hostname }}/files/."

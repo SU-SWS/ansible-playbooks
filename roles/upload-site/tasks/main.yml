@@ -1,11 +1,12 @@
 ---
-# Ansible role for syncing the database and files between Sites and Site Factory.
+# Ansible role for uploading the database and files to Site Factory.
 # https://github.com/SU-SWS/ansible-playbooks
-# =====================================================================
+# ==================================================================
 #
-# This role syncs the database from Sites to Site Factory. To do this,
-# it will first save a copy locally and then rsync the local copy to
-# Site Factory.
+# This role uploads the database and files from local to Site Factory. It also
+# runs a number of tasks to transform the database in such a way that images
+# and absolute paths will work in the new ACSF environment. If any part of this
+# role fails for a site, restart from the tag "upload-site".
 #
 # INPUTS:
 #   acsf_site_name
@@ -19,7 +20,6 @@
 #   dept_site
 #
 # OUTPUTS:
-#   factory_sites
 #   files_public_path
 #
 # ALTERNATIVE ROLES:
@@ -31,31 +31,19 @@
 # KNOWN ISSUES:
 # --
 
-- name: Get list of sites on Site Factory
-  uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites?limit=100"
-    method: GET
-    user: "{{ acquia_username }}"
-    password: "{{ acquia_api_key }}"
-    force_basic_auth: yes
-    body_format: json
-    return_content: yes
-  register: factory_sites
-
-- name: Set acsf_site_name from inventory_hostname if it is undefined.
-  set_fact:
-    acsf_site_name: "{{ inventory_hostname | regex_replace('[^a-z1-9]') }}"
-    cacheable: TRUE
-  when: acsf_site_name is undefined
-
-- name: Download copy of database from sites
-  shell: "drush @{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }} sql-dump > /tmp/{{ inventory_hostname }}/dbdump.sql"
+- name: Check drush can bootstrap site
+  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
+  retries: 10
+  delay: 50
+  register: bootstrap_status
+  until: bootstrap_status.stdout | search('Successful')
 
 - name: Drop database in Site Factory and install new database
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
   with_items:
     - "-y sql-drop"
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
+  notify: Clear site cache
 
 - name: Set site up as a Department site
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
@@ -65,6 +53,7 @@
     - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
     - "rr"
   when: dept_site == "TRUE"
+  notify: Clear site cache
 
 - name: Do post-database-restore tasks
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
@@ -73,6 +62,7 @@
     - "-y en acsf nobots stanford_ssp"
     - "-y dis googleanalytics pingdom_rum"
     - "sspwmd"
+  notify: Clear site cache
 
 - name: Find any absolute paths and replace them - people sites
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
@@ -88,6 +78,7 @@
     - "sarl -y '/{{ inventory_hostname }}/' ''"
   when:
     site_prefix == "dp"
+  notify: Clear site cache
 
 - name: Find any absolute paths and replace them - group and dept sites
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
@@ -103,6 +94,7 @@
     - "sarl -y '/{{ inventory_hostname }}/' ''"
   when:
     site_prefix == "ds"
+  notify: Clear site cache
 
 - name: Find any vhost absolute paths and replace them
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
@@ -115,6 +107,7 @@
     - "sarl -y 'https://{{ vhost }}.stanford.edu/' ''"
   when:
     vhost is defined
+  notify: Clear site cache
 
 - name: Get public files directory
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='File directory path' --field-labels=0 --strict=0"
@@ -131,47 +124,8 @@
 
 - name: Replace sites/default/files with path to files directory
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
-
-- name: Copy files from Sites to local
-  shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/* /tmp/{{ inventory_hostname }}/files/."
+  notify: Clear site cache
 
 - name: Copy files from local to Site Factory
   shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/"
-
-- name: Add vhost as domain
-  uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ item }}/add"
-    method: POST
-    user: "{{ acquia_username }}"
-    password: "{{ acquia_api_key }}"
-    force_basic_auth: yes
-    body_format: json
-    body:
-      domain_name: "{{ vhost }}.stanford.edu"
-  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
-  when:
-    vhost is defined
-
-# Waiting to find out via Acquia ticket #624799 if this is possible
-# - name: Add inventory_hostname as domain
-#   uri:
-#     url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ item }}/add"
-#     method: POST
-#     user: "{{ acquia_username }}"
-#     password: "{{ acquia_api_key }}"
-#     force_basic_auth: yes
-#     body_format: json
-#     body:
-#       domain_name: "{{ inventory_hostname }}.{{ sitefactory_environment }}.acsitefactory.com"
-#     return_content: yes
-#   register: inventory_hostname_domain_response
-#   with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
-
-- name: Clear site cache
-  uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites/{{ item }}/cache-clear"
-    method: POST
-    user: "{{ acquia_username }}"
-    password: "{{ acquia_api_key }}"
-    force_basic_auth: yes
-  with_items: "{{ factory_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
+  notify: Clear site cache
