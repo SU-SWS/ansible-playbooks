@@ -7,10 +7,10 @@
 #
 # Enter the environment sub-domain that you would like to run this
 # migration playbook against. `cardinalsites` would be the production environment
-# `test-cardinalsites` would be the test, or staging environment. And
-# `dev-cardinalsites` would be the dev environment. The environment you choose
+# `cardinalsites-test` would be the test, or staging environment. And
+# `cardinalsites-dev` would be the dev environment. The environment you choose
 # needs to match the environment choice below.
-sitefactory_environment: "test-cardinalsites"
+sitefactory_environment: "cardinalsites-test"
 #
 # Enter the enviroment drush alias prefix that you would like to run this
 # migration playbook against. `acsf` would be production. `acsf.test` would
