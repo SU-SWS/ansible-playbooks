@@ -3,15 +3,15 @@
 
 # Dev servers
 [dev]
-cardinald701dev.ssh.enterprise-g1.acquia-sites.com ansible_connection=ssh ansible_user=cardinald7.01dev major_version=7
+cardinald702dev.ssh.enterprise-g1.acquia-sites.com ansible_connection=ssh ansible_user=cardinald7.02dev major_version=7
 cardinalsites01dev.ssh.enterprise-g1.acquia-sites.com ansible_connection=ssh ansible_user=cardinalsites.01dev major_version=8
 
 # Test servers
 [test]
-cardinald701test.ssh.enterprise-g1.acquia-sites.com ansible_connection=ssh ansible_user=cardinald7.01test major_version=7
+cardinald702test.ssh.enterprise-g1.acquia-sites.com ansible_connection=ssh ansible_user=cardinald7.02test major_version=7
 cardinalsites01test.ssh.enterprise-g1.acquia-sites.com ansible_connection=ssh ansible_user=cardinalsites.01test major_version=8
 
 # Prod servers
 [prod]
-cardinald701live.ssh.enterprise-g1.acquia-sites.com ansible_connection=ssh ansible_user=cardinald7.01live major_version=7
+cardinald702live.ssh.enterprise-g1.acquia-sites.com ansible_connection=ssh ansible_user=cardinald7.02live major_version=7
 cardinalsites01live.ssh.enterprise-g1.acquia-sites.com ansible_connection=ssh ansible_user=cardinalsites.01live major_version=8
