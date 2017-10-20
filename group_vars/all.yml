@@ -15,7 +15,7 @@ profile: "testing"
 #
 # We are only migrating Drupal 7 sites, so we will only be migrating sites
 # to the `cardinal` stack.
-stack: "cardinal"
+stack: "cardinald7"
 #
 # The Site Factory API requires that we pass it the stack ID. The `cardinal`
 # stack is ID: `2` and `stanford` stack is ID: `1`.

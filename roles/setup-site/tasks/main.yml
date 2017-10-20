@@ -36,7 +36,7 @@
       site_name: "{{ acsf_site_name }}"
       install_profile: "{{ profile }}"
       codebase: "{{ stack_id }}"
-      group_ids: 126
+      group_ids: "{{ group_ids }}"
     force_basic_auth: yes
     body_format: json
     return_content: yes
