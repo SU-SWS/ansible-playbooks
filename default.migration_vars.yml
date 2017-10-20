@@ -19,6 +19,12 @@ sitefactory_environment: "test-cardinalsites"
 # choice above.
 drush_alias_environment: "acsf.test"
 #
+# Enter the number of minutes you should wait for all sites to complete
+# spinup on Site Factory. In general, it appears ACSF spins up 3 sites at a
+# time and that each batch takes around 6 minutes. So if you are migrating
+# 9 sites, you might want to wait 20-30m before proceeding.
+wait_time: "30"
+
 # Enter your Acquia username. This is the name as it appears on your
 # Acquia profile page once logged in.
 # Example: "John Doe"
