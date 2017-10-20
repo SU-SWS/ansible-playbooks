@@ -27,7 +27,7 @@
 
 - name: Sanitize inventory_hostname
   set_fact:
-    acsf_site_name: "{{ inventory_hostname | regex_replace('[^a-z1-9]') }}"
+    acsf_site_name: "{{ inventory_hostname | lower | regex_replace('[^a-z1-9]') }}"
     cacheable: TRUE
 
 - name: Get list of sites on Site Factory
