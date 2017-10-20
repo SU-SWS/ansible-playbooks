@@ -6,11 +6,11 @@
 # and name it, migration_vars.yml.
 #
 # Enter the environment sub-domain that you would like to run this
-# migration playbook against. `stanford` would be the production environment
-# `test-stanford` would be the test, or staging environment. And
-# `dev-stanford` would be the dev environment. The environment you choose
+# migration playbook against. `cardinalsites` would be the production environment
+# `test-cardinalsites` would be the test, or staging environment. And
+# `dev-cardinalsites` would be the dev environment. The environment you choose
 # needs to match the environment choice below.
-sitefactory_environment: "test-stanford"
+sitefactory_environment: "test-cardinalsites"
 #
 # Enter the enviroment drush alias prefix that you would like to run this
 # migration playbook against. `acsf` would be production. `acsf.test` would
@@ -19,6 +19,12 @@ sitefactory_environment: "test-stanford"
 # choice above.
 drush_alias_environment: "acsf.test"
 #
+# Enter the number of minutes you should wait for all sites to complete
+# spinup on Site Factory. In general, it appears ACSF spins up 3 sites at a
+# time and that each batch takes around 6 minutes. So if you are migrating
+# 9 sites, you might want to wait 20-30m before proceeding.
+wait_time: "30"
+
 # Enter your Acquia username. This is the name as it appears on your
 # Acquia profile page once logged in.
 # Example: "John Doe"

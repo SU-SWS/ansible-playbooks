@@ -4,19 +4,16 @@
 # =================================================
 #
 # The purpose of this role is to instantiate a STATE, in this case the
-# existence of a site in Site Factory.
+# existence of a vhost for a site in Site Factory.
 #
 # INPUTS:
-#   inventory_hostname
+#   acsf_site_name
 #   sitefactory_environment
-#   profile
-#   group_ids
-#   stack_id
 #   acquia_username
 #   acquia_api_key
 #
 # OUTPUTS:
-#   site_created
+# --
 #
 # ALTERNATIVE ROLES:
 # --
@@ -26,25 +23,6 @@
 #
 # KNOWN ISSUES:
 # --
-- name: Create new site on Site Factory
-  uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites"
-    method: POST
-    user: "{{ acquia_username }}"
-    password: "{{ acquia_api_key }}"
-    body:
-      site_name: "{{ acsf_site_name }}"
-      install_profile: "{{ profile }}"
-      codebase: "{{ stack_id }}"
-      group_ids: "{{ group_ids }}"
-    force_basic_auth: yes
-    body_format: json
-    return_content: yes
-  register: site_created
-  when: acsf_site_name not in existing_sites | json_query('json.sites[*].site')
-
-- pause:
-    minutes: 1
 
 - name: Add vhost as domain
   uri:
