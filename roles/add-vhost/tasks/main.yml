@@ -24,9 +24,23 @@
 # KNOWN ISSUES:
 # --
 
+- name: Establish numerical id from existing_sites JSON response
+  set_fact:
+    site_id: "{{ existing_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
+
+- name: Establish numerical id from API JSON response if site did not exist
+  set_fact:
+    site_id: "{{ site_created | json_query(\"json.id\") }}"
+  when:
+    site_id > 0
+
+#- name: Debug site_id variable
+#  debug:
+#    var: site_id
+
 - name: Add vhost as domain
   uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ item }}/add"
+    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
     method: POST
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
@@ -34,13 +48,12 @@
     body_format: json
     body:
       domain_name: "{{ vhost }}.stanford.edu"
-  with_items: "{{ existing_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
   when:
     vhost is defined
 
 - name: Add inventory_hostname as domain
   uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ item }}/add"
+    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
     method: POST
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
@@ -50,4 +63,5 @@
       domain_name: "{{ inventory_hostname }}.{{ sitefactory_environment }}.stanford.edu"
     return_content: yes
     register: inventory_hostname_domain_response
-  with_items: "{{ existing_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
+  when:
+    inventory_hostname != acsf_site_name
