@@ -8,13 +8,15 @@
 #
 # INPUTS:
 #   inventory_hostname
-#   sitefactory_environment
+#   environment
 #   acquia_username
 #   acquia_api_key
 #
 # OUTPUTS:
 #   acsf_site_name
 #   existing_sites
+#   sitefactory_environment
+#   stanford_environment
 #
 # ALTERNATIVE ROLES:
 # --
@@ -30,9 +32,30 @@
     acsf_site_name: "{{ inventory_hostname | lower | regex_replace('[^a-z1-9]') }}"
     cacheable: TRUE
 
+- name: Create token for Site Factory environment URL
+  set_fact:
+    sitefactory_environment: "{{ environment }}-"
+    cacheable: TRUE
+  when:
+    environment is defined
+
+- name: Create token for stanford.edu environment URL
+  set_fact:
+    stanford_environment: "-{{ environment }}"
+    cacheable: TRUE
+  when:
+    environment is defined
+
+- name: Create token for drush environment
+  set_fact:
+    drush_environment: ".{{ environment }}"
+    cacheable: TRUE
+  when:
+    environment is defined
+
 - name: Get list of sites on Site Factory
   uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites?limit=100"
+    url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/sites?limit=100"
     method: GET
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"

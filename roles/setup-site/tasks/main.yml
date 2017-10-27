@@ -28,7 +28,7 @@
 # --
 - name: Create new site on Site Factory
   uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites"
+    url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/sites"
     method: POST
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
