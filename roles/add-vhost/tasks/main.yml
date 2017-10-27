@@ -40,9 +40,9 @@
   when:
     site_id is not defined
 
-- name: Debug json formatting on sites_created id
-  debug:
-    var: site_id
+#- name: Debug json formatting on sites_created id
+#  debug:
+#    var: site_id
 
 - name: Add vhost as domain
   uri:
