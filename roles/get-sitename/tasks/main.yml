@@ -37,21 +37,21 @@
     sitefactory_environment: "{{ acsf_environment }}-"
     cacheable: TRUE
   when:
-    environment is defined
+    acsf_environment != ""
 
 - name: Create token for stanford.edu environment URL
   set_fact:
     stanford_environment: "-{{ acsf_environment }}"
     cacheable: TRUE
   when:
-    environment is defined
+    acsf_environment != ""
 
 - name: Create token for drush environment
   set_fact:
     drush_environment: ".{{ acsf_environment }}"
     cacheable: TRUE
   when:
-    environment is defined
+    acsf_environment != ""
 
 - name: Get list of sites on Site Factory
   uri:
