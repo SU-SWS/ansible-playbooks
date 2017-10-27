@@ -36,13 +36,13 @@
 
 - name: Establish numerical id from API JSON response if site did not exist
   set_fact:
-    site_id: "{{ site_created | json_query('json | [0].id') }}"
+    site_id: "{{ site_created | json_query('json.id') }}"
   when:
     site_id is not defined
 
-#- name: Debug json formatting on sites_created id
-#  debug:
-#    var: site_id
+- name: Debug json formatting on sites_created id
+  debug:
+    var: site_id
 
 - name: Add vhost as domain
   uri:
