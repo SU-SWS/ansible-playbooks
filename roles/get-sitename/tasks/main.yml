@@ -8,7 +8,7 @@
 #
 # INPUTS:
 #   inventory_hostname
-#   environment
+#   acsf_environment
 #   acquia_username
 #   acquia_api_key
 #
@@ -34,21 +34,21 @@
 
 - name: Create token for Site Factory environment URL
   set_fact:
-    sitefactory_environment: "{{ environment }}-"
+    sitefactory_environment: "{{ acsf_environment }}-"
     cacheable: TRUE
   when:
     environment is defined
 
 - name: Create token for stanford.edu environment URL
   set_fact:
-    stanford_environment: "-{{ environment }}"
+    stanford_environment: "-{{ acsf_environment }}"
     cacheable: TRUE
   when:
     environment is defined
 
 - name: Create token for drush environment
   set_fact:
-    drush_environment: ".{{ environment }}"
+    drush_environment: ".{{ acsf_environment }}"
     cacheable: TRUE
   when:
     environment is defined

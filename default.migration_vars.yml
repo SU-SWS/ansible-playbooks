@@ -10,7 +10,7 @@
 # dev: enter "dev"
 # test: enter "test"
 # prod: enter ""
-environment: "dev"
+acsf_environment: "dev"
 #
 # Enter the number of minutes you should wait for all sites to complete
 # spinup on Site Factory. In general, it appears ACSF spins up 3 sites at a
