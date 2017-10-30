@@ -12,7 +12,6 @@
 #   acquia_username
 #   acquia_api_key
 #   existing_site
-#   site_created
 #
 # OUTPUTS:
 # --
@@ -31,16 +30,6 @@
     site_id: "{{ existing_sites | json_query(existing_sites_query) }}"
   vars:
     existing_sites_query: "json.sites[?site=='{{ acsf_site_name }}'] | [0].id"
-
-#- name: Debug json formatting on existing_sites id
-#  debug:
-#    var: site_id
-
-- name: Establish numerical id from API JSON response if site did not exist
-  set_fact:
-    site_id: "{{ site_created | json_query('json.id') }}"
-  when:
-    site_id is not defined
 
 #- name: Debug json formatting on sites_created id
 #  debug:
