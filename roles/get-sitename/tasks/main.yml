@@ -40,7 +40,7 @@
     return_content: yes
   register: existing_sites
 
-#- name: Display all site names
-#  debug:
-#    var: item
-#  with_items: "{{ existing_sites | json_query('json.sites[*].site') }}"
+- name: Display all site names
+  debug:
+    var: item
+  with_items: "{{ existing_sites | json_query('json.sites[*].site') }}"

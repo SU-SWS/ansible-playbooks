@@ -14,6 +14,7 @@
 #   stack_id
 #   acquia_username
 #   acquia_api_key
+#   existing_sites
 #
 # OUTPUTS:
 #   site_created

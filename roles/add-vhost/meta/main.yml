@@ -1,4 +1,4 @@
 ---
 dependencies:
   - { role: get-sitename }
-  - { role: setup-site }
+  - { role: setup-site, when: site_created is not defined }
