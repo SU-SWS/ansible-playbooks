@@ -11,6 +11,7 @@
 #   sitefactory_environment
 #   acquia_username
 #   acquia_api_key
+#   existing_sites
 #
 # OUTPUTS:
 # --
@@ -24,9 +25,19 @@
 # KNOWN ISSUES:
 # --
 
+- name: Establish numerical id from existing_sites JSON response
+  set_fact:
+    site_id: "{{ existing_sites | json_query(existing_sites_query) }}"
+  vars:
+    existing_sites_query: "json.sites[?site=='{{ acsf_site_name }}'] | [0].id"
+
+#- name: Debug json formatting on sites_created id
+#  debug:
+#    var: site_id
+
 - name: Add vhost as domain
   uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ item }}/add"
+    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
     method: POST
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
@@ -34,21 +45,20 @@
     body_format: json
     body:
       domain_name: "{{ vhost }}.stanford.edu"
-  with_items: "{{ existing_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
   when:
     vhost is defined
 
-# Waiting to find out via Acquia ticket #624799 if this is possible
-# - name: Add inventory_hostname as domain
-#   uri:
-#     url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ item }}/add"
-#     method: POST
-#     user: "{{ acquia_username }}"
-#     password: "{{ acquia_api_key }}"
-#     force_basic_auth: yes
-#     body_format: json
-#     body:
-#       domain_name: "{{ inventory_hostname }}.{{ sitefactory_environment }}.acsitefactory.com"
-#     return_content: yes
-#   register: inventory_hostname_domain_response
-#   with_items: "{{ existing_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
+- name: Add inventory_hostname as domain
+  uri:
+    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
+    method: POST
+    user: "{{ acquia_username }}"
+    password: "{{ acquia_api_key }}"
+    force_basic_auth: yes
+    body_format: json
+    body:
+      domain_name: "{{ inventory_hostname }}.{{ sitefactory_environment }}.stanford.edu"
+    return_content: yes
+    register: inventory_hostname_domain_response
+  when:
+    inventory_hostname != acsf_site_name

@@ -32,13 +32,6 @@
 # KNOWN ISSUES:
 # --
 
-- name: Check drush can bootstrap site
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
-  retries: "{{ wait_time }}"
-  delay: 50
-  register: bootstrap_status
-  until: bootstrap_status.stdout | search('Successful')
-
 - name: Drop database in Site Factory and install new database
   shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
   with_items:
