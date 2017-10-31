@@ -26,16 +26,6 @@
 # KNOWN ISSUES:
 # --
 
-- name: Establish numerical id from existing_sites JSON response
-  set_fact:
-    site_id: "{{ existing_sites | json_query(existing_sites_query) }}"
-  vars:
-    existing_sites_query: "json.sites[?site=='{{ acsf_site_name }}'] | [0].id"
-
-#- name: Debug json formatting on sites_created id
-#  debug:
-#    var: site_id
-
 - name: Add vhost as domain
   uri:
     url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/domains/{{ site_id }}/add"

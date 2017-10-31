@@ -6,4 +6,4 @@
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
     force_basic_auth: yes
-  with_items: "{{ existing_sites | json_query(\"json.sites[?site=='\" + acsf_site_name + \"'].id\") }}"
+  with_items: "{{ site_id }}"
