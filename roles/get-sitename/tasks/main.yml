@@ -8,13 +8,15 @@
 #
 # INPUTS:
 #   inventory_hostname
-#   sitefactory_environment
+#   acsf_environment
 #   acquia_username
 #   acquia_api_key
 #
 # OUTPUTS:
 #   acsf_site_name
 #   existing_sites
+#   sitefactory_environment
+#   stanford_environment
 #
 # ALTERNATIVE ROLES:
 # --
@@ -30,9 +32,30 @@
     acsf_site_name: "{{ inventory_hostname | lower | regex_replace('[^a-z1-9]') }}"
     cacheable: TRUE
 
+- name: Create token for Site Factory environment URL
+  set_fact:
+    sitefactory_environment: "{{ acsf_environment }}-"
+    cacheable: TRUE
+  when:
+    acsf_environment != ""
+
+- name: Create token for stanford.edu environment URL
+  set_fact:
+    stanford_environment: "-{{ acsf_environment }}"
+    cacheable: TRUE
+  when:
+    acsf_environment != ""
+
+- name: Create token for drush environment
+  set_fact:
+    drush_environment: ".{{ acsf_environment }}"
+    cacheable: TRUE
+  when:
+    acsf_environment != ""
+
 - name: Get list of sites on Site Factory
   uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites?limit=100"
+    url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/sites?limit=100"
     method: GET
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
@@ -44,3 +67,14 @@
 #  debug:
 #    var: item
 #  with_items: "{{ existing_sites | json_query('json.sites[*].site') }}"
+
+- name: Establish numerical id from existing_sites JSON response
+  set_fact:
+    site_id: "{{ existing_sites | json_query(existing_sites_query) }}"
+  vars:
+    existing_sites_query: "json.sites[?site=='{{ acsf_site_name }}'] | [0].id"
+
+#- name: Debug json formatting on sites_created id
+#  debug:
+#    var: site_id
+

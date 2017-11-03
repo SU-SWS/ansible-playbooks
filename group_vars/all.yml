@@ -20,3 +20,11 @@ stack: "cardinald7"
 # The Site Factory API requires that we pass it the stack ID. The `cardinalsites`
 # stack is ID: `2` and `cardinald7` stack is ID: `1`.
 stack_id: "2"
+#
+# These variables (sitefactory_environment, stanford_environment, and
+# drush_environment) should be set to empty strings as defaults, in order to
+# avoid "undefined variable" error messages. They are set to appropriate values,
+# if needed, in get-sitename/tasks/main.yml.
+sitefactory_environment: ""
+stanford_environment: ""
+drush_environment: ""

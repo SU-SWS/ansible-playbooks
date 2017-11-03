@@ -29,7 +29,7 @@
 # --
 - name: Create new site on Site Factory
   uri:
-    url: "https://www.{{ sitefactory_environment }}.acsitefactory.com/api/v1/sites"
+    url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/sites"
     method: POST
     user: "{{ acquia_username }}"
     password: "{{ acquia_api_key }}"
@@ -48,7 +48,7 @@
     minutes: 1
 
 - name: Check drush can bootstrap site
-  shell: "drush @{{ drush_alias_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
   retries: "{{ wait_time }}"
   delay: 50
   register: bootstrap_status
