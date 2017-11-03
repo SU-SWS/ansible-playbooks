@@ -30,6 +30,9 @@ This playbook allows you to copy sites from `sites.stanford.edu` or `people.stan
 4. Run: `ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml` with the inventory you created or modified.
 
 ## Configuring ACSF Servers
+````
+ansible-playbook -i inventory/servers server-settings-playbook.yml
+````
 
 1. Copy `default.servers` to `inventory/servers`.
 2. Copy `default.server_vars.yml` to the root `ansible-playbooks` directory and name it `server_vars.yml`. Populate it with your information.
@@ -37,9 +40,13 @@ This playbook allows you to copy sites from `sites.stanford.edu` or `people.stan
 
 ## Troubleshooting
 
-If a task fails, you can re-run the playbook from where it failed with: `ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml --start-at-task="name of the task you want to start from"`.
+If a task fails, you can re-run the playbook from where it failed with: 
 
-You can also add `-v(vvvv)` for more debug information.
+```
+ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml --tags "[rolename]"
+```
+
+You can also add `-v(vvv)` for more debug information.
 
 ## Contribution / Collaboration
 
