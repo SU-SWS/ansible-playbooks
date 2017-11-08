@@ -55,6 +55,7 @@
     - "-y updb"
     - "-y en acsf nobots stanford_ssp"
     - "-y dis googleanalytics pingdom_rum"
+    - "-y vset stanford_simplesamlphp_auth_installdir /var/www/html/cardinald7.02live/simplesamlphp"
     - "sspwmd"
   notify: Clear site cache
 

@@ -35,7 +35,7 @@
     force_basic_auth: yes
     body_format: json
     body:
-      domain_name: "{{ vhost }}.stanford.edu"
+      domain_name: "{{ vhost }}{{ stanford_environment }}.cardinalsites.stanford.edu"
   when:
     vhost is defined
 
