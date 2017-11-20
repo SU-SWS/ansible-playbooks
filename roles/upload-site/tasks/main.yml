@@ -42,9 +42,11 @@
 - name: Set site up as a Department site
   shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
   with_items:
-    - "vset install_profile stanford_dept"
+    - "-y vset install_profile stanford_dept"
     - "cc all"
     - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
+    - "-y en acsf"
+    - "ev 'acsf_openid_allow_local_user_logins();'"
     - "rr"
   when: dept_site == "TRUE"
   notify: Clear site cache
@@ -63,13 +65,10 @@
   with_items:
     - "sar -y 'http://people.stanford.edu/{{ inventory_hostname }}/' '/'"
     - "sar -y 'https://people.stanford.edu/{{ inventory_hostname }}/' '/'"
-    - "sar -y '/{{ inventory_hostname }}/' '/'"
     - "sarm -y 'http://people.stanford.edu/{{ inventory_hostname }}/' ''"
     - "sarm -y 'https://people.stanford.edu/{{ inventory_hostname }}/' ''"
-    - "sarm -y '/{{ inventory_hostname }}/' ''"
     - "sarl -y 'http://people.stanford.edu/{{ inventory_hostname }}/' ''"
     - "sarl -y 'https://people.stanford.edu/{{ inventory_hostname }}/' ''"
-    - "sarl -y '/{{ inventory_hostname }}/' ''"
   when:
     site_prefix == "dp"
   notify: Clear site cache
@@ -79,15 +78,23 @@
   with_items:
     - "sar -y 'http://sites.stanford.edu/{{ inventory_hostname }}/' '/'"
     - "sar -y 'https://sites.stanford.edu/{{ inventory_hostname }}/' '/'"
-    - "sar -y '/{{ inventory_hostname }}/' '/'"
     - "sarm -y 'http://sites.stanford.edu/{{ inventory_hostname }}/' ''"
     - "sarm -y 'https://sites.stanford.edu/{{ inventory_hostname }}/' ''"
-    - "sarm -y '/{{ inventory_hostname }}/' ''"
     - "sarl -y 'http://sites.stanford.edu/{{ inventory_hostname }}/' ''"
     - "sarl -y 'https://sites.stanford.edu/{{ inventory_hostname }}/' ''"
-    - "sarl -y '/{{ inventory_hostname }}/' ''"
   when:
     site_prefix == "ds"
+  notify: Clear site cache
+
+- name: Find any relative paths and replace them
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
+  with_items:
+    - "sar -y 'href=\"/{{ inventory_hostname }}/' 'href=\"/'"
+    - "sar -y 'src=\"/{{ inventory_hostname }}/' 'src=\"/'"
+    - "sarm -y 'href=\"/{{ inventory_hostname }}/' 'href=\"/'"
+    - "sarm -y 'src=\"/{{ inventory_hostname }}/' 'src=\"/'"
+    - "sarl -y 'href=\"/{{ inventory_hostname }}/' 'href=\"/'"
+    - "sarl -y 'src=\"/{{ inventory_hostname }}/' 'src=\"/'"
   notify: Clear site cache
 
 - name: Find any vhost absolute paths and replace them
@@ -117,7 +124,10 @@
   when: file_public_path.stdout | search('The following module is missing')
 
 - name: Replace sites/default/files with path to files directory
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y 'http://{{ vhost }}.stanford.edu/sites/default/files' 'https://{{ vhost }}.stanford.edu/{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y 'https://{{ vhost }}.stanford.edu/sites/default/files' 'https://{{ vhost }}.stanford.edu/{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y 'href=\"/sites/default/files' 'href=\"/{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y 'src=\"/sites/default/files' 'src=\"/{{ file_public_path.stdout | replace(' ','') }}'"
   notify: Clear site cache
 
 - name: Copy files from local to Site Factory
