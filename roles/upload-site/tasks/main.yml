@@ -57,6 +57,7 @@
     - "-y updb"
     - "-y en acsf nobots stanford_ssp"
     - "-y dis googleanalytics pingdom_rum"
+    - "sqlq 'truncate table webauth_roles_history'"
     - "sspwmd"
   notify: Clear site cache
 
