@@ -131,7 +131,7 @@
   with_items:
     - "sar -y 'href=\"/{{ inventory_hostname }}/' 'href=\"/'"
     - "sar -y 'src=\"/{{ inventory_hostname }}/' 'src=\"/'"
-    - "sar -y 'url=\"/{{ inventory_hostname }}/' 'src=\"/'"
+    - "sar -y 'url=\"/{{ inventory_hostname }}/' 'url=\"/'"
   notify: Clear site cache
 
 ##############################################################################
