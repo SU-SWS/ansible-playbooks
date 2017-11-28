@@ -1,0 +1,4 @@
+---
+sar_commands: [ 'sar', 'sarl', 'sarm' ]
+protocols: [ 'https://', 'http://' ]
+link_attributes: [ 'url="', 'href="', 'src="' ]

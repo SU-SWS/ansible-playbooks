@@ -1,0 +1,105 @@
+---
+# Ansible role for changing paths after a site has been uploaded.
+# https://github.com/SU-SWS/ansible-playbooks
+# ==================================================================
+#
+# This role uploads the database and files from local to Site Factory. It also
+# runs a number of tasks to transform the database in such a way that images
+# and absolute paths will work in the new ACSF environment. If any part of this
+# role fails for a site, restart from the tag "upload-site".
+#
+# INPUTS:
+#   acsf_site_name
+#   inventory_hostname
+#   sitefactory_environment
+#   drush_environment
+#   server_alias
+#   site_prefix
+#   stack
+#   server
+#   dept_site
+#   wait_time
+#
+# OUTPUTS:
+#   file_public_path
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+##############################################################################
+# Database surgery: Find and replace anything that the user may have entered #
+# that references the old site.                                              #
+# See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
+##############################################################################
+
+- name: Set sites_service variable
+  set_fact:
+    sites_service: "{% if site_prefix=='dp' %}people{% elif site_prefix=='ds'%}sites{% endif %}"
+
+- name: Remove absolute paths
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item[0] }} -y '{{ item[1] }}{{ sites_service }}.stanford.edu/{{ inventory_hostname }}/' ''"
+  with_nested:
+    - "{{ sar_commands }}"
+    - "{{ protocols }}"
+  notify: Clear site cache
+
+- name: Remove absolute paths with vhost
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item[0] }} -y '{{ item[1] }}{{ vhost }}.stanford.edu/' ''"
+  with_nested:
+    - "{{ sar_commands }}"
+    - "{{ protocols }}"
+  when:
+    vhost is defined
+  notify: Clear site cache
+
+- name: Remove attributes with absolute paths
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y '{{ item[0] }}/{{ inventory_hostname }}/' '{{ item[0] }}/'"
+  with_together:
+    - "{{ link_attributes }}"
+  notify: Clear site cache
+
+##############################################################################
+# Database surgery: Find and replace references to sites/default/files with  #
+# the string that ACSF uses for the file_public_path variable. Do NOT do a   #
+# global find and replace of the "sites/default/files" string, for users may #
+# have linked to files on other websites.                                    #
+# See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
+##############################################################################
+
+- name: Get public files directory
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='File directory path' --field-labels=0 --strict=0"
+  register: file_public_path
+
+- name: Print file_public_path
+  debug:
+    msg: "File public path: {{ file_public_path.stdout }}"
+
+- name: Be sure response does not include drush warnings
+  fail:
+    msg: "There appear to be drush warning messages cluttering the file_public_path variable"
+  when: file_public_path.stdout | search('The following module is missing')
+
+- name: Replace absolute sites/default/files with path to files directory
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y '{{ item[0] }}{{ item[1] }}{{ acsf_site_name }}{{ stanford_environment }}.cardinalsites.stanford.edu/sites/default/files' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
+  with_nested:
+    - "{{ link_attributes }}"
+    - "{{ protocols }}"
+
+- name: Replace relative sites/default/paths with path to files directory
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y '{{ item[0] }}/sites/default/files' '{{ item[0] }}/{{ file_public_path.stdout | replace(' ','') }}'"
+  with_together:
+    - "{{ link_attributes }}"
+  notify: Clear site cache
+
+- name: Replace link and menu items with new files path
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }} -y --regex='^sites/default/files' 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
+  with_items:
+    - "sarl"
+    - "sarm"
+  notify: Clear site cache
