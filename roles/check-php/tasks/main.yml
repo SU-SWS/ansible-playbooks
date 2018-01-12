@@ -1,0 +1,41 @@
+---
+# Ansible role for downloading the database and files from Sites.
+# https://github.com/SU-SWS/ansible-playbooks
+# ===============================================================
+#
+# This role saves a copy of the site database and files from Sites to your
+# local directory in /tmp. I would call this a TASK role, since we don't know
+# what state your directory and files might be in. But they should exactly
+# match what's on Sites.
+#
+# INPUTS:
+#   inventory_hostname
+#   server_alias
+#   site_prefix
+#   sunetid
+#   server
+#
+# OUTPUTS:
+# --
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+- name: Check for PHP in database
+  shell: "grep -o '{{ item }}' /tmp/{{ inventory_hostname }}/dbdump.sql"
+  register: database_php_candidates
+  ignore_errors: yes
+  # failed_when: task changed
+  with_items:
+    - '.\{0,20\}$[^S$D|\.|0-9|conf|user|_SESSION][A-Za-z].\{0,20\}'
+    - '.\{0,20\}<?[^xml].\{0,20\}'
+
+    - name: Display database_php_candidates
+  debug:
+    msg: "Database PHP Candidates: {{ database_php_candidates | json_query('results[*].stdout_lines') }}"
