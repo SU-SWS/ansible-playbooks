@@ -1,22 +1,18 @@
 ---
-# Ansible role for downloading the database and files from Sites.
+# Ansible role for identifying PHP in a database.
 # https://github.com/SU-SWS/ansible-playbooks
-# ===============================================================
+# ===============================================
 #
-# This role saves a copy of the site database and files from Sites to your
-# local directory in /tmp. I would call this a TASK role, since we don't know
-# what state your directory and files might be in. But they should exactly
-# match what's on Sites.
+# The purpose of this role is to run a TASK, in this case, search for evidence
+# of PHP in a database.  Upon finding what might be PHP, this role should
+# abort migration of the host and save the PHP to our ansible.log file for
+# review later.
 #
 # INPUTS:
 #   inventory_hostname
-#   server_alias
-#   site_prefix
-#   sunetid
-#   server
 #
 # OUTPUTS:
-# --
+#   database_php_candidates
 #
 # ALTERNATIVE ROLES:
 # --
