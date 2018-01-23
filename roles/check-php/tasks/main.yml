@@ -30,12 +30,13 @@
 - name: Check for PHP in database
   shell: "grep -o '{{ item }}' /tmp/{{ inventory_hostname }}/dbdump.sql"
   register: database_php_candidates
-  ignore_errors: yes
-  # failed_when: task changed
+  #ignore_errors: yes
+  failed_when: "database_php_candidates.rc == 0"
   with_items:
     - '.\{0,20\}$[^S$D|\.|0-9|conf|user|_SESSION][A-Za-z].\{0,20\}'
     - '.\{0,20\}<?[^xml].\{0,20\}'
 
-    - name: Display database_php_candidates
-  debug:
-    msg: "Database PHP Candidates: {{ database_php_candidates | json_query('results[*].stdout_lines') }}"
+- name: Save PHP in file
+  copy:
+    content: "{{ inventory_hostname }} {{ database_php_candidates | json_query('results[*].stdout_lines') }}"
+    dest: "/tmp/ansible.log"
