@@ -1,0 +1,38 @@
+---
+# Ansible role for identifying PHP in a database.
+# https://github.com/SU-SWS/ansible-playbooks
+# ===============================================
+#
+# The purpose of this role is to run a TASK, in this case, search for evidence
+# of PHP in a database.  Upon finding what might be PHP, this role should
+# abort migration of the host and save the PHP to our ansible.log file for
+# review later.
+#
+# INPUTS:
+#   inventory_hostname
+#
+# OUTPUTS:
+#   database_php_candidates
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+- name: Check for PHP in database
+  shell: "grep -o '{{ item }}' /tmp/{{ inventory_hostname }}/dbdump.sql"
+  register: database_php_candidates
+  #ignore_errors: yes
+  failed_when: "database_php_candidates.rc == 0"
+  with_items:
+    - '.\{0,20\}$[^S$D|\.|0-9|conf|user|_SESSION][A-Za-z].\{0,20\}'
+    - '.\{0,20\}<?[^xml].\{0,20\}'
+
+- name: Save PHP in file
+  copy:
+    content: "{{ inventory_hostname }} {{ database_php_candidates | json_query('results[*].stdout_lines') }}"
+    dest: "/tmp/ansible.log"
