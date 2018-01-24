@@ -24,15 +24,23 @@
 # --
 
 - name: Check for PHP in database
-  shell: "grep -o '{{ item }}' /tmp/{{ inventory_hostname }}/dbdump.sql"
+  shell: "grep -o '.\\{0,20\\}{{ item }}.\\{0,20\\}' /tmp/{{ inventory_hostname }}/dbdump.sql; test $? -eq 1"
   register: database_php_candidates
-  #ignore_errors: yes
-  failed_when: "database_php_candidates.rc == 0"
+  ignore_errors: yes
   with_items:
-    - '.\{0,20\}$[^S$D|\.|0-9|conf|user|_SESSION][A-Za-z].\{0,20\}'
-    - '.\{0,20\}<?[^xml].\{0,20\}'
+    - '$[^S$D|\.|0-9|conf|user|_SESSION][A-Za-z]'
+    - '<?[^xml]'
+    - 'eval('
+    - 'system('
+    - 'preg_replace('
+    - 'create_function'
+    - 'include\['
+    - 'require\['
 
 - name: Save PHP in file
   copy:
     content: "{{ inventory_hostname }} {{ database_php_candidates | json_query('results[*].stdout_lines') }}"
     dest: "/tmp/ansible.log"
+  register: php_logged
+  when: database_php_candidates|failed
+  failed_when: php_logged is defined
