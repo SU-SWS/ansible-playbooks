@@ -31,11 +31,20 @@
     - '$[^S$D|\.|0-9|conf|user|_SESSION][A-Za-z]'
     - '<?[^xml]'
     - 'eval('
-    - 'system('
     - 'preg_replace('
     - 'create_function'
     - 'include\['
     - 'require\['
+    - 'exec('
+    - 'passthru('
+    - 'shell_exec('
+    - 'system('
+    - 'proc_open('
+    - 'popen('
+    - 'curl_exec('
+    - 'curl_multi_exec('
+    - 'parse_ini_file('
+    - 'show_source('
 
 - name: Save PHP in file
   copy:
