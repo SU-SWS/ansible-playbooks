@@ -29,7 +29,7 @@
 
 - name: Sanitize inventory_hostname
   set_fact:
-    acsf_site_name: "{{ inventory_hostname | lower | regex_replace('[^a-z1-9]') }}"
+    acsf_site_name: "{{ inventory_hostname | lower | regex_replace('[^a-z0-9]') }}"
     cacheable: TRUE
 
 - name: Create token for Site Factory environment URL
