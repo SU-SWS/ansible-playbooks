@@ -24,27 +24,12 @@
 # --
 
 - name: Check for PHP in database
-  shell: "grep -o '.\\{0,20\\}{{ item }}.\\{0,20\\}' /tmp/{{ inventory_hostname }}/dbdump.sql; test $? -eq 1"
+  shell: "grep -o '.\\{0,20\\}{{ item }}{% if item in php_callbacks %}{{ parens }}{% endif %}.\\{0,20\\}' /tmp/{{ inventory_hostname }}/dbdump.sql; test $? -eq 1"
   register: database_php_candidates
   ignore_errors: yes
   with_items:
-    - '$[^S$D|\.|0-9|conf|user|_SESSION][A-Za-z]'
-    - '<?[^xml]'
-    - 'eval('
-    - 'preg_replace('
-    - 'create_function'
-    - 'include(\|include_once('
-    - 'require(\|require_once('
-    - 'exec('
-    - 'passthru('
-    - 'shell_exec('
-    - 'system('
-    - 'proc_open('
-    - 'popen('
-    - 'curl_exec('
-    - 'curl_multi_exec('
-    - 'parse_ini_file('
-    - 'show_source('
+    - "{{ php_syntax }}"
+    - "{{ php_callbacks }}"
 
 - name: Save PHP in file
   copy:
