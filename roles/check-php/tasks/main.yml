@@ -31,9 +31,15 @@
     - "{{ php_syntax }}"
     - "{{ php_callbacks }}"
 
+- name: Prompt for action on databases with PHP
+  pause:
+    prompt: "Do you want to fail hosts with PHP candidates in their databases or continue their migration? (Options: fail, continue)"
+  when: database_php_candidates|failed and php_candidates_consequence == "prompt"
+  register: php_candidates_consequence_prompted
+
 - name: Save PHP in file
   copy:
     content: "{{ inventory_hostname }} {{ database_php_candidates | json_query('results[*].stdout_lines') }}"
     dest: "/tmp/ansible.log"
   when: database_php_candidates|failed
-  failed_when: php_candidates_consequence == "fail"
+  failed_when: php_candidates_consequence == "fail" or php_candidates_consequence_prompted.user_input == "fail"
