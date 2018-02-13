@@ -35,6 +35,5 @@
   copy:
     content: "{{ inventory_hostname }} {{ database_php_candidates | json_query('results[*].stdout_lines') }}"
     dest: "/tmp/ansible.log"
-  register: php_logged
   when: database_php_candidates|failed
-  failed_when: php_logged is defined
+  failed_when: php_candidates_consequence == "fail"
