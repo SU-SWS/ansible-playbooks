@@ -5,14 +5,18 @@
 #
 # The purpose of this role is to run a TASK, in this case, search for evidence
 # of PHP in a database.  Upon finding what might be PHP, this role should
-# abort migration of the host and save the PHP to our ansible.log file for
-# review later.
+# save the PHP to our ansible.log file for review later, and fail, continue,
+# or prompt the user for what actions to take on suspicious hosts.
 #
 # INPUTS:
 #   inventory_hostname
+#   php_syntax
+#   php_callbacks
+#   php_candidates_consequence_prompted
 #
 # OUTPUTS:
 #   database_php_candidates
+#   php_candidates_consequence_prompted
 #
 # ALTERNATIVE ROLES:
 # --
