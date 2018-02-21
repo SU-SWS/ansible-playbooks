@@ -25,7 +25,18 @@
 # --
 #
 # KNOWN ISSUES:
-# --
+# - In testing, the following failed:
+#   "when: php_candidates_consequence_prompted is defined"
+#   This appears to fail because drupal7-update-status is for whatever reason
+#   registering this variable.  But without the user_input key:value pair.
+#
+#   "when: php_candidates_consequence_prompted.user_input is defined"
+#   Ansible appears to fail this when the variable name is not defined, in
+#   this case, php_candidates_consequence_prompted.  So I can't just check
+#   a key:value pair within that variable.
+#
+#   Before setting on this proxy, of checking for "prompt", I'd like to see if
+#   Ansible might have a special filter I could use to check the key:value.
 
 - name: Check for PHP in database
   shell: "grep -o '.\\{0,20\\}{{ item }}{% if item in php_callbacks %}{{ parens }}{% endif %}.\\{0,20\\}' /tmp/{{ inventory_hostname }}/dbdump.sql; test $? -eq 1"
@@ -41,9 +52,15 @@
   when: database_php_candidates|failed and php_candidates_consequence == "prompt"
   register: php_candidates_consequence_prompted
 
+- name: Rewrite php_candidates_consequence based on input
+  set_fact:
+    php_candidates_consequence: "{{ php_candidates_consequence_prompted.user_input }}"
+    cacheable: TRUE
+  when: php_candidates_consequence == "prompt"
+
 - name: Save PHP in file
   copy:
     content: "{{ inventory_hostname }} {{ database_php_candidates | json_query('results[*].stdout_lines') }}"
     dest: "/tmp/ansible.log"
   when: database_php_candidates|failed
-  failed_when: php_candidates_consequence == "fail" or php_candidates_consequence_prompted.user_input == "fail"
+  failed_when: php_candidates_consequence == "fail"
