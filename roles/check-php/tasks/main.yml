@@ -1,4 +1,3 @@
----
 # Ansible role for identifying PHP in a database.
 # https://github.com/SU-SWS/ansible-playbooks
 # ===============================================
@@ -46,21 +45,26 @@
     - "{{ php_syntax }}"
     - "{{ php_callbacks }}"
 
+# I see.  Ansible appears to only be registering this variable for the first host.
 - name: Prompt for action on databases with PHP
   pause:
-    prompt: "Do you want to fail hosts with PHP candidates in their databases or continue their migration? (Options: fail, continue)"
-  when: database_php_candidates|failed and php_candidates_consequence == "prompt"
+    prompt: "Continue or fail: {{ item }}?"
+  when: php_candidates_consequence == "prompt"
   register: php_candidates_consequence_prompted
+  with_items: "{{ play_hosts }}"
 
 - name: Rewrite php_candidates_consequence based on input
   set_fact:
-    php_candidates_consequence: "{{ php_candidates_consequence_prompted.user_input }}"
-    cacheable: TRUE
-  when: php_candidates_consequence == "prompt"
-
+    php_candidates_consequence: "{{ item.user_input }}"
+  with_items: "{{ hostvars[play_hosts.0].php_candidates_consequence_prompted.results }}"
+  when: php_candidates_consequence == "prompt" and database_php_candidates|failed
+#
 - name: Save PHP in file
-  copy:
-    content: "{{ inventory_hostname }} {{ database_php_candidates | json_query('results[*].stdout_lines') }}"
-    dest: "/tmp/ansible.log"
+  lineinfile:
+    line: "{{ inventory_hostname }} {{ database_php_candidates | json_query('results[*].stdout_lines') }}"
+    path: "/tmp/ansible-{{ inventory_hostname }}-php.log"
+    create: yes
+    state: present
+    insertafter: EOF
   when: database_php_candidates|failed
   failed_when: php_candidates_consequence == "fail"
