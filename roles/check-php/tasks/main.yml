@@ -4,8 +4,8 @@
 #
 # The purpose of this role is to run a TASK, in this case, search for evidence
 # of PHP in a database.  Upon finding what might be PHP, this role should
-# save the PHP to our ansible.log file for review later, and fail, continue,
-# or prompt the user for what actions to take on suspicious hosts.
+# save the PHP to a host specific log file for review later, and fail or continue
+# migrating suspicious hosts.
 #
 # INPUTS:
 #   inventory_hostname
@@ -45,20 +45,6 @@
     - "{{ php_syntax }}"
     - "{{ php_callbacks }}"
 
-# I see.  Ansible appears to only be registering this variable for the first host.
-- name: Prompt for action on databases with PHP
-  pause:
-    prompt: "Continue or fail: {{ item }}?"
-  when: php_candidates_consequence == "prompt"
-  register: php_candidates_consequence_prompted
-  with_items: "{{ play_hosts }}"
-
-- name: Rewrite php_candidates_consequence based on input
-  set_fact:
-    php_candidates_consequence: "{{ item.user_input }}"
-  with_items: "{{ hostvars[play_hosts.0].php_candidates_consequence_prompted.results }}"
-  when: php_candidates_consequence == "prompt" and database_php_candidates|failed
-#
 - name: Save PHP in file
   lineinfile:
     line: "{{ inventory_hostname }} {{ database_php_candidates | json_query('results[*].stdout_lines') }}"

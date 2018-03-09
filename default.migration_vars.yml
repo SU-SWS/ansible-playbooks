@@ -35,7 +35,6 @@ acquia_api_key: ""
 sunetid: ""
 
 # Tell Ansible what action you would like to take on a host that appears to
-# have at least one string resembling PHP.  Options include: fail, continue
-# or prompt.
+# have at least one string resembling PHP.  Options include: fail or continue.
 # Example: fail
 php_candidates_consequence: "fail"
