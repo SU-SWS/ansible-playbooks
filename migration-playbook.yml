@@ -35,9 +35,10 @@
   roles:
     - { role: setup-local }
     - { role: download-site, tags: [download-site] }
-    - { role: setup-site, tags: [setup-site,download-site] }
-    - { role: upload-site, tags: [upload-site,setup-site,download-site] }
-    - { role: get-sitename, tags: [upload-site,setup-site,download-site] }
-    - { role: add-vhost, tags: [add-vhost,upload-site,setup-site,download-site] }
-    - { role: cleanup-local, tags: [cleanup-local,upload-site,setup-site,download-site] }
+    - { role: check-php, tags: [check-php,download-site] }
+    - { role: setup-site, tags: [download-site,check-php] }
+    - { role: upload-site, tags: [upload-site,setup-site,download-site,check-php] }
+    - { role: get-sitename, tags: [upload-site,setup-site,download-site,check-php] }
+    - { role: add-vhost, tags: [add-vhost,upload-site,setup-site,download-site,check-php] }
+    - { role: cleanup-local, tags: [cleanup-local,upload-site,setup-site,download-site,check-php] }
   serial: 12
