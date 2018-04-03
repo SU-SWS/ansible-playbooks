@@ -26,7 +26,7 @@
 # KNOWN ISSUES:
 # --
 
-- name: Add vhost as domain
+- name: Add vhost as stanford.edu domain
   uri:
     url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
     method: POST
@@ -36,6 +36,19 @@
     body_format: json
     body:
       domain_name: "{{ vhost }}{{ stanford_environment }}.stanford.edu"
+  when:
+    vhost is defined
+
+- name: Add vhost as cardinalsites.stanford.edu domain
+  uri:
+    url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
+    method: POST
+    user: "{{ acquia_username }}"
+    password: "{{ acquia_api_key }}"
+    force_basic_auth: yes
+    body_format: json
+    body:
+      domain_name: "{{ vhost }}{{ stanford_environment }}.cardinalsites.stanford.edu"
   when:
     vhost is defined
 
