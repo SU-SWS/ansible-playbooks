@@ -49,7 +49,7 @@
     - "{{ protocols }}"
   notify: Clear site cache
 
-- name: Remove absolute paths with vhost
+- name: Remove vhost absolute paths
   shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item[0] }} -y '{{ item[1] }}{{ vhost }}.stanford.edu/' ''"
   with_nested:
     - "{{ sar_commands }}"
@@ -58,17 +58,26 @@
     vhost is defined
   notify: Clear site cache
 
-- name: Remove attributes with absolute paths
+# These are separated out because we will only be using sar, not all sar_commands
+- name: Remove absolute paths for link attributes
   shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y '{{ item[0] }}/{{ inventory_hostname }}/' '{{ item[0] }}/'"
   with_together:
     - "{{ link_attributes }}"
   notify: Clear site cache
 
+- name: Remove vhost absolute paths for link attributes
+  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y '{{ item[0] }}/{{ vhost }}.stanford.edu/' '{{ item[0] }}/'"
+  with_together:
+    - "{{ link_attributes }}"
+  notify: Clear site cache
+
+
 ##############################################################################
 # Database surgery: Find and replace references to sites/default/files with  #
 # the string that ACSF uses for the file_public_path variable. Do NOT do a   #
 # global find and replace of the "sites/default/files" string, for users may #
-# have linked to files on other websites.                                    #
+# have linked to files on other websites. We are assuming all absolute       #
+# paths have been replaced above by relative paths.                          #
 # See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
 ##############################################################################
 
@@ -85,6 +94,7 @@
     msg: "There appear to be drush warning messages cluttering the file_public_path variable"
   when: file_public_path.stdout | search('The following module is missing')
 
+# When would this be used?
 - name: Replace absolute sites/default/files with path to files directory
   shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y '{{ item[0] }}{{ item[1] }}{{ acsf_site_name }}{{ stanford_environment }}.cardinalsites.stanford.edu/sites/default/files' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
