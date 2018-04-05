@@ -65,3 +65,4 @@
 - name: Copy files from local to Site Factory
   shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/"
   notify: Clear site cache
+
