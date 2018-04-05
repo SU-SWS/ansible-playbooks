@@ -13,15 +13,10 @@
 #   inventory_hostname
 #   sitefactory_environment
 #   drush_environment
-#   server_alias
-#   site_prefix
 #   stack
-#   server
-#   dept_site
-#   wait_time
 #
 # OUTPUTS:
-#   files_public_path
+# --
 #
 # ALTERNATIVE ROLES:
 # --
