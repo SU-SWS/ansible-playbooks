@@ -3,10 +3,9 @@
 # https://github.com/SU-SWS/ansible-playbooks
 # ==================================================================
 #
-# This role uploads the database and files from local to Site Factory. It also
-# runs a number of tasks to transform the database in such a way that images
-# and absolute paths will work in the new ACSF environment. If any part of this
-# role fails for a site, restart from the tag "upload-site".
+# This role runs a number of tasks to transform the database in such a way that
+# images and absolute paths will work in the new ACSF environment. If any part
+# of this role fails for a site, restart from the tag "download-site".
 #
 # INPUTS:
 #   acsf_site_name
@@ -42,35 +41,55 @@
   set_fact:
     sites_service: "{% if site_prefix=='dp' %}people{% elif site_prefix=='ds'%}sites{% endif %}"
 
-- name: Remove absolute paths
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item[0] }} -y '{{ item[1] }}{{ sites_service }}.stanford.edu/{{ inventory_hostname }}/' ''"
-  with_nested:
-    - "{{ sar_commands }}"
-    - "{{ protocols }}"
-  notify: Clear site cache
+- name: Set absolute path from sites service
+  set_fact:
+    absolute_path_sites_service: "{% if vhost is defined %}{{ vhost }}.stanford.edu/{% else %}{{ sites_service }}.stanford.edu/{{ inventory_hostname }}{% endif %}"
 
-- name: Remove vhost absolute paths
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item[0] }} -y '{{ item[1] }}{{ vhost }}.stanford.edu/' ''"
+- name: Set absolute path for testing
+  set_fact:
+    absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.cardinalsites.stanford.edu" 
+
+- name: Set absolute path for production
+  set_fact:
+    absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.stanford.edu"
+
+- name: Set new absolute path based on destination
+  set_fact:
+    new_absolute_path: "{% if acsf_environment == "" %}{{ absolute_path_prod }}{% else %}{{ absolute_path_testing }}{% endif %}"
+
+- name: Set drush sar command
+  set_fact:
+    drush_sar_command: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}" 
+
+# See discussion in https://github.com/SU-SWS/ansible-playbooks/pull/17/files
+# And https://github.com/SU-SWS/ansible-playbooks/pull/22/files
+- name: Update full paths in text
+  shell: "{{ drush_sar_command }} sar -y '{{ item }}{{ absolute_path_sites_service }}/' '{{ item }}{{ new_absolute_path }}'"
+  with_items:
+   - "{{ protocols }}"
+
+# We may want to exclude sar from this
+- name: Remove absolute paths for links and menus
+  shell: "{{ drush_sar_command }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_path_sites_service }}/' ''"
   with_nested:
-    - "{{ sar_commands }}"
+    - [ "sarl", "sarm" ]
     - "{{ protocols }}"
-  when:
-    vhost is defined
   notify: Clear site cache
 
 # These are separated out because we will only be using sar, not all sar_commands
 - name: Remove absolute paths for link attributes
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y '{{ item[0] }}/{{ inventory_hostname }}/' '{{ item[0] }}/'"
+  shell: "{{ drush_sar_command }} sar -y '{{ item[0] }}/{{ absolute_path_sites_service }}/' '{{ item[0] }}/'"
   with_together:
     - "{{ link_attributes }}"
   notify: Clear site cache
 
-- name: Remove vhost absolute paths for link attributes
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y '{{ item[0] }}/{{ vhost }}.stanford.edu/' '{{ item[0] }}/'"
+# Do we need one more for things like src="/methane..."?
+- name: Remove absolute paths for link attributes
+  shell: "{{ drush_sar_command }} sar -y '{{ item[0] }}/{{ inventory_hostname }}/' '{{ item[0] }}/'"
   with_together:
     - "{{ link_attributes }}"
+  when: vhost is not defined
   notify: Clear site cache
-
 
 ##############################################################################
 # Database surgery: Find and replace references to sites/default/files with  #
@@ -94,21 +113,20 @@
     msg: "There appear to be drush warning messages cluttering the file_public_path variable"
   when: file_public_path.stdout | search('The following module is missing')
 
-# When would this be used?
 - name: Replace absolute sites/default/files with path to files directory
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y '{{ item[0] }}{{ item[1] }}{{ acsf_site_name }}{{ stanford_environment }}.cardinalsites.stanford.edu/sites/default/files' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "{{ drush_sar_command }} sar -y '{{ item[0] }}{{ item[1] }}{{ new_absolute_path }}/sites/default/files' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
     - "{{ link_attributes }}"
     - "{{ protocols }}"
 
 - name: Replace relative sites/default/paths with path to files directory
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} sar -y '{{ item[0] }}/sites/default/files' '{{ item[0] }}/{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "{{ drush_sar_command }} sar -y '{{ item[0] }}/sites/default/files' '{{ item[0] }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_together:
     - "{{ link_attributes }}"
   notify: Clear site cache
 
 - name: Replace link and menu items with new files path
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }} -y --regex='^sites/default/files' 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "{{ drush_sar_command }} {{ item }} -y --regex='^sites/default/files' 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
   with_items:
     - "sarl"
     - "sarm"
