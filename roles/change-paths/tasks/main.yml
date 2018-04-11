@@ -41,13 +41,18 @@
   set_fact:
     sites_service: "{% if site_prefix=='dp' %}people{% elif site_prefix=='ds'%}sites{% endif %}"
 
-- name: Set absolute path from sites service
+# Found example of a site with a vhost, hard linking to images by non-vhost path.
+- name: Set absolute vhost path from sites service
   set_fact:
-    absolute_path_sites_service: "{% if vhost is defined %}{{ vhost }}.stanford.edu/{% else %}{{ sites_service }}.stanford.edu/{{ inventory_hostname }}{% endif %}"
+    absolute_vhost_path_sites_service: "{{ vhost }}.stanford.edu"
+
+- name: Set absolute non-vhost path from sites service
+  set_fact:
+    absolute_path_sites_service: "{{ sites_service }}.stanford.edu/{{ inventory_hostname }}"
 
 - name: Set absolute path for testing
   set_fact:
-    absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.cardinalsites.stanford.edu" 
+    absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}-{{ acsf_environment }}.cardinalsites.stanford.edu" 
 
 - name: Set absolute path for production
   set_fact:
@@ -55,7 +60,11 @@
 
 - name: Set new absolute path based on destination
   set_fact:
-    new_absolute_path: "{% if acsf_environment == "" %}{{ absolute_path_prod }}{% else %}{{ absolute_path_testing }}{% endif %}"
+    new_absolute_path: "{% if acsf_environment == '' %}{{ absolute_path_prod }}{% else %}{{ absolute_path_testing }}{% endif %}"
+
+- name: Debug absolute path for site
+  debug:
+    msg: "Absolute path: {{ new_absolute_path }}"
 
 - name: Set drush sar command
   set_fact:
@@ -64,7 +73,7 @@
 # See discussion in https://github.com/SU-SWS/ansible-playbooks/pull/17/files
 # And https://github.com/SU-SWS/ansible-playbooks/pull/22/files
 - name: Update full paths in text
-  shell: "{{ drush_sar_command }} sar -y '{{ item }}{{ absolute_path_sites_service }}/' '{{ item }}{{ new_absolute_path }}'"
+  shell: "{{ drush_sar_command }} sar -y '{{ item }}{{ absolute_path_sites_service }}/' '{{ item }}{{ new_absolute_path }}/'"
   with_items:
    - "{{ protocols }}"
 
@@ -78,10 +87,34 @@
 
 # These are separated out because we will only be using sar, not all sar_commands
 - name: Remove absolute paths for link attributes
-  shell: "{{ drush_sar_command }} sar -y '{{ item[0] }}/{{ absolute_path_sites_service }}/' '{{ item[0] }}/'"
+  shell: "{{ drush_sar_command }} sar -y '{{ item[0] }}/{{ absolute_path_sites_service }}/' ''"
   with_together:
     - "{{ link_attributes }}"
   notify: Clear site cache
+
+# Have to run these again for links that might include vhosts
+- name: Update full vhost paths in text
+  shell: "{{ drush_sar_command }} sar -y '{{ item }}{{ absolute_vhost_path_sites_service }}/' '{{ item }}{{ new_absolute_path }}/'"
+  with_items:
+   - "{{ protocols }}"
+  when: vhost is defined
+
+# We may want to exclude sar from this
+- name: Remove absolute vhost paths for links and menus
+  shell: "{{ drush_sar_command }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_vhost_path_sites_service }}/' ''"
+  with_nested:
+    - [ "sarl", "sarm" ]
+    - "{{ protocols }}"
+  notify: Clear site cache
+  when: vhost is defined
+
+# These are separated out because we will only be using sar, not all sar_commands
+- name: Remove absolute vhost paths for link attributes
+  shell: "{{ drush_sar_command }} sar -y '{{ item[0] }}/{{ absolute_vhost_path_sites_service }}/' '{{ item[0] }}/'"
+  with_together:
+    - "{{ link_attributes }}"
+  notify: Clear site cache
+  when: vhost is defined
 
 # Do we need one more for things like src="/methane..."?
 - name: Remove absolute paths for link attributes
@@ -113,8 +146,9 @@
     msg: "There appear to be drush warning messages cluttering the file_public_path variable"
   when: file_public_path.stdout | search('The following module is missing')
 
+# All absolute paths should now be the new absolute path
 - name: Replace absolute sites/default/files with path to files directory
-  shell: "{{ drush_sar_command }} sar -y '{{ item[0] }}{{ item[1] }}{{ new_absolute_path }}/sites/default/files' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "{{ drush_sar_command }} sar -y '{{ item[0] }}{{ item[1] }}{{ new_absolute_path }}/sites/default/files' '{{ item[0] }}{{ item[1] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
     - "{{ link_attributes }}"
     - "{{ protocols }}"
@@ -126,7 +160,7 @@
   notify: Clear site cache
 
 - name: Replace link and menu items with new files path
-  shell: "{{ drush_sar_command }} {{ item }} -y --regex='^sites/default/files' 'sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "{{ drush_sar_command }} {{ item }} -y --regex='^sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
   with_items:
     - "sarl"
     - "sarm"
