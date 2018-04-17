@@ -56,7 +56,7 @@
     - "-y en acsf nobots stanford_ssp paranoia"
     - "ev 'acsf_openid_allow_local_user_logins();'"
     - 'ev "_paranoia_remove_risky_permissions();"'
-    - "-y dis googleanalytics pingdom_rum"
+    - "-y dis googleanalytics pingdom_rum stanford_afs_quota"
     - "sqlq 'truncate table webauth_roles_history'"
     - "sspwmd"
   notify: Clear site cache
