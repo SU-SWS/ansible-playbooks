@@ -66,7 +66,7 @@
 # Copy files first so that they exist and Drupal can find them if needed
 - name: Copy files from local to Site Factory
   shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/"
-  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/private/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%private/"
+#  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/private/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%private/"
   notify: Clear site cache
 
 ##############################################################################
