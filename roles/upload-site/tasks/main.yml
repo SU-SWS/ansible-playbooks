@@ -82,8 +82,8 @@
     # when/if we decide on a URL syntax for people sites. Also, we are using
     # {{ acsf_site_name }} here because we can rely on it being the same as
     # the person's SUNetID due to validation rules for SUNetIDs.
-    - "sar -y 'http://people.stanford.edu/{{ inventory_hostname }}/' 'https://{% if vhost %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
-    - "sar -y 'https://people.stanford.edu/{{ inventory_hostname }}/' 'https://{% if vhost %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
+    - "sar -y 'http://people.stanford.edu/{{ inventory_hostname }}/' 'https://{{ acsf_site_name }}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
+    - "sar -y 'https://people.stanford.edu/{{ inventory_hostname }}/' 'https://{{ acsf_site_name }}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
     # Menus and links should replace http(s)://people.stanford.edu/sunetid with nothing.
     - "sarm -y 'http://people.stanford.edu/{{ inventory_hostname }}/' ''"
     - "sarm -y 'https://people.stanford.edu/{{ inventory_hostname }}/' ''"
@@ -102,8 +102,8 @@
     # site after cutover (note that this is an assumption). Also, we are using
     # {{ acsf_site_name }} here because we can rely on it existing, regardless
     # whether there's a vhost.
-    - "sar -y 'http://sites.stanford.edu/{{ inventory_hostname }}/' 'https://{% if vhost %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
-    - "sar -y 'https://sites.stanford.edu/{{ inventory_hostname }}/' 'https://{% if vhost %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
+    - "sar -y 'http://sites.stanford.edu/{{ inventory_hostname }}/' 'https://{{ acsf_site_name }}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
+    - "sar -y 'https://sites.stanford.edu/{{ inventory_hostname }}/' 'https://{{ acsf_site_name }}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
     # Menus and links should replace http(s)://sites.stanford.edu/sitename with nothing.
     - "sarm -y 'http://sites.stanford.edu/{{ inventory_hostname }}/' ''"
     - "sarm -y 'https://sites.stanford.edu/{{ inventory_hostname }}/' ''"
