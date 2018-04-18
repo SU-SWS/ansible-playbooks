@@ -99,8 +99,8 @@
     # Text fields should replace http(s)://sites.stanford.edu/sitename with
     # https://acsf_site_name.cardinalsites.stanford.edu, or
     # https://vhost.cardinalsites.stanford.edu when one exists.
-    - "sar -y 'http://sites.stanford.edu/{{ inventory_hostname }}/' 'https://{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
-    - "sar -y 'https://sites.stanford.edu/{{ inventory_hostname }}/' 'https://{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
+    - "sar -y 'http://sites.stanford.edu/{{ inventory_hostname }}/' 'https://{% if vhost %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
+    - "sar -y 'https://sites.stanford.edu/{{ inventory_hostname }}/' 'https://{% if vhost %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}{{ stanford_environment }}.cardinalsites.stanford.edu/'"
     # Menus and links should replace http(s)://sites.stanford.edu/sitename with nothing.
     - "sarm -y 'http://sites.stanford.edu/{{ inventory_hostname }}/' ''"
     - "sarm -y 'https://sites.stanford.edu/{{ inventory_hostname }}/' ''"
