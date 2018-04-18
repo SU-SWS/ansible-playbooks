@@ -57,6 +57,7 @@
     - "-y en acsf stanford_ssp paranoia"
     - "ev 'acsf_openid_allow_local_user_logins();'"
     - 'ev "_paranoia_remove_risky_permissions();"'
+    - "-y dis stanford_afs_quota"
 #    - "-y dis googleanalytics pingdom_rum"
     - "sqlq 'truncate table webauth_roles_history'"
     - "sspwmd"
