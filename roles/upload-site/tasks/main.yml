@@ -50,10 +50,11 @@
   shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
   with_items:
     - "-y updb"
-    - "-y en acsf nobots stanford_ssp paranoia"
+    - "-y en acsf stanford_ssp paranoia"
+#    - "-y en nobots"
     - "ev 'acsf_openid_allow_local_user_logins();'"
     - 'ev "_paranoia_remove_risky_permissions();"'
-    - "-y dis googleanalytics pingdom_rum"
+#    - "-y dis googleanalytics pingdom_rum"
     - "-y dis stanford_afs_quota"
     - "sqlq 'truncate table webauth_roles_history'"
     - "sspwmd"
