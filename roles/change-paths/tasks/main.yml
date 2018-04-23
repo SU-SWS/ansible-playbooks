@@ -166,19 +166,31 @@
     msg: "There appear to be drush warning messages cluttering the file_public_path variable"
   when: file_public_path.stdout | search('The following module is missing')
 
-# All absolute paths should now be the new absolute path
+# We already did a global find/replace of vhost.stanford.edu and
+# sites.stanford.edu with https://acsf_site_name.cardinalsites.stanford.edu,
+# so we just need to find/replace the "sites/default/files" string with
+# the ACSF file_public_path value.
+# TODO: Determine how to treat for final migration (SITES-465)
 - name: Replace absolute sites/default/files with path to files directory
   shell: "{{ drush_alias }} sar -y '{{ item[0] }}{{ item[1] }}{{ new_absolute_path }}/sites/default/files' '{{ item[0] }}{{ item[1] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
     - "{{ link_attributes }}"
     - "{{ protocols }}"
 
-- name: Replace relative sites/default/paths with path to files directory
+# Same here: we already replaced absolute references in href and src
+# attributes, so we only need to replace the "sites/default/files" string
+# with the ACSF file_public_path value.
+- name: Replace relative sites/default/files paths with path to files directory
   shell: "{{ drush_alias }} sar -y '{{ item[0] }}/sites/default/files' '{{ item[0] }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_together:
     - "{{ link_attributes }}"
   notify: Clear site cache
 
+# We already replaced absolute references in menus and links
+# attributes, so we only need to replace relative references to
+# the "sites/default/files" string with the ACSF file_public_path value.
+# The --regex option limits replacement to only those fields that match the
+# regular expression.
 - name: Replace link and menu items with new files path
   shell: "{{ drush_alias }} {{ item }} -y --regex='^sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
   with_items:
