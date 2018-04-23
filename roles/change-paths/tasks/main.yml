@@ -35,6 +35,15 @@
 # Database surgery: Find and replace anything that the user may have entered #
 # that references the old site.                                              #
 # See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
+#                                                                            #
+# Text fields should replace http(s)://people.stanford.edu/sunetid with      #
+# https://sunetid(-env).cardinalsites.stanford.edu. This will need to be     #
+# changed when/if we decide on a URL syntax for people sites. Also, we are   #
+# using {{ acsf_site_name }} here because we can rely on it being the same   #
+# as the person's SUNetID due to validation rules for SUNetIDs.              #
+#                                                                            #
+# Text fields should replace http(s)://sites.stanford.edu/sitename with      #
+# https://(acsf_site_name|vhost)(-env).cardinalsites.stanford.edu.           #
 ##############################################################################
 
 - name: Set sites_service variable
@@ -72,12 +81,14 @@
 
 # See discussion in https://github.com/SU-SWS/ansible-playbooks/pull/17
 # And https://github.com/SU-SWS/ansible-playbooks/pull/22
+# TODO: Determine how to treat for final migration (SITES-465)
 - name: Update full paths in text
-  shell: "{{ drush_alias }} sar -y '{{ item }}{{ absolute_path_sites_service }}/' '{{ item }}{{ new_absolute_path }}/'"
+  shell: "{{ drush_alias }} sar -y '{{ item }}{{ absolute_path_sites_service }}/' 'https://{{ new_absolute_path }}/'"
   with_items:
    - "{{ protocols }}"
 
-# We may want to exclude sar from this
+# We are purposefully excluding sar from this because we can't assume that all
+# absolute URLs should be relative.
 - name: Remove absolute paths for links and menus
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_path_sites_service }}/' ''"
   with_nested:
@@ -85,21 +96,26 @@
     - "{{ protocols }}"
   notify: Clear site cache
 
-# These are separated out because we will only be using sar, not all sar_commands
-- name: Remove absolute paths for link attributes
-  shell: "{{ drush_alias }} sar -y '{{ item[0] }}/{{ absolute_path_sites_service }}/' ''"
+# These are separated out because we are only using sar (not sarl or sarm) to do
+# a string replacement of 'src="https://sites.stanford.edu/sitename/' with 'src="/'
+# TODO: fix this, it's still not right. It's searching for src="sites.stanford.edu..."
+# TODO: Loop through http/https because it's possible that someone entered
+# src="http://sites.stanford.edu/foo". Use with_nested?
+- name: Remove absolute paths for href, src, and url attributes
+  shell: "{{ drush_alias }} sar -y '{{ item[0] }}/{{ absolute_path_sites_service }}/' '{{ item[0] }}/'"
   with_together:
     - "{{ link_attributes }}"
   notify: Clear site cache
 
 # Have to run these again for links that might include vhosts
+# TODO: See todos in above command
 - name: Update full vhost paths in text
   shell: "{{ drush_alias }} sar -y '{{ item }}{{ absolute_vhost_path_sites_service }}/' '{{ item }}{{ new_absolute_path }}/'"
   with_items:
    - "{{ protocols }}"
   when: vhost is defined
 
-# We may want to exclude sar from this
+# Exclude sar from this
 - name: Remove absolute vhost paths for links and menus
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_vhost_path_sites_service }}/' ''"
   with_nested:
@@ -108,16 +124,20 @@
   notify: Clear site cache
   when: vhost is defined
 
-# These are separated out because we will only be using sar, not all sar_commands
-- name: Remove absolute vhost paths for link attributes
+# These are separated out because we are only using sar (not sarl or sarm) to do
+# a string replacement of 'src="https://vhost.stanford.edu/' with 'src="/'
+# TODO: fix this, it's still not right. It's searching for src="sites.stanford.edu..."
+# TODO: Loop through http/https because it's possible that someone entered
+# src="http://vhost.stanford.edu/". Use with_nested?
+- name: Remove absolute vhost paths for href, src, and url attributes
   shell: "{{ drush_alias }} sar -y '{{ item[0] }}/{{ absolute_vhost_path_sites_service }}/' '{{ item[0] }}/'"
   with_together:
     - "{{ link_attributes }}"
   notify: Clear site cache
   when: vhost is defined
 
-# Do we need one more for things like src="/methane..."?
-- name: Remove absolute paths for link attributes
+# One more for things like src="/methane..."
+- name: Remove relative paths for href, src, and url attributes
   shell: "{{ drush_alias }} sar -y '{{ item[0] }}/{{ inventory_hostname }}/' '{{ item[0] }}/'"
   with_together:
     - "{{ link_attributes }}"
