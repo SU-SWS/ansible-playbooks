@@ -61,7 +61,7 @@
 
 # Copy public files first so that they exist and Drupal can find them if needed
 - name: Copy public files from local to Site Factory
-  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/"
+  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/ --exclude-paths=sites/default/files/js_injector/"
   notify: Clear site cache
 
 # Copy private files first so that they exist and Drupal can find them if needed
