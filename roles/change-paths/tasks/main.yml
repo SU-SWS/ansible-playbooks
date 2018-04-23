@@ -46,27 +46,33 @@
 # https://(acsf_site_name|vhost)(-env).cardinalsites.stanford.edu.           #
 ##############################################################################
 
+# Ex: sites
 - name: Set sites_service variable
   set_fact:
     sites_service: "{% if site_prefix=='dp' %}people{% elif site_prefix=='ds'%}sites{% endif %}"
 
+# Ex: g2sc.stanford.edu
 # Found example of a site with a vhost, hard linking to images by non-vhost path.
 - name: Set absolute vhost path from sites service
   set_fact:
     absolute_vhost_path_sites_service: "{{ vhost }}.stanford.edu"
 
+# Ex: sites.stanford.edu/g2scd7
 - name: Set absolute non-vhost path from sites service
   set_fact:
     absolute_path_sites_service: "{{ sites_service }}.stanford.edu/{{ inventory_hostname }}"
 
+# Ex: g2sc-dev.cardinalsites.stanford.edu
 - name: Set absolute path for testing
   set_fact:
     absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}-{{ acsf_environment }}.cardinalsites.stanford.edu"
 
+# Ex: g2sc.stanford.edu
 - name: Set absolute path for production
   set_fact:
     absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.stanford.edu"
 
+# Ex: g2sc-dev.cardinalsites.stanford.edu if migrating to dev
 - name: Set new absolute path based on destination
   set_fact:
     new_absolute_path: "{% if acsf_environment == '' %}{{ absolute_path_prod }}{% else %}{{ absolute_path_testing }}{% endif %}"
@@ -75,6 +81,7 @@
   debug:
     msg: "Absolute path: {{ new_absolute_path }}"
 
+# Ex: drush @acsf.dev.cardinald7.g2scd7
 - name: Set drush alias
   set_fact:
     drush_alias: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}"
@@ -82,6 +89,7 @@
 # See discussion in https://github.com/SU-SWS/ansible-playbooks/pull/17
 # And https://github.com/SU-SWS/ansible-playbooks/pull/22
 # TODO: Determine how to treat for final migration (SITES-465)
+# Ex: drush sar -y 'https://sites.stanford.edu/g2scd7' 'https://g2sc-dev.cardinalsites.stanford.edu/'
 - name: Update full paths in text
   shell: "{{ drush_alias }} sar -y '{{ item }}{{ absolute_path_sites_service }}/' 'https://{{ new_absolute_path }}/'"
   with_items:
@@ -89,6 +97,9 @@
 
 # We are purposefully excluding sar from this because we can't assume that all
 # absolute URLs should be relative.
+# Also, "with_nested" will loop through all iterations of both arrays, as in:
+# sarl/http, sarl/https, sarm/http, sarm/https.
+# Ex: drush sarl -y https://sites.stanford.edu/g2scd7' ''
 - name: Remove absolute paths for links and menus
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_path_sites_service }}/' ''"
   with_nested:
@@ -101,6 +112,7 @@
 # TODO: fix this, it's still not right. It's searching for src="sites.stanford.edu..."
 # TODO: Loop through http/https because it's possible that someone entered
 # src="http://sites.stanford.edu/foo". Use with_nested?
+# Ex: drush sar -y 'src="https://sites.stanford.edu/g2scd7' ''
 - name: Remove absolute paths for href, src, and url attributes
   shell: "{{ drush_alias }} sar -y '{{ item[0] }}/{{ absolute_path_sites_service }}/' '{{ item[0] }}/'"
   with_together:
@@ -109,6 +121,7 @@
 
 # Have to run these again for links that might include vhosts
 # TODO: See todos in above command
+# Ex: drush sar -y 'https://g2sc.stanford.edu' 'https://g2sc-dev.cardinalsites.stanford.edu/'
 - name: Update full vhost paths in text
   shell: "{{ drush_alias }} sar -y '{{ item }}{{ absolute_vhost_path_sites_service }}/' '{{ item }}{{ new_absolute_path }}/'"
   with_items:
