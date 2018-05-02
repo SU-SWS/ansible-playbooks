@@ -1,5 +1,6 @@
 # Exclude files from repository
 *.DS_Store
 *.retry
+backtrac_vars.yml
 migration_vars.yml
 server_vars.yml
