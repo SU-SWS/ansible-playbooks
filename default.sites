@@ -1,15 +1,17 @@
 # Default inventory file. Copy this and put it in the "inventory" directory.
 
-# Personal sites on people.stanford.edu. See group_vars/people.yml for defaults.
-[people]
-#jbickar
+[education]
+# Add sitenames here
 
-# Group sites on sites.stanford.edu (no Stanford-branded themes). See
-# group_vars/groups.yml for defaults.
-[groups]
-#designingforvr vhost="designingforvr"
+[earth]
+# Add sitenames here
 
-# Department sites on sites.stanford.edu (Stanford-branded themes). See
-# group_vars/depts.yml for defaults.
-[depts]
-#ssds vhost="ssds"
+[depts:children]
+education
+earth
+
+[education:vars]
+group_ids=621
+
+[earth:vars]
+group_ids=336
