@@ -94,7 +94,7 @@
 - name: Update full paths in text
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_path_sites_service }}/' 'https://{{ new_absolute_path }}/'"
   with_nested:
-    - [ "sar", "sarv", "sarjs" ]
+    - "{{ sar_fulltext_commands }}"
     - "{{ protocols }}"
 
 # We are purposefully excluding sar from this because we can't assume that all
@@ -105,7 +105,7 @@
 - name: Remove absolute paths for links and menus
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_path_sites_service }}/' ''"
   with_nested:
-    - [ "sarl", "sarm" ]
+    - "{{ sarl_commands }}"
     - "{{ protocols }}"
   notify: Clear site cache
 
@@ -116,26 +116,29 @@
 # src="http://sites.stanford.edu/foo". Use with_nested?
 # Ex: drush sar -y 'src="https://sites.stanford.edu/g2scd7' ''
 - name: Remove absolute paths for href, src, and url attributes
-  shell: "{{ drush_alias }} sar -y '{{ item[0] }}/{{ absolute_path_sites_service }}/' '{{ item[0] }}/'"
-  with_together:
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ absolute_path_sites_service }}/' '{{ item[1] }}/'"
+  with_nested:
+    - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
+    - "{{ protocols }}"
   notify: Clear site cache
 
 # Have to run these again for links that might include vhosts
 # TODO: See todos in above command
 # Ex: drush sar -y 'https://g2sc.stanford.edu' 'https://g2sc-dev.cardinalsites.stanford.edu/'
 - name: Update full vhost paths in text
-  shell: "{{ drush_alias }} {{ item[0 ]}} -y '{{ item[1] }}{{ absolute_vhost_path_sites_service }}/' '{{ item }}{{ new_absolute_path }}/'"
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_vhost_path_sites_service }}/' '{{ item[1] }}{{ new_absolute_path }}/'"
   with_nested:
-    - [ "sar", "sarv", "sarjs" ]
+    - "{{ sar_fulltext_commands }}"
     - "{{ protocols }}"
   when: vhost is defined
 
 # Exclude sar from this
+# Ex. drush sarl -y 'https://g2sc.stanford.edu' ''
 - name: Remove absolute vhost paths for links and menus
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_vhost_path_sites_service }}/' ''"
   with_nested:
-    - [ "sarl", "sarm" ]
+    - "{{ sarl_commands }}"
     - "{{ protocols }}"
   notify: Clear site cache
   when: vhost is defined
@@ -148,7 +151,7 @@
 - name: Remove absolute vhost paths for href, src, and url attributes
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ absolute_vhost_path_sites_service }}/' '{{ item[1] }}/'"
   with_nested:
-    - [ "sar", "sarv", "sarjs" ]
+    - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
     - "{{ protocols }}"
   notify: Clear site cache
@@ -158,7 +161,7 @@
 - name: Remove relative paths for href, src, and url attributes
   shell: "{{ drush_alias }} sar -y '{{ item[0] }}/{{ inventory_hostname }}/' '{{ item[0] }}/'"
   with_nested:
-    - [ "sar", "sarv", "sarjs" ]
+    - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
   when: vhost is not defined
   notify: Clear site cache
