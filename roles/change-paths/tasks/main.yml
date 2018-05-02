@@ -92,9 +92,10 @@
 # TODO: Determine how to treat for final migration (SITES-465)
 # Ex: drush sar -y 'https://sites.stanford.edu/g2scd7' 'https://g2sc-dev.cardinalsites.stanford.edu/'
 - name: Update full paths in text
-  shell: "{{ drush_alias }} sar -y '{{ item }}{{ absolute_path_sites_service }}/' 'https://{{ new_absolute_path }}/'"
-  with_items:
-   - "{{ protocols }}"
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_path_sites_service }}/' 'https://{{ new_absolute_path }}/'"
+  with_nested:
+    - [ "sar", "sarv", "sarjs" ]
+    - "{{ protocols }}"
 
 # We are purposefully excluding sar from this because we can't assume that all
 # absolute URLs should be relative.
@@ -124,9 +125,10 @@
 # TODO: See todos in above command
 # Ex: drush sar -y 'https://g2sc.stanford.edu' 'https://g2sc-dev.cardinalsites.stanford.edu/'
 - name: Update full vhost paths in text
-  shell: "{{ drush_alias }} sar -y '{{ item }}{{ absolute_vhost_path_sites_service }}/' '{{ item }}{{ new_absolute_path }}/'"
-  with_items:
-   - "{{ protocols }}"
+  shell: "{{ drush_alias }} {{ item[0 ]}} -y '{{ item[1] }}{{ absolute_vhost_path_sites_service }}/' '{{ item }}{{ new_absolute_path }}/'"
+  with_nested:
+    - [ "sar", "sarv", "sarjs" ]
+    - "{{ protocols }}"
   when: vhost is defined
 
 # Exclude sar from this
@@ -144,16 +146,19 @@
 # TODO: Loop through http/https because it's possible that someone entered
 # src="http://vhost.stanford.edu/". Use with_nested?
 - name: Remove absolute vhost paths for href, src, and url attributes
-  shell: "{{ drush_alias }} sar -y '{{ item[0] }}/{{ absolute_vhost_path_sites_service }}/' '{{ item[0] }}/'"
-  with_together:
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ absolute_vhost_path_sites_service }}/' '{{ item[1] }}/'"
+  with_nested:
+    - [ "sar", "sarv", "sarjs" ]
     - "{{ link_attributes }}"
+    - "{{ protocols }}"
   notify: Clear site cache
   when: vhost is defined
 
 # One more for things like src="/methane..."
 - name: Remove relative paths for href, src, and url attributes
   shell: "{{ drush_alias }} sar -y '{{ item[0] }}/{{ inventory_hostname }}/' '{{ item[0] }}/'"
-  with_together:
+  with_nested:
+    - [ "sar", "sarv", "sarjs" ]
     - "{{ link_attributes }}"
   when: vhost is not defined
   notify: Clear site cache
