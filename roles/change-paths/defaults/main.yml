@@ -1,4 +1,4 @@
 ---
-sar_commands: [ 'sar', 'sarl', 'sarm' ]
+sar_commands: [ 'sar', 'sarl', 'sarm', 'sarv', 'sarjs' ]
 protocols: [ 'https://', 'http://' ]
 link_attributes: [ 'url="', 'href="', 'src="' ]
