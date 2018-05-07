@@ -33,6 +33,7 @@
     - migration_vars.yml
 
   roles:
+    - { role: protect-prod }
     - { role: setup-local }
     - { role: download-site, tags: [download-site] }
     - { role: check-php, tags: [download-site,check-php] }

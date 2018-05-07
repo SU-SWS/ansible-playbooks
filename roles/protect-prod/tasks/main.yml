@@ -1,0 +1,41 @@
+---
+# Ansible role for checking whether a site is in the Factory.
+# https://github.com/SU-SWS/ansible-playbooks
+# ===========================================================
+#
+# The purpose of this role is to instantiate a STATE, in this case the state
+# in which acsf_site_name and existing_sites have values.
+#
+# INPUTS:
+#   inventory_hostname
+#   acsf_environment
+#   acquia_username
+#   acquia_api_key
+#
+# OUTPUTS:
+#   acsf_site_name
+#   existing_sites
+#   sitefactory_environment
+#   stanford_environment
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+- name: Pull latest version of prod sites list
+  git:
+    repo: "https://gist.github.com/69552f6cb1a6bf8f243ff12b3d8c973f.git"
+    dest: "roles/protect-prod/defaults"
+    force: yes
+
+- name: Fail if on list of protected prod sites
+  fail:
+    msg: "{{ inventory_hostname }} appears to be on our list of protected production sites."
+  when: inventory_hostname in prod_sites
+# Only fail for production environment
+
