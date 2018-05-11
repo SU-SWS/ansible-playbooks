@@ -39,6 +39,7 @@
   when:
     vhost is defined
 
+# Ex. drupal7-update-status.cardinalsites.stanford.edu.
 - name: Add inventory_hostname as domain
   uri:
     url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
