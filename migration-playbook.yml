@@ -7,7 +7,7 @@
 # then sync a site from the SWS legacy hosting platform to the newly created
 # site.
 #
-# Can be run with: ansible-playbook -i inventory/sites migration-playbook.yml
+# Can be run with: ansible-playbook -i ansible-sync/sites.yml migration-playbook.yml
 #
 # RE-STARTING:
 # If you need to restart the site-migration process, use --tags "" instead of
@@ -15,7 +15,7 @@
 # playbook and rely on dependencies to grab variables required for a role.
 #
 # Example:
-# ansible-playbook -i inventory/sites migration-playbook.yml --tags "download-site"
+# ansible-playbook -i ansible-sync/sites.yml migration-playbook.yml --tags "download-site"
 #
 # Re-running this playbook with the "download-site" tag, will run download-site,
 # get-sitename (because get-sitename is a dependency of upload-site), then
@@ -31,6 +31,7 @@
 
   vars_files:
     - migration_vars.yml
+    - ansible-sync/prod-sites.yml
 
   roles:
     - { role: protect-prod }

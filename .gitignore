@@ -1,6 +1,6 @@
 # Exclude files from repository
 *.DS_Store
 *.retry
-roles/protect-prod/defaults
+ansible-sync
 migration_vars.yml
 server_vars.yml
