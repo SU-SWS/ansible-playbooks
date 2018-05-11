@@ -111,6 +111,9 @@
 
 # These are separated out because we are only using sar (not sarl or sarm) to do
 # a string replacement of 'src="https://sites.stanford.edu/sitename/' with 'src="/'
+# TODO: fix this, it's still not right. It's searching for src="sites.stanford.edu..."
+# TODO: Loop through http/https because it's possible that someone entered
+# src="http://sites.stanford.edu/foo". Use with_nested?
 # Ex: drush sar -y 'src="https://sites.stanford.edu/g2scd7' 'src="'
 - name: Remove absolute paths for href, src, and url attributes
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ absolute_path_sites_service }}/' '{{ item[1] }}/'"
@@ -121,6 +124,7 @@
   notify: Clear site cache
 
 # Have to run these again for links that might include vhosts
+# TODO: See todos in above command
 # Ex: drush sar -y 'https://g2sc.stanford.edu/' 'https://g2sc-dev.cardinalsites.stanford.edu/'
 - name: Update full vhost paths in text
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_vhost_path_sites_service }}/' '{{ item[1] }}{{ new_absolute_path }}/'"
@@ -141,6 +145,9 @@
 
 # These are separated out because we are only using sar (not sarl or sarm) to do
 # a string replacement of 'src="https://vhost.stanford.edu/' with 'src="/'
+# TODO: fix this, it's still not right. It's searching for src="sites.stanford.edu..."
+# TODO: Loop through http/https because it's possible that someone entered
+# src="http://vhost.stanford.edu/". Use with_nested?
 # Ex. drush sar -y 'src="https://g2sc.stanford.edu/' 'src="/'
 - name: Remove absolute vhost paths for href, src, and url attributes
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ absolute_vhost_path_sites_service }}/' '{{ item[1] }}/'"
