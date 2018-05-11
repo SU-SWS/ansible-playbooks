@@ -63,3 +63,13 @@
   git:
     repo: "https://github.com/jrglasgow/drush_active_users"
     dest: "~/.drush/drush_active_users"
+
+- name: Update .gitconfig
+  template:
+    src: ".gitconfig"
+    dest: "~/.gitconfig"
+
+- name: Update .vimrc
+  template:
+    src: ".vimrc"
+    dest: "~/.vimrc"
