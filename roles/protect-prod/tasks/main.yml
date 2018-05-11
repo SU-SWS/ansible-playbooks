@@ -8,6 +8,7 @@
 #
 # INPUTS:
 #   inventory_hostname
+#   acsf_site_name
 #   prod_sites
 #
 # OUTPUTS:
@@ -22,8 +23,14 @@
 # KNOWN ISSUES:
 # --
 
-- name: Fail if on list of protected prod sites
+- name: Fail if host is on list of protected prod sites
   fail:
     msg: "{{ inventory_hostname }} appears to be on our list of protected production sites."
   when: inventory_hostname in prod_sites
+# Only fail for production environment
+
+- name: Fail if acsf name conflicts with prod sites
+  fail:
+    msg: "{{ acsf_site_name }} conflicts with an inventory hostname on our list of protected production sites."
+  when: acsf_site_name in prod_sites
 # Only fail for production environment
