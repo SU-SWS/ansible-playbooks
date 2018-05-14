@@ -51,6 +51,7 @@
   with_nested:
     - "{{ sar_fulltext_commands }}"
     - "{{ protocols }}"
+  notify: Clear site cache
 
 # We are purposefully excluding sar from this because we can't assume that all
 # absolute URLs should be relative.
@@ -83,6 +84,7 @@
     - "{{ sar_fulltext_commands }}"
     - "{{ protocols }}"
   when: vhost is defined
+  notify: Clear site cache
 
 # Exclude sar from this
 # Ex. drush sarl -y 'https://g2sc.stanford.edu/' ''
@@ -91,8 +93,8 @@
   with_nested:
     - "{{ sarl_commands }}"
     - "{{ protocols }}"
-  notify: Clear site cache
   when: vhost is defined
+  notify: Clear site cache
 
 # These are separated out because we are only using sar (not sarl or sarm) to do
 # a string replacement of 'src="https://vhost.stanford.edu/' with 'src="/'
@@ -103,8 +105,8 @@
     - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
     - "{{ protocols }}"
-  notify: Clear site cache
   when: vhost is defined
+  notify: Clear site cache
 
 # One more for things like src="/methane..."
 # Ex. drush sar -y 'src="/g2scd7/' 'src="/'
@@ -164,3 +166,4 @@
 
 - name: Save modified JS Injector rules to disk
   shell: "{{ drush_alias }} scr /home/cardinald7/02test/livedev/scripts/js-injector.php"
+  notify: Clear site cache
