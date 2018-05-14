@@ -65,27 +65,40 @@
 #    with path to ACSF files directory
 ##############################################################################
 
+# Get the list of CSS Injector files
+- name: Get list of CSS Injector files
+  find:
+    paths: /tmp/{{ inventory_hostname }}/files/css_injector/
+    patterns: "*.css"
+  register: css_injector_files
+
+- name: Debug CSS Injector files variable
+  debug:
+    msg: "CSS Injector files: {{ css_injector_files.files }}"
+
 # 1
 # Ex. sed -i '' 's/http:\/\/sites.stanford.edu\/eao\/https:\/\/eao.cardinalsites.stanford.edu\//g'
 - name: Update full paths in CSS Injector files
   replace:
-    path: /tmp/{{ inventory_hostname }}/files/css_injector/
-    regexp: {{ item[0] }}{{ absolute_path_sites_service }}/
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}{{ absolute_path_sites_service }}/"
     replace: https://{{ new_absolute_path }}/
     backup: yes
-  with_together:
+  with_nested:
+    - "{{ css_injector_files.files }}"
     - "{{ protocols }}"
   notify: Clear site cache
 
 # 2
-# Ex. sed -i '' 's/src=\"http:\/\/sites.stanford.edu\/eao\/src=\"\//g'
+# Ex. sed -i '' 's/url\(\"http:\/\/sites.stanford.edu\/eao\/url\(\"\//g'
 - name: Remove absolute paths for src and url attributes in CSS Injector files
   replace:
-    path: /tmp/{{ inventory_hostname }}/files/css_injector/
-    regexp: {{ item[0] }}{{ item[1] }}{{ absolute_path_sites_service }}/
-    replace: {{ item[0] }}/
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}{{ item[2] }}{{ absolute_path_sites_service }}/"
+    replace: "{{ item[1] }}/"
     backup: yes
   with_nested:
+    - "{{ css_injector_files.files }}"
     - "{{ link_attributes }}"
     - "{{ protocols }}"
   notify: Clear site cache
@@ -94,11 +107,12 @@
 # Ex. sed -i '' 's/http:\/\/eao.stanford.edu\//https:\/\/eao.cardinalsites.stanford.edu\//g'
 - name: Update full vhost paths in CSS Injector files
   replace:
-    path: /tmp/{{ inventory_hostname }}/files/css_injector/
-    regexp: {{ item[0] }}{{ absolute_vhost_path_sites_service }}/
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}{{ absolute_vhost_path_sites_service }}/"
     replace: https://{{ new_absolute_path }}/
     backup: yes
-  with_together:
+  with_nested:
+    - "{{ css_injector_files.files }}"
     - "{{ protocols }}"
   notify: Clear site cache
 
@@ -106,11 +120,12 @@
 # Ex. sed -i '' 's/src=\"http:\/\/eao.stanford.edu\/src=\"\//g'
 - name: Remove absolute vhost paths for src and url attributes in CSS Injector files
   replace:
-    path: /tmp/{{ inventory_hostname }}/files/css_injector/
-    regexp: {{ item[0] }}{{ item[1] }}{{ absolute_vhost_path_sites_service }}/
-    replace: {{ item[0] }}/
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}{{ item[2] }}{{ absolute_vhost_path_sites_service }}/"
+    replace: "{{ item[1] }}/"
     backup: yes
   with_nested:
+    - "{{ css_injector_files.files }}"
     - "{{ link_attributes }}"
     - "{{ protocols }}"
   notify: Clear site cache
@@ -119,11 +134,12 @@
 # Ex. sed -i '' 's/src=\"\/eao\//src=\"\//g'
 - name: Remove relative paths for src and url attributes in CSS Injector files
   replace:
-    path: /tmp/{{ inventory_hostname }}/files/css_injector/
-    regexp: {{ item[0] }}/{{ inventory_hostname }}/
-    replace: {{ item[0] }}/
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}/{{ inventory_hostname }}/"
+    replace: "{{ item[1] }}/"
     backup: yes
-  with_together:
+  with_nested:
+    - "{{ css_injector_files.files }}"
     - "{{ link_attributes }}"
   notify: Clear site cache
 
@@ -131,11 +147,12 @@
 # Ex. sed -i '' 's/https:\/\/eao.cardinalsites.stanford.edu\/sites\/default\/files/https:\/\/eao.cardinalsites.stanford.edu\/sites\/g\/files\/sbiybj396\/f/g'
 - name: Replace absolute sites/default/files with path to files directory in CSS Injector files
   replace:
-    path: /tmp/{{ inventory_hostname }}/files/css_injector/
-    regexp: {{ item[0] }}{{ new_absolute_path }}/sites/default/files
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}{{ new_absolute_path }}/sites/default/files"
     replace: https://{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}
     backup: yes
-  with_together:
+  with_nested:
+    - "{{ css_injector_files.files }}"
     - "{{ protocols }}"
   notify: Clear site cache
 
@@ -143,16 +160,11 @@
 # Ex. sed -i '' 's/https:\/\/eao.cardinalsites.stanford.edu\/sites\/default\/files/https:\/\/eao.cardinalsites.stanford.edu\/sites\/g\/files\/sbiybj396\/f/g'
 - name: Replace relative sites/default/files paths with path to files directory for src and url attributes in CSS Injector files
   replace:
-    path: /tmp/{{ inventory_hostname }}/files/css_injector/
-    regexp: {{ item[0] }}/sites/default/files
-    replace: {{ item[0] }}/{{ file_public_path.stdout | replace(' ','') }}
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}/sites/default/files"
+    replace: "{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}"
     backup: yes
-  with_together:
+  with_nested:
+    - "{{ css_injector_files.files }}"
     - "{{ protocols }}"
   notify: Clear site cache
-
-
-
-
-
-#  shell: "find /tmp/{{ inventory_hostname }}/files/css_injector/ -name '*.css' -exec sed -i '' 's/{{ item[0] }}{{ absolute_path_sites_service }}/' 'https://{{ new_absolute_path }}/''"
