@@ -166,9 +166,8 @@
     - "{{ sarl_commands }}"
   notify: Clear site cache
 
+# TODO: This should not point to livedev and it should point to the correct
+#       directory per environment 
 - name: Save modified JS Injector rules to disk
   shell: "{{ drush_alias }} scr /home/cardinald7/02test/livedev/scripts/js-injector.php"
   notify: Clear site cache
-
-- name: Save modified JS Injector rules to disk
-  shell: "{{ drush_alias }} scr /home/cardinald7/02test/livedev/scripts/js-injector.php"
