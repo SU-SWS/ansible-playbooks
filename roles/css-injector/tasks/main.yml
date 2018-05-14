@@ -91,7 +91,7 @@
 
 # 2
 # Ex. sed -i '' 's/url\(\"http:\/\/sites.stanford.edu\/eao\/url\(\"\//g'
-- name: Remove absolute paths for src and url attributes in CSS Injector files
+- name: Remove absolute paths for url attributes in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
     regexp: "{{ item[1] }}{{ item[2] }}{{ absolute_path_sites_service }}/"
@@ -114,11 +114,12 @@
   with_nested:
     - "{{ css_injector_files.files }}"
     - "{{ protocols }}"
+  when: vhost is defined
   notify: Clear site cache
 
 # 4
 # Ex. sed -i '' 's/src=\"http:\/\/eao.stanford.edu\/src=\"\//g'
-- name: Remove absolute vhost paths for src and url attributes in CSS Injector files
+- name: Remove absolute vhost paths for url attributes in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
     regexp: "{{ item[1] }}{{ item[2] }}{{ absolute_vhost_path_sites_service }}/"
@@ -128,11 +129,12 @@
     - "{{ css_injector_files.files }}"
     - "{{ link_attributes }}"
     - "{{ protocols }}"
+  when: vhost is defined
   notify: Clear site cache
 
 # 5
 # Ex. sed -i '' 's/src=\"\/eao\//src=\"\//g'
-- name: Remove relative paths for src and url attributes in CSS Injector files
+- name: Remove relative paths for url attributes in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
     regexp: "{{ item[1] }}/{{ inventory_hostname }}/"
@@ -158,7 +160,7 @@
 
 # 7
 # Ex. sed -i '' 's/https:\/\/eao.cardinalsites.stanford.edu\/sites\/default\/files/https:\/\/eao.cardinalsites.stanford.edu\/sites\/g\/files\/sbiybj396\/f/g'
-- name: Replace relative sites/default/files paths with path to files directory for src and url attributes in CSS Injector files
+- name: Replace relative sites/default/files paths with path to files directory for url attributes in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
     regexp: "{{ item[1] }}/sites/default/files"
@@ -166,5 +168,5 @@
     backup: yes
   with_nested:
     - "{{ css_injector_files.files }}"
-    - "{{ protocols }}"
+    - "{{ link_attributes }}"
   notify: Clear site cache
