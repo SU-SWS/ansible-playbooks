@@ -1,0 +1,86 @@
+---
+# Ansible role for setting a number of variables (mostly paths and URLs).
+# https://github.com/SU-SWS/ansible-playbooks
+# ==================================================================
+#
+# This role is required for "change-paths" and "css-injector".
+#
+# INPUTS:
+#   acsf_site_name
+#   inventory_hostname
+#   drush_environment
+#   site_prefix
+#   stack
+#   vhost
+#
+# OUTPUTS:
+#   sites_service
+#   absolute_vhost_path_sites_service
+#   absolute_path_sites_service
+#   absolute_path_testing
+#   absolute_path_prod
+#   new_absolute_path
+#   drush_alias
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+# Ex: sites
+- name: Set sites_service variable
+  set_fact:
+    sites_service: "{% if site_prefix=='dp' %}people{% elif site_prefix=='ds'%}sites{% endif %}"
+
+# Ex: g2sc.stanford.edu
+# Found example of a site with a vhost, hard linking to images by non-vhost path.
+- name: Set absolute vhost path from sites service
+  set_fact:
+    absolute_vhost_path_sites_service: "{{ vhost }}.stanford.edu"
+  when: vhost is defined
+
+# Ex: sites.stanford.edu/g2scd7
+- name: Set absolute non-vhost path from sites service
+  set_fact:
+    absolute_path_sites_service: "{{ sites_service }}.stanford.edu/{{ inventory_hostname }}"
+
+# Ex: g2sc-dev.cardinalsites.stanford.edu
+- name: Set absolute path for testing
+  set_fact:
+    absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}-{{ acsf_environment }}.cardinalsites.stanford.edu"
+
+# Ex: g2sc.stanford.edu
+- name: Set absolute path for production
+  set_fact:
+    absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.stanford.edu"
+
+# Ex: g2sc-dev.cardinalsites.stanford.edu if migrating to dev
+- name: Set new absolute path based on destination
+  set_fact:
+    new_absolute_path: "{% if acsf_environment == '' %}{{ absolute_path_prod }}{% else %}{{ absolute_path_testing }}{% endif %}"
+
+- name: Debug absolute path for site
+  debug:
+    msg: "Absolute path: {{ new_absolute_path }}"
+
+# Ex: drush @acsf.dev.cardinald7.g2scd7
+- name: Set drush alias
+  set_fact:
+    drush_alias: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}"
+
+- name: Get public files directory
+  shell: "{{ drush_alias }} status --fields='File directory path' --field-labels=0 --strict=0"
+  register: file_public_path
+
+- name: Print file_public_path
+  debug:
+    msg: "File public path: {{ file_public_path.stdout }}"
+
+- name: Be sure response does not include drush warnings
+  fail:
+    msg: "There appear to be drush warning messages cluttering the file_public_path variable"
+  when: file_public_path.stdout | search('The following module is missing')

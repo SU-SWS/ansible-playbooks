@@ -1,0 +1,158 @@
+---
+# Ansible role for changing paths in CSS Injector files.
+# https://github.com/SU-SWS/ansible-playbooks
+# ==================================================================
+#
+# This role runs a number of tasks to transform the database in such a way that
+# images and absolute paths will work in the new ACSF environment. If any part
+# of this role fails for a site, restart from the tag "download-site".
+#
+# INPUTS:
+#   acsf_site_name
+#   inventory_hostname
+#   sitefactory_environment
+#   drush_environment
+#   site_prefix
+#   stack
+#
+# OUTPUTS:
+#   file_public_path
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+##############################################################################
+# CSS Injector file surgery: Find and replace anything that the user may
+# have entered #
+# that references the old site.                                              #
+# See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
+#                                                                            #
+# Text fields should replace http(s)://people.stanford.edu/sunetid with      #
+# https://sunetid(-env).cardinalsites.stanford.edu. This will need to be     #
+# changed when/if we decide on a URL syntax for people sites. Also, we are   #
+# using {{ acsf_site_name }} here because we can rely on it being the same   #
+# as the person's SUNetID due to validation rules for SUNetIDs.              #
+#                                                                            #
+# Text fields should replace http(s)://sites.stanford.edu/sitename with      #
+# https://(acsf_site_name|vhost)(-env).cardinalsites.stanford.edu.           #
+#
+# 1. Find and replace full paths (sites.stanford.edu/foo,
+#     people.stanford.edu/SUNetID). See "Update full paths in text" in the
+#    "change-paths" role.
+# 2. Find and replace full paths with relative for src and url references.
+#    See "Remove absolute paths for href, src, and url attributes" in the
+#    "change-paths" role.
+# 3. Find and replace full vhosts (foo.stanford.edu) See "Update full vhost
+#    paths in text" in the "change-paths" role.
+# 4. Find and replace full vhost paths with relative for src and url references.
+#    See "Remove absolute vhost paths for href, src, and url attributes" in the
+#    "change-paths" role.
+# 5. Find and replace relative subdirectory paths with relative to root
+#    for src and url references. See "Remove relative paths for href, src, and
+#    url attributes" in the "change-paths" role.
+# 6. Find and replace
+#    "https://foo.cardinalsites.stanford.edu/sites/default/files" with
+#    "https://foo.cardinalsites.stanford.edu/sites/g/files/sbiybj5000986/f".
+#    See "Replace absolute sites/default/files with path to files directory"
+#    in the "change-paths" role.
+# 7. Find and replace relative sites/default/files for src and url references
+#    with path to ACSF files directory
+##############################################################################
+
+# 1
+# Ex. sed -i '' 's/http:\/\/sites.stanford.edu\/eao\/https:\/\/eao.cardinalsites.stanford.edu\//g'
+- name: Update full paths in CSS Injector files
+  replace:
+    path: /tmp/{{ inventory_hostname }}/files/css_injector/
+    regexp: {{ item[0] }}{{ absolute_path_sites_service }}/
+    replace: https://{{ new_absolute_path }}/
+    backup: yes
+  with_together:
+    - "{{ protocols }}"
+  notify: Clear site cache
+
+# 2
+# Ex. sed -i '' 's/src=\"http:\/\/sites.stanford.edu\/eao\/src=\"\//g'
+- name: Remove absolute paths for src and url attributes in CSS Injector files
+  replace:
+    path: /tmp/{{ inventory_hostname }}/files/css_injector/
+    regexp: {{ item[0] }}{{ item[1] }}{{ absolute_path_sites_service }}/
+    replace: {{ item[0] }}/
+    backup: yes
+  with_nested:
+    - "{{ link_attributes }}"
+    - "{{ protocols }}"
+  notify: Clear site cache
+
+# 3
+# Ex. sed -i '' 's/http:\/\/eao.stanford.edu\//https:\/\/eao.cardinalsites.stanford.edu\//g'
+- name: Update full vhost paths in CSS Injector files
+  replace:
+    path: /tmp/{{ inventory_hostname }}/files/css_injector/
+    regexp: {{ item[0] }}{{ absolute_vhost_path_sites_service }}/
+    replace: https://{{ new_absolute_path }}/
+    backup: yes
+  with_together:
+    - "{{ protocols }}"
+  notify: Clear site cache
+
+# 4
+# Ex. sed -i '' 's/src=\"http:\/\/eao.stanford.edu\/src=\"\//g'
+- name: Remove absolute vhost paths for src and url attributes in CSS Injector files
+  replace:
+    path: /tmp/{{ inventory_hostname }}/files/css_injector/
+    regexp: {{ item[0] }}{{ item[1] }}{{ absolute_vhost_path_sites_service }}/
+    replace: {{ item[0] }}/
+    backup: yes
+  with_nested:
+    - "{{ link_attributes }}"
+    - "{{ protocols }}"
+  notify: Clear site cache
+
+# 5
+# Ex. sed -i '' 's/src=\"\/eao\//src=\"\//g'
+- name: Remove relative paths for src and url attributes in CSS Injector files
+  replace:
+    path: /tmp/{{ inventory_hostname }}/files/css_injector/
+    regexp: {{ item[0] }}/{{ inventory_hostname }}/
+    replace: {{ item[0] }}/
+    backup: yes
+  with_together:
+    - "{{ link_attributes }}"
+  notify: Clear site cache
+
+# 6
+# Ex. sed -i '' 's/https:\/\/eao.cardinalsites.stanford.edu\/sites\/default\/files/https:\/\/eao.cardinalsites.stanford.edu\/sites\/g\/files\/sbiybj396\/f/g'
+- name: Replace absolute sites/default/files with path to files directory in CSS Injector files
+  replace:
+    path: /tmp/{{ inventory_hostname }}/files/css_injector/
+    regexp: {{ item[0] }}{{ new_absolute_path }}/sites/default/files
+    replace: https://{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}
+    backup: yes
+  with_together:
+    - "{{ protocols }}"
+  notify: Clear site cache
+
+# 7
+# Ex. sed -i '' 's/https:\/\/eao.cardinalsites.stanford.edu\/sites\/default\/files/https:\/\/eao.cardinalsites.stanford.edu\/sites\/g\/files\/sbiybj396\/f/g'
+- name: Replace relative sites/default/files paths with path to files directory for src and url attributes in CSS Injector files
+  replace:
+    path: /tmp/{{ inventory_hostname }}/files/css_injector/
+    regexp: {{ item[0] }}/sites/default/files
+    replace: {{ item[0] }}/{{ file_public_path.stdout | replace(' ','') }}
+    backup: yes
+  with_together:
+    - "{{ protocols }}"
+  notify: Clear site cache
+
+
+
+
+
+#  shell: "find /tmp/{{ inventory_hostname }}/files/css_injector/ -name '*.css' -exec sed -i '' 's/{{ item[0] }}{{ absolute_path_sites_service }}/' 'https://{{ new_absolute_path }}/''"

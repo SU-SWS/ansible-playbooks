@@ -12,12 +12,8 @@
 #   inventory_hostname
 #   sitefactory_environment
 #   drush_environment
-#   server_alias
 #   site_prefix
 #   stack
-#   server
-#   dept_site
-#   wait_time
 #
 # OUTPUTS:
 #   file_public_path
@@ -46,51 +42,10 @@
 # https://(acsf_site_name|vhost)(-env).cardinalsites.stanford.edu.           #
 ##############################################################################
 
-# Ex: sites
-- name: Set sites_service variable
-  set_fact:
-    sites_service: "{% if site_prefix=='dp' %}people{% elif site_prefix=='ds'%}sites{% endif %}"
-
-# Ex: g2sc.stanford.edu
-# Found example of a site with a vhost, hard linking to images by non-vhost path.
-- name: Set absolute vhost path from sites service
-  set_fact:
-    absolute_vhost_path_sites_service: "{{ vhost }}.stanford.edu"
-  when: vhost is defined
-
-# Ex: sites.stanford.edu/g2scd7
-- name: Set absolute non-vhost path from sites service
-  set_fact:
-    absolute_path_sites_service: "{{ sites_service }}.stanford.edu/{{ inventory_hostname }}"
-
-# Ex: g2sc-dev.cardinalsites.stanford.edu
-- name: Set absolute path for testing
-  set_fact:
-    absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}-{{ acsf_environment }}.cardinalsites.stanford.edu"
-
-# Ex: g2sc.stanford.edu
-- name: Set absolute path for production
-  set_fact:
-    absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.stanford.edu"
-
-# Ex: g2sc-dev.cardinalsites.stanford.edu if migrating to dev
-- name: Set new absolute path based on destination
-  set_fact:
-    new_absolute_path: "{% if acsf_environment == '' %}{{ absolute_path_prod }}{% else %}{{ absolute_path_testing }}{% endif %}"
-
-- name: Debug absolute path for site
-  debug:
-    msg: "Absolute path: {{ new_absolute_path }}"
-
-# Ex: drush @acsf.dev.cardinald7.g2scd7
-- name: Set drush alias
-  set_fact:
-    drush_alias: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}"
-
 # See discussion in https://github.com/SU-SWS/ansible-playbooks/pull/17
 # And https://github.com/SU-SWS/ansible-playbooks/pull/22
 # TODO: Determine how to treat for final migration (SITES-465)
-# Ex: drush sar -y 'https://sites.stanford.edu/g2scd7' 'https://g2sc-dev.cardinalsites.stanford.edu/'
+# Ex: drush sar -y 'https://sites.stanford.edu/g2scd7/' 'https://g2sc-dev.cardinalsites.stanford.edu/'
 - name: Update full paths in text
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_path_sites_service }}/' 'https://{{ new_absolute_path }}/'"
   with_nested:
@@ -111,7 +66,7 @@
 
 # These are separated out because we are only using sar (not sarl or sarm) to do
 # a string replacement of 'src="https://sites.stanford.edu/sitename/' with 'src="/'
-# Ex: drush sar -y 'src="https://sites.stanford.edu/g2scd7' 'src="'
+# Ex: drush sar -y 'src="https://sites.stanford.edu/g2scd7/' 'src="/'
 - name: Remove absolute paths for href, src, and url attributes
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ absolute_path_sites_service }}/' '{{ item[1] }}/'"
   with_nested:
@@ -170,30 +125,19 @@
 # See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
 ##############################################################################
 
-- name: Get public files directory
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} status --fields='File directory path' --field-labels=0 --strict=0"
-  register: file_public_path
-
-- name: Print file_public_path
-  debug:
-    msg: "File public path: {{ file_public_path.stdout }}"
-
-- name: Be sure response does not include drush warnings
-  fail:
-    msg: "There appear to be drush warning messages cluttering the file_public_path variable"
-  when: file_public_path.stdout | search('The following module is missing')
-
 # We already did a global find/replace of vhost.stanford.edu and
 # sites.stanford.edu with https://acsf_site_name.cardinalsites.stanford.edu,
 # so we just need to find/replace the "sites/default/files" string with
-# the ACSF file_public_path value.
+# the ACSF file_public_path value. We probably don't need to loop through
+# {{ protocols }} here (http and https), as we should have already handled that
+# in "Update full paths in text" or "Update full vhost paths in text". But it's
+# cheap to loop through.
 # TODO: Determine how to treat for final migration (SITES-465)
-# Ex. drush sar -y 'src="https://g2sc.stanford.edu/sites/default/files' 'src="https://g2sc.cardinalsites.stanford.edu/sites/g/sbiybj5000986/f'
+# Ex. drush sar -y 'https://g2sc.cardinalsites.stanford.edu/sites/default/files' 'https://g2sc.cardinalsites.stanford.edu/sites/g/sbiybj5000986/f'
 - name: Replace absolute sites/default/files with path to files directory
-  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/sites/default/files' '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ new_absolute_path }}/sites/default/files' 'https://{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
     - "{{ sar_fulltext_commands }}"
-    - "{{ link_attributes }}"
     - "{{ protocols }}"
 
 # Same here: we already replaced absolute references in href and src
