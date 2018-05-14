@@ -28,9 +28,8 @@
 # --
 
 ##############################################################################
-# CSS Injector file surgery: Find and replace anything that the user may
-# have entered #
-# that references the old site.                                              #
+# CSS Injector file surgery: Find and replace anything that the user may     #
+# have entered that references the old site.                                 #
 # See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
 #                                                                            #
 # Text fields should replace http(s)://people.stanford.edu/sunetid with      #
@@ -41,28 +40,28 @@
 #                                                                            #
 # Text fields should replace http(s)://sites.stanford.edu/sitename with      #
 # https://(acsf_site_name|vhost)(-env).cardinalsites.stanford.edu.           #
-#
-# 1. Find and replace full paths (sites.stanford.edu/foo,
-#     people.stanford.edu/SUNetID). See "Update full paths in text" in the
-#    "change-paths" role.
-# 2. Find and replace full paths with relative for src and url references.
-#    See "Remove absolute paths for href, src, and url attributes" in the
-#    "change-paths" role.
-# 3. Find and replace full vhosts (foo.stanford.edu) See "Update full vhost
-#    paths in text" in the "change-paths" role.
-# 4. Find and replace full vhost paths with relative for src and url references.
-#    See "Remove absolute vhost paths for href, src, and url attributes" in the
-#    "change-paths" role.
-# 5. Find and replace relative subdirectory paths with relative to root
-#    for src and url references. See "Remove relative paths for href, src, and
-#    url attributes" in the "change-paths" role.
-# 6. Find and replace
-#    "https://foo.cardinalsites.stanford.edu/sites/default/files" with
-#    "https://foo.cardinalsites.stanford.edu/sites/g/files/sbiybj5000986/f".
-#    See "Replace absolute sites/default/files with path to files directory"
-#    in the "change-paths" role.
-# 7. Find and replace relative sites/default/files for src and url references
-#    with path to ACSF files directory
+#                                                                            #
+# 1. Find and replace full paths (sites.stanford.edu/foo,                    #
+#     people.stanford.edu/SUNetID). See "Update full paths in text" in the   #
+#    "change-paths" role.                                                    #
+# 2. Find and replace full paths with relative for src and url references.   #
+#    See "Remove absolute paths for href, src, and url attributes" in the    #
+#    "change-paths" role.                                                    #
+# 3. Find and replace full vhosts (foo.stanford.edu) See "Update full vhost  #
+#    paths in text" in the "change-paths" role.                              #
+# 4. Find and replace full vhost paths with relative for src and url         #
+#    references. See "Remove absolute vhost paths for href, src, and url     #
+#    attributes" in the "change-paths" role.                                 #
+# 5. Find and replace relative subdirectory paths with relative to root      #
+#    for src and url references. See "Remove relative paths for href, src,   #
+#    and url attributes" in the "change-paths" role.                         #
+# 6. Find and replace                                                        #
+#    "https://foo.cardinalsites.stanford.edu/sites/default/files" with       #
+#    "https://foo.cardinalsites.stanford.edu/sites/g/files/sbiybj5000986/f". #
+#    See "Replace absolute sites/default/files with path to files directory" #
+#    in the "change-paths" role.                                             #
+# 7. Find and replace relative sites/default/files for src and url           #
+#    references with path to ACSF files directory                            #
 ##############################################################################
 
 # Get the list of CSS Injector files
