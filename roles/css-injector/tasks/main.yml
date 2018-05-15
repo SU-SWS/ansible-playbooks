@@ -65,6 +65,7 @@
 ##############################################################################
 
 # Get the list of CSS Injector files
+# TODO: Better documentation of the css_injector variable and how it's used.
 - name: Get list of CSS Injector files
   find:
     paths: /tmp/{{ inventory_hostname }}/files/css_injector/
