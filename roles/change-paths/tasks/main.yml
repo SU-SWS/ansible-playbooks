@@ -112,7 +112,7 @@
 # One more for things like src="/methane..."
 # Ex. drush sar -y 'src="/g2scd7/' 'src="/'
 - name: Remove relative paths for href, src, and url attributes
-  shell: "{{ drush_alias }} sar -y '{{ item[0] }}/{{ inventory_hostname }}/' '{{ item[0] }}/'"
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/{{ inventory_hostname }}/' '{{ item[1] }}/'"
   with_nested:
     - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
@@ -167,7 +167,7 @@
   notify: Clear site cache
 
 # TODO: This should not point to livedev and it should point to the correct
-#       directory per environment 
+#       directory per environment
 - name: Save modified JS Injector rules to disk
   shell: "{{ drush_alias }} scr /home/cardinald7/02test/livedev/scripts/js-injector.php"
   notify: Clear site cache
