@@ -48,7 +48,7 @@
     minutes: 1
 
 - name: Check drush can bootstrap site
-  shell: "{{ drush_alias }} }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
+  shell: "{{ drush_alias }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
   retries: "{{ wait_time }}"
   delay: 50
   register: bootstrap_status
