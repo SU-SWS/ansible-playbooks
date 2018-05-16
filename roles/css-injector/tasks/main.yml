@@ -65,7 +65,11 @@
 ##############################################################################
 
 # Get the list of CSS Injector files
-# TODO: Better documentation of the css_injector variable and how it's used.
+# See https://docs.ansible.com/ansible/latest/modules/find_module.html#return-values
+# Returns a list of files that can be accessed at css_injector_files.files.
+# Individual file paths are accessed at css_injector_files.files.path.
+# Ex. find /tmp/{{ inventory_hostname }}/files/css_injector/ -name "*.css"
+
 - name: Get list of CSS Injector files
   find:
     paths: /tmp/{{ inventory_hostname }}/files/css_injector/
@@ -77,7 +81,11 @@
     msg: "CSS Injector files: {{ css_injector_files.files }}"
 
 # 1
-# Ex. sed -i '' 's/http:\/\/sites.stanford.edu\/eao\/https:\/\/eao.cardinalsites.stanford.edu\//g'
+# See https://docs.ansible.com/ansible/latest/modules/replace_module.html
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: http://sites.stanford.edu/eao/
+#   replace: https://eao.cardinalsites.stanford.edu/
 - name: Update full paths in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
@@ -90,21 +98,35 @@
   notify: Clear site cache
 
 # 2
-# Ex. sed -i '' 's/url\(\"http:\/\/sites.stanford.edu\/eao\/url\(\"\//g'
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: url(..)http://sites.stanford.edu/eao/
+#   replace: url\1/
+#     Note: this will match single or double quotes:
+#       url('http://sites.stanford.edu/eao/
+#       url("http://sites.stanford.edu/eao/
+#   replace: url("https://eao.cardinalsites.stanford.edu/
+#     Note: this uses a backreference from the regexp match, and will replace with:
+#       url('/
+#       url("/
 - name: Remove absolute paths for url attributes in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
     regexp: "{{ item[1] }}{{ item[2] }}{{ absolute_path_sites_service }}/"
-    replace: "{{ item[1] }}/"
+    replace: "{{ item[3] }}/"
     backup: yes
   with_nested:
     - "{{ css_injector_files.files }}"
-    - "{{ link_attributes }}"
+    - "{{ url_regex }}"
     - "{{ protocols }}"
+    - "{{ url_replace }}"
   notify: Clear site cache
 
 # 3
-# Ex. sed -i '' 's/http:\/\/eao.stanford.edu\//https:\/\/eao.cardinalsites.stanford.edu\//g'
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: http://eao.stanford.edu/
+#   replace: https://eao.cardinalsites.stanford.edu/
 - name: Update full vhost paths in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
@@ -118,35 +140,63 @@
   notify: Clear site cache
 
 # 4
-# Ex. sed -i '' 's/src=\"http:\/\/eao.stanford.edu\/src=\"\//g'
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: url(..)http://eao.stanford.edu/
+#   replace: url\1/
+#     Note: this will match single or double quotes:
+#       url('http://eao.stanford.edu/
+#       url("http://eao.stanford.edu/
+#   replace: url("https://eao.cardinalsites.stanford.edu/
+#     Note: this uses a backreference from the regexp match, and will replace with:
+#       url('/
+#       url("/
 - name: Remove absolute vhost paths for url attributes in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
     regexp: "{{ item[1] }}{{ item[2] }}{{ absolute_vhost_path_sites_service }}/"
-    replace: "{{ item[1] }}/"
+    replace: "{{ item[3] }}/"
     backup: yes
   with_nested:
     - "{{ css_injector_files.files }}"
-    - "{{ link_attributes }}"
+    - "{{ url_regex }}"
     - "{{ protocols }}"
+    - "{{ url_replace }}"
   when: vhost is defined
   notify: Clear site cache
 
 # 5
-# Ex. sed -i '' 's/src=\"\/eao\//src=\"\//g'
+# Note that we are running this task regardless of whether a vhost is defined,
+#   because we can be reasonably certain that url() in a CSS file is
+#   referencing a static file.
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: url(..)/eao/
+#   replace: url\1/
+#     Note: this will match single or double quotes:
+#       url('/eao/
+#       url("/eao/
+#   replace: url("https://eao.cardinalsites.stanford.edu/
+#     Note: this uses a backreference from the regexp match, and will replace with:
+#       url('/
+#       url("/
 - name: Remove relative paths for url attributes in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
     regexp: "{{ item[1] }}/{{ inventory_hostname }}/"
-    replace: "{{ item[1] }}/"
+    replace: "{{ item[2] }}/"
     backup: yes
   with_nested:
     - "{{ css_injector_files.files }}"
-    - "{{ link_attributes }}"
+    - "{{ url_regex }}"
+    - "{{ url_replace }}"
   notify: Clear site cache
 
 # 6
-# Ex. sed -i '' 's/https:\/\/eao.cardinalsites.stanford.edu\/sites\/default\/files/https:\/\/eao.cardinalsites.stanford.edu\/sites\/g\/files\/sbiybj396\/f/g'
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: http://eao.cardinalsites.stanford.edu/sites/default/files
+#   replace: https://eao.cardinalsites.stanford.edu/sites/g/files/sbiybj5000986/f
 - name: Replace absolute sites/default/files with path to files directory in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
@@ -159,14 +209,25 @@
   notify: Clear site cache
 
 # 7
-# Ex. sed -i '' 's/https:\/\/eao.cardinalsites.stanford.edu\/sites\/default\/files/https:\/\/eao.cardinalsites.stanford.edu\/sites\/g\/files\/sbiybj396\/f/g'
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: url(..)/sites/default/files
+#   replace: url\1/sites/g/files/sbiybj5000986/f
+#     Note: this will match single or double quotes:
+#       url('/sites/default/files
+#       url("/sites/default/files
+#   replace: url("https://eao.cardinalsites.stanford.edu/
+#     Note: this uses a backreference from the regexp match, and will replace with:
+#       url('/sites/g/files/sbiybj5000986/f
+#       url("/sites/g/files/sbiybj5000986/f
 - name: Replace relative sites/default/files paths with path to files directory for url attributes in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
     regexp: "{{ item[1] }}/sites/default/files"
-    replace: "{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}"
+    replace: "{{ item[2] }}/{{ file_public_path.stdout | replace(' ','') }}"
     backup: yes
   with_nested:
     - "{{ css_injector_files.files }}"
-    - "{{ link_attributes }}"
+    - "{{ url_regex }}"
+    - "{{ url_replace }}"
   notify: Clear site cache
