@@ -155,6 +155,19 @@
     - "{{ link_attributes }}"
   notify: Clear site cache
 
+# We already replaced relative references in href and src attributes (like
+# src="/methane/), but we only did it if the vhost is defined, because of the
+# edge case where inventory_hostname also is a legitimate path for an hreft.
+# Here we more broadly replace the "/inventory_hostname/sites/default/files" string
+# with the ACSF file_public_path value.
+# Ex. drush sar -y 'src="/methane/sites/default/files' 'src="/sites/g/sbiybj5000986/f'
+- name: Replace relative /inventory_hostname/default/files paths with path to files directory
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/{{ inventory_hostname }}/sites/default/files' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
+  with_nested:
+    - "{{ sar_fulltext_commands }}"
+    - "{{ link_attributes }}"
+  notify: Clear site cache
+
 # We already replaced absolute references in menus and links
 # attributes, so we only need to replace relative references to
 # the "sites/default/files" string with the ACSF file_public_path value.
