@@ -81,6 +81,7 @@
     msg: "CSS Injector files: {{ css_injector_files.files }}"
 
 # 1
+# TODO: Determine how to treat for final migration (SITES-465)
 # See https://docs.ansible.com/ansible/latest/modules/replace_module.html
 # Examples:
 #   path: /tmp/eao/files/css_injector/css_injector_2.css
@@ -105,7 +106,7 @@
 #     Note: this will match single or double quotes:
 #       url('http://sites.stanford.edu/eao/
 #       url("http://sites.stanford.edu/eao/
-#   replace: url("https://eao.cardinalsites.stanford.edu/
+#   replace: url("/
 #     Note: this uses a backreference from the regexp match, and will replace with:
 #       url('/
 #       url("/
@@ -123,6 +124,7 @@
   notify: Clear site cache
 
 # 3
+# TODO: Determine how to treat for final migration (SITES-465)
 # Examples:
 #   path: /tmp/eao/files/css_injector/css_injector_2.css
 #   regexp: http://eao.stanford.edu/
@@ -147,7 +149,7 @@
 #     Note: this will match single or double quotes:
 #       url('http://eao.stanford.edu/
 #       url("http://eao.stanford.edu/
-#   replace: url("https://eao.cardinalsites.stanford.edu/
+#   replace: url("/
 #     Note: this uses a backreference from the regexp match, and will replace with:
 #       url('/
 #       url("/
@@ -176,7 +178,7 @@
 #     Note: this will match single or double quotes:
 #       url('/eao/
 #       url("/eao/
-#   replace: url("https://eao.cardinalsites.stanford.edu/
+#   replace: url("/
 #     Note: this uses a backreference from the regexp match, and will replace with:
 #       url('/
 #       url("/
@@ -193,6 +195,7 @@
   notify: Clear site cache
 
 # 6
+# TODO: Determine how to treat for final migration (SITES-465)
 # Examples:
 #   path: /tmp/eao/files/css_injector/css_injector_2.css
 #   regexp: http://eao.cardinalsites.stanford.edu/sites/default/files
@@ -216,7 +219,7 @@
 #     Note: this will match single or double quotes:
 #       url('/sites/default/files
 #       url("/sites/default/files
-#   replace: url("https://eao.cardinalsites.stanford.edu/
+#   replace: url("/sites/g/files/sbiybj5000986/f
 #     Note: this uses a backreference from the regexp match, and will replace with:
 #       url('/sites/g/files/sbiybj5000986/f
 #       url("/sites/g/files/sbiybj5000986/f

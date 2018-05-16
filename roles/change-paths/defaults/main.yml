@@ -7,6 +7,9 @@ link_attributes:
   - url="
   - href="
   - src="
-  - url='
-  - href='
-  - src='
+  - src='\''
+  - href='\''
+link_attributes_single_quotes:
+  - url=
+  - href=
+  - src=
