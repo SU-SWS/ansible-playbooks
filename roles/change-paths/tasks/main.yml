@@ -77,17 +77,6 @@
     - "{{ protocols }}"
   notify: Clear site cache
 
-# These are separated out because we are only using sar (not sarl or sarm) to do
-# a string replacement of 'src="https://sites.stanford.edu/sitename/' with 'src="/'
-# Ex: drush sar -y 'src="https://sites.stanford.edu/g2scd7/' 'src="/'
-#- name: Remove absolute paths for href, src, and url attributes (single quotes)
-#  shell: "{{ drush_alias }} --debug {{ item[0] }} -y '{{ item[1] }}'\\''{{ item[2] }}{{ absolute_path_sites_service }}/' '{{ item[1] }}'\\''/'"
-#  with_nested:
-#    - "{{ sar_fulltext_commands }}"
-#    - "{{ link_attributes_single_quotes }}"
-#    - "{{ protocols }}"
-#  notify: Clear site cache
-
 # Have to run these again for links that might include vhosts
 # Ex: drush sar -y 'https://g2sc.stanford.edu/' 'https://g2sc-dev.cardinalsites.stanford.edu/'
 - name: Update full vhost paths in text
@@ -122,20 +111,6 @@
   when: vhost is defined
   notify: Clear site cache
 
-# Note: I don't think we ever get to this either
-# These are separated out because we are only using sar (not sarl or sarm) to do
-# a string replacement of 'src="https://vhost.stanford.edu/' with 'src="/'
-# Ex. drush sar -y 'src="https://g2sc.stanford.edu/' 'src="/'
-#- name: Remove absolute vhost paths for href, src, and url attributes (single quotes)
-#  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}'\''{{ item[2] }}{{ absolute_vhost_path_sites_service }}/' '{{ item[1] }}'\''/'"
-#  with_nested:
-#    - "{{ sar_fulltext_commands }}"
-#    - "{{ link_attributes_single_quotes }}"
-#    - "{{ protocols }}"
-#  notify: Clear site cache
-#  when: vhost is defined
-#  notify: Clear site cache
-
 # One more for things like src="/methane..."
 # Ex. drush sar -y 'src="/g2scd7/' 'src="/'
 - name: Remove relative paths for href, src, and url attributes
@@ -145,16 +120,6 @@
     - "{{ link_attributes }}"
   when: vhost is not defined
   notify: Clear site cache
-
-# One more for things like src="/methane..."
-# Ex. drush sar -y 'src="/g2scd7/' 'src="/'
-#- name: Remove relative paths for href, src, and url attributes (single quotes)
-#  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}'\''/{{ inventory_hostname }}/' '{{ item[1] }}'\''/'"
-#  with_nested:
-#    - "{{ sar_fulltext_commands }}"
-#    - "{{ link_attributes_single_quotes }}"
-#  when: vhost is not defined
-#  notify: Clear site cache
 
 ##############################################################################
 # Database surgery: Find and replace references to sites/default/files with  #

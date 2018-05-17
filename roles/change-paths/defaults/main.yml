@@ -1,15 +1,24 @@
 ---
-all_sar_commands: [ 'sar', 'sarl', 'sarm', 'sarv', 'sarjs' ]
-sarl_commands: [ 'sarl', 'sarm' ]
-sar_fulltext_commands: [ 'sar', 'sarv', 'sarjs' ]
-protocols: [ 'https://', 'http://' ]
+all_sar_commands:
+  - sar
+  - sarl
+  - sarm
+  - sarv
+  - sarjs
+sarl_commands:
+  - sarl
+  - sarm
+sar_fulltext_commands:
+  - sar
+  - sarv
+  - sarjs
+protocols:
+  - https://
+  - http://
 link_attributes:
-  - url="
   - href="
   - src="
-  - src='\''
+  - url="
   - href='\''
-link_attributes_single_quotes:
-  - url=
-  - href=
-  - src=
+  - src='\''
+  - url='\''
