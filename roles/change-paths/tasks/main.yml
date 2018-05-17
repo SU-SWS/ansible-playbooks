@@ -65,6 +65,7 @@
     - "{{ protocols }}"
   notify: Clear site cache
 
+# Note: I don't think this will ever get run.
 # These are separated out because we are only using sar (not sarl or sarm) to do
 # a string replacement of 'src="https://sites.stanford.edu/sitename/' with 'src="/'
 # Ex: drush sar -y 'src="https://sites.stanford.edu/g2scd7/' 'src="/'
@@ -96,6 +97,7 @@
   when: vhost is defined
   notify: Clear site cache
 
+# Note: I don't think we ever get to this either
 # These are separated out because we are only using sar (not sarl or sarm) to do
 # a string replacement of 'src="https://vhost.stanford.edu/' with 'src="/'
 # Ex. drush sar -y 'src="https://g2sc.stanford.edu/' 'src="/'
@@ -183,8 +185,7 @@
     - "{{ sarl_commands }}"
   notify: Clear site cache
 
-# TODO: This should not point to livedev and it should point to the correct
-#       directory per environment
+# Ex. drush @acsf.test.cardinald7.eao scr /var/www/html/cardinald7.02test/scripts/js-injector.php
 - name: Save modified JS Injector rules to disk
-  shell: "{{ drush_alias }} scr /home/cardinald7/02test/livedev/scripts/js-injector.php"
+  shell: "{{ drush_alias }} scr {{ scripts_dir }}/js-injector.php"
   notify: Clear site cache
