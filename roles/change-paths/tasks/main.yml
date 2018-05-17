@@ -110,6 +110,10 @@
   notify: Clear site cache
 
 # One more for things like src="/methane..."
+# We only do this if the vhost is defined, because of the edge case where
+# inventory_hostname also is a legitimate path for an href, like if the shortname
+# is something like "books" and they have a path like
+# "https://mysite.stanford.edu/books/my-awesome-book-title"
 # Ex. drush sar -y 'src="/g2scd7/' 'src="/'
 - name: Remove relative paths for href, src, and url attributes
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/{{ inventory_hostname }}/' '{{ item[1] }}/'"
