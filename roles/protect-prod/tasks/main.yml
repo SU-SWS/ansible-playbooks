@@ -27,11 +27,11 @@
 - name: Fail if host is on list of protected prod sites
   fail:
     msg: "{{ inventory_hostname }} appears to be on our list of protected production sites."
-  when: inventory_hostname in prod_sites and acsf_environment == "test"
-# Only fail for production environment
+  # Only fail for production environment
+  when: inventory_hostname in prod_sites and acsf_environment == ""
 
 - name: Fail if acsf name conflicts with prod sites
   fail:
     msg: "{{ acsf_site_name }} conflicts with an inventory hostname on our list of protected production sites."
-  when: acsf_site_name in prod_sites and acsf_environment == "test"
-# Only fail for production environment
+  # Only fail for production environment
+  when: acsf_site_name in prod_sites and acsf_environment == ""
