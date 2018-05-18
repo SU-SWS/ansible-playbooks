@@ -1,0 +1,37 @@
+---
+# Ansible role for checking whether a site is in the Factory.
+# https://github.com/SU-SWS/ansible-playbooks
+# ===========================================================
+#
+# The purpose of this role is to instantiate a STATE, in this case the state
+# in which acsf_site_name and existing_sites have values.
+#
+# INPUTS:
+#   inventory_hostname
+#   acsf_site_name
+#   acsf_environment
+#   prod_sites
+#
+# OUTPUTS:
+# --
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+- name: Fail if host is on list of protected prod sites
+  fail:
+    msg: "{{ inventory_hostname }} appears to be on our list of protected production sites."
+  # Only fail for production environment
+  when: inventory_hostname in prod_sites and acsf_environment == ""
+
+- name: Fail if acsf name conflicts with prod sites
+  fail:
+    msg: "{{ acsf_site_name }} conflicts with an inventory hostname on our list of protected production sites."
+  # Only fail for production environment
+  when: acsf_site_name in prod_sites and acsf_environment == ""

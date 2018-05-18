@@ -1,4 +1,3 @@
 ---
 dependencies:
-  - { role: protect-prod }
   - { role: get-sitename }

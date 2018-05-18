@@ -1,5 +1,6 @@
 # Exclude files from repository
 *.DS_Store
 *.retry
+ansible-sync
 migration_vars.yml
 server_vars.yml

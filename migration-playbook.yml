@@ -31,8 +31,10 @@
 
   vars_files:
     - migration_vars.yml
+    - ansible-sync/prod-sites.yml
 
   roles:
+    - { role: protect-prod }
     - { role: setup-local }
     - { role: download-site, tags: [download-site] }
     - { role: check-php, tags: [download-site,check-php] }
