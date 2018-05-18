@@ -19,6 +19,7 @@ link_attributes:
   - href="
   - src="
   - url="
+  # Quote single quotes. See https://stackoverflow.com/a/1315213.
   - href='\''
   - src='\''
   - url='\''
