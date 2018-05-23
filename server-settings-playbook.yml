@@ -7,7 +7,7 @@
 # drush plugins and preferences that we define.
 #
 # Can be run with:
-# ansible-playbook -i inventory/servers server-settings-playbook.yml
+# ansible-playbook -i ansible-sync/servers.yml server-settings-playbook.yml
 #
 # KNOWN ISSUES:
 # --
