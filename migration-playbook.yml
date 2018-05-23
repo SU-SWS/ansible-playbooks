@@ -36,12 +36,12 @@
   roles:
     - { role: protect-prod }
     - { role: setup-local }
-    - { role: download-site, tags: [download-site] }
-    - { role: css-injector, tags: [download-site,css-injector] }
-    - { role: check-php, tags: [download-site,css-injector,check-php] }
-    - { role: setup-site, tags: [download-site,check-php,setup-site] }
-    - { role: upload-site, tags: [download-site,check-php,setup-site,upload-site] }
-    - { role: change-paths, tags: [download-site,check-php,setup-site,upload-site,change-paths] }
-    - { role: add-vhost, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost] }
-    - { role: cleanup-local, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost,cleanup-local] }
+    - { role: download-site }
+    - { role: css-injector }
+    - { role: check-php }
+    - { role: setup-site }
+    - { role: upload-site }
+    - { role: change-paths }
+    - { role: add-vhost }
+    - { role: cleanup-local }
   serial: 12
