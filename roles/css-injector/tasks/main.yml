@@ -1,0 +1,236 @@
+---
+# Ansible role for changing paths in CSS Injector files.
+# https://github.com/SU-SWS/ansible-playbooks
+# ==================================================================
+#
+# This role runs a number of tasks to transform the database in such a way that
+# images and absolute paths will work in the new ACSF environment. If any part
+# of this role fails for a site, restart from the tag "download-site".
+#
+# INPUTS:
+#   acsf_site_name
+#   inventory_hostname
+#   sitefactory_environment
+#   drush_environment
+#   site_prefix
+#   stack
+#
+# OUTPUTS:
+#   file_public_path
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+##############################################################################
+# CSS Injector file surgery: Find and replace anything that the user may     #
+# have entered that references the old site.                                 #
+# See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
+#                                                                            #
+# Text fields should replace http(s)://people.stanford.edu/sunetid with      #
+# https://sunetid(-env).cardinalsites.stanford.edu. This will need to be     #
+# changed when/if we decide on a URL syntax for people sites. Also, we are   #
+# using {{ acsf_site_name }} here because we can rely on it being the same   #
+# as the person's SUNetID due to validation rules for SUNetIDs.              #
+#                                                                            #
+# Text fields should replace http(s)://sites.stanford.edu/sitename with      #
+# https://(acsf_site_name|vhost)(-env).cardinalsites.stanford.edu.           #
+#                                                                            #
+# 1. Find and replace full paths (sites.stanford.edu/foo,                    #
+#     people.stanford.edu/SUNetID). See "Update full paths in text" in the   #
+#    "change-paths" role.                                                    #
+# 2. Find and replace full paths with relative for src and url references.   #
+#    See "Remove absolute paths for href, src, and url attributes" in the    #
+#    "change-paths" role.                                                    #
+# 3. Find and replace full vhosts (foo.stanford.edu) See "Update full vhost  #
+#    paths in text" in the "change-paths" role.                              #
+# 4. Find and replace full vhost paths with relative for src and url         #
+#    references. See "Remove absolute vhost paths for href, src, and url     #
+#    attributes" in the "change-paths" role.                                 #
+# 5. Find and replace relative subdirectory paths with relative to root      #
+#    for src and url references. See "Remove relative paths for href, src,   #
+#    and url attributes" in the "change-paths" role.                         #
+# 6. Find and replace                                                        #
+#    "https://foo.cardinalsites.stanford.edu/sites/default/files" with       #
+#    "https://foo.cardinalsites.stanford.edu/sites/g/files/sbiybj5000986/f". #
+#    See "Replace absolute sites/default/files with path to files directory" #
+#    in the "change-paths" role.                                             #
+# 7. Find and replace relative sites/default/files for src and url           #
+#    references with path to ACSF files directory                            #
+##############################################################################
+
+# Get the list of CSS Injector files
+# See https://docs.ansible.com/ansible/latest/modules/find_module.html#return-values
+# Returns a list of files that can be accessed at css_injector_files.files.
+# Individual file paths are accessed at css_injector_files.files.path.
+# Ex. find /tmp/{{ inventory_hostname }}/files/css_injector/ -name "*.css"
+
+- name: Get list of CSS Injector files
+  find:
+    paths: /tmp/{{ inventory_hostname }}/files/css_injector/
+    patterns: "*.css"
+  register: css_injector_files
+
+- name: Debug CSS Injector files variable
+  debug:
+    msg: "CSS Injector files: {{ css_injector_files.files }}"
+
+# 1
+# TODO: Determine how to treat for final migration (SITES-465)
+# See https://docs.ansible.com/ansible/latest/modules/replace_module.html
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: http://sites.stanford.edu/eao/
+#   replace: https://eao.cardinalsites.stanford.edu/
+- name: Update full paths in CSS Injector files
+  replace:
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}{{ absolute_path_sites_service }}/"
+    replace: https://{{ new_absolute_path }}/
+    backup: yes
+  with_nested:
+    - "{{ css_injector_files.files }}"
+    - "{{ protocols }}"
+  notify: Clear site cache
+
+# 2
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: url(..)http://sites.stanford.edu/eao/
+#   replace: url\1/
+#     Note: this will match single or double quotes:
+#       url('http://sites.stanford.edu/eao/
+#       url("http://sites.stanford.edu/eao/
+#   replace: url("/
+#     Note: this uses a backreference from the regexp match, and will replace with:
+#       url('/
+#       url("/
+- name: Remove absolute paths for url attributes in CSS Injector files
+  replace:
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}{{ item[2] }}{{ absolute_path_sites_service }}/"
+    replace: "{{ item[3] }}/"
+    backup: yes
+  with_nested:
+    - "{{ css_injector_files.files }}"
+    - "{{ url_regex }}"
+    - "{{ protocols }}"
+    - "{{ url_replace }}"
+  notify: Clear site cache
+
+# 3
+# TODO: Determine how to treat for final migration (SITES-465)
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: http://eao.stanford.edu/
+#   replace: https://eao.cardinalsites.stanford.edu/
+- name: Update full vhost paths in CSS Injector files
+  replace:
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}{{ absolute_vhost_path_sites_service }}/"
+    replace: https://{{ new_absolute_path }}/
+    backup: yes
+  with_nested:
+    - "{{ css_injector_files.files }}"
+    - "{{ protocols }}"
+  when: vhost is defined
+  notify: Clear site cache
+
+# 4
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: url(..)http://eao.stanford.edu/
+#   replace: url\1/
+#     Note: this will match single or double quotes:
+#       url('http://eao.stanford.edu/
+#       url("http://eao.stanford.edu/
+#   replace: url("/
+#     Note: this uses a backreference from the regexp match, and will replace with:
+#       url('/
+#       url("/
+- name: Remove absolute vhost paths for url attributes in CSS Injector files
+  replace:
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}{{ item[2] }}{{ absolute_vhost_path_sites_service }}/"
+    replace: "{{ item[3] }}/"
+    backup: yes
+  with_nested:
+    - "{{ css_injector_files.files }}"
+    - "{{ url_regex }}"
+    - "{{ protocols }}"
+    - "{{ url_replace }}"
+  when: vhost is defined
+  notify: Clear site cache
+
+# 5
+# Note that we are running this task regardless of whether a vhost is defined,
+#   because we can be reasonably certain that url() in a CSS file is
+#   referencing a static file.
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: url(..)/eao/
+#   replace: url\1/
+#     Note: this will match single or double quotes:
+#       url('/eao/
+#       url("/eao/
+#   replace: url("/
+#     Note: this uses a backreference from the regexp match, and will replace with:
+#       url('/
+#       url("/
+- name: Remove relative paths for url attributes in CSS Injector files
+  replace:
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}/{{ inventory_hostname }}/"
+    replace: "{{ item[2] }}/"
+    backup: yes
+  with_nested:
+    - "{{ css_injector_files.files }}"
+    - "{{ url_regex }}"
+    - "{{ url_replace }}"
+  notify: Clear site cache
+
+# 6
+# TODO: Determine how to treat for final migration (SITES-465)
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: http://eao.cardinalsites.stanford.edu/sites/default/files
+#   replace: https://eao.cardinalsites.stanford.edu/sites/g/files/sbiybj5000986/f
+- name: Replace absolute sites/default/files with path to files directory in CSS Injector files
+  replace:
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}{{ new_absolute_path }}/sites/default/files"
+    replace: https://{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}
+    backup: yes
+  with_nested:
+    - "{{ css_injector_files.files }}"
+    - "{{ protocols }}"
+  notify: Clear site cache
+
+# 7
+# Examples:
+#   path: /tmp/eao/files/css_injector/css_injector_2.css
+#   regexp: url(..)/sites/default/files
+#   replace: url\1/sites/g/files/sbiybj5000986/f
+#     Note: this will match single or double quotes:
+#       url('/sites/default/files
+#       url("/sites/default/files
+#   replace: url("/sites/g/files/sbiybj5000986/f
+#     Note: this uses a backreference from the regexp match, and will replace with:
+#       url('/sites/g/files/sbiybj5000986/f
+#       url("/sites/g/files/sbiybj5000986/f
+- name: Replace relative sites/default/files paths with path to files directory for url attributes in CSS Injector files
+  replace:
+    path: "{{ item[0].path }}"
+    regexp: "{{ item[1] }}/sites/default/files"
+    replace: "{{ item[2] }}/{{ file_public_path.stdout | replace(' ','') }}"
+    backup: yes
+  with_nested:
+    - "{{ css_injector_files.files }}"
+    - "{{ url_regex }}"
+    - "{{ url_replace }}"
+  notify: Clear site cache

@@ -1,6 +1,25 @@
 ---
-all_sar_commands: [ 'sar', 'sarl', 'sarm', 'sarv', 'sarjs' ]
-sarl_commands: [ 'sarl', 'sarm' ]
-sar_fulltext_commands: [ 'sar', 'sarv', 'sarjs' ]
-protocols: [ 'https://', 'http://' ]
-link_attributes: [ 'url="', 'href="', 'src="' ]
+all_sar_commands:
+  - sar
+  - sarl
+  - sarm
+  - sarv
+  - sarjs
+sarl_commands:
+  - sarl
+  - sarm
+sar_fulltext_commands:
+  - sar
+  - sarv
+  - sarjs
+protocols:
+  - https://
+  - http://
+link_attributes:
+  - href="
+  - src="
+  - url="
+  # Quote single quotes. See https://stackoverflow.com/a/1315213.
+  - href='\''
+  - src='\''
+  - url='\''

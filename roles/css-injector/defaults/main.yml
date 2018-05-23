@@ -1,0 +1,9 @@
+---
+all_sar_commands: [ 'sar', 'sarl', 'sarm', 'sarv', 'sarjs' ]
+sarl_commands: [ 'sarl', 'sarm' ]
+sar_fulltext_commands: [ 'sar', 'sarv', 'sarjs' ]
+protocols: [ 'https://', 'http://' ]
+url_regex:
+  - url(..)
+url_replace:
+  - url\1

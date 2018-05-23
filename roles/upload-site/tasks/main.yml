@@ -12,6 +12,7 @@
 #   acsf_site_name
 #   inventory_hostname
 #   sitefactory_environment
+#   drush_alias
 #   drush_environment
 #   stack
 #
@@ -28,14 +29,14 @@
 # --
 
 - name: Drop database in Site Factory and install new database
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
+  shell: "{{drush_alias }} {{ item }}"
   with_items:
     - "-y sql-drop"
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
   notify: Clear site cache
 
 - name: Set site up as a Department site
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
+  shell: "{{drush_alias }} {{ item }}"
   with_items:
     - "-y vset install_profile stanford_dept"
     - "cc all"
@@ -47,7 +48,7 @@
   notify: Clear site cache
 
 - name: Do post-database-restore tasks
-  shell: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }} {{ item }}"
+  shell: "{{drush_alias }} {{ item }}"
   with_items:
     - "-y updb"
     - "-y en acsf nobots stanford_ssp paranoia"
