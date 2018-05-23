@@ -11,8 +11,10 @@
 #
 # RE-STARTING:
 # If you need to restart the site-migration process, restart from the top.
-# --start-at-task="" does not always run dependencies nor grab variables
-# required for a role.
+#
+# Dependencies are not run when you restart a playbook with --start-at-task=""
+# so you may miss requiring variables or operations on the files,
+# site, and database.
 #
 # KNOWN ISSUES:
 # --
