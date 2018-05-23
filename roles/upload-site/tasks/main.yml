@@ -51,14 +51,21 @@
   shell: "{{drush_alias }} {{ item }}"
   with_items:
     - "-y updb"
-    - "-y en acsf nobots stanford_ssp paranoia"
+    - "-y en acsf stanford_ssp paranoia"
     - "ev 'acsf_openid_allow_local_user_logins();'"
     - 'ev "_paranoia_remove_risky_permissions();"'
-    - "-y dis googleanalytics pingdom_rum"
     - "-y dis stanford_afs_quota"
     # Must truncate this table otherwise users will lose roles in WMD->SSP upgrade path.
     - "sqlq 'truncate table webauth_roles_history'"
     - "sspwmd"
+  notify: Clear site cache
+
+- name: Post-database-restore tasks if not launch
+  shell: "{{ drush_alias }} {{ item }}"
+  with_items:
+    - "-y en nobots"
+    - "y dis googleanalytics pingdom_rum"
+  when: launch_tasks == ""
   notify: Clear site cache
 
 # Copy public files first so that they exist and Drupal can find them if needed
