@@ -6,7 +6,7 @@
 # This role uploads the database and files from local to Site Factory. It also
 # runs a number of tasks to transform the database in such a way that images
 # and absolute paths will work in the new ACSF environment. If any part of this
-# role fails for a site, restart from the tag "upload-site".
+# role fails for a site, start from the top with a fresh download of the site.
 #
 # INPUTS:
 #   acsf_site_name
