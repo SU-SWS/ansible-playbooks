@@ -3,14 +3,14 @@
 # https://github.com/SU-SWS/ansible-playbooks
 # ==================================================================
 #
-# This role is required for "change-paths" and "css-injector".
-#
 # INPUTS:
 #   acsf_site_name
-#   inventory_hostname
+#   acsf_environment
 #   drush_environment
-#   site_prefix
 #   stack
+#   inventory_hostname
+#   site_prefix
+#   sites_service
 #   vhost
 #   launch_tasks
 #
@@ -19,9 +19,11 @@
 #   absolute_vhost_path_sites_service
 #   absolute_path_sites_service
 #   absolute_path_testing
+#   absolute_path_launch
 #   absolute_path_prod
 #   new_absolute_path
 #   drush_alias
+#   file_public_path
 #
 # ALTERNATIVE ROLES:
 # --
