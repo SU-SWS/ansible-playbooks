@@ -69,7 +69,7 @@
 # Ex: g2sc-dev.cardinalsites.stanford.edu if migrating to dev
 - name: Set new absolute path based on destination
   set_fact:
-    new_absolute_path: "{% if launch_tasks == 'launch' %}{{ absolute_path_launch }}{% elseif acsf_environment == '' %}{{ absolute_path_production }}{% else %}{{ absolute_path_testing }}{% endif %}"
+    new_absolute_path: "{% if launch_tasks == 'launch' %}{{ absolute_path_launch }}{% elif acsf_environment == '' %}{{ absolute_path_production }}{% else %}{{ absolute_path_testing }}{% endif %}"
 
 - name: Debug absolute path for site
   debug:
