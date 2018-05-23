@@ -3,6 +3,9 @@
 # https://github.com/SU-SWS/ansible-playbooks
 # ==================================================================
 #
+# This role is required for "change-paths", "css-injector", "setup-site",
+#   and "upload-site".
+#
 # INPUTS:
 #   acsf_site_name
 #   acsf_environment
