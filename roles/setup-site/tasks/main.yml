@@ -15,6 +15,8 @@
 #   acquia_username
 #   acquia_api_key
 #   existing_sites
+#   drush_alias
+#   wait_time
 #
 # OUTPUTS:
 #   site_created

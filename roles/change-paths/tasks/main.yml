@@ -8,15 +8,19 @@
 # of this role fails for a site, restart from the tag "download-site".
 #
 # INPUTS:
+#   absolute_path_sites_service
+#   absolute_vhost_path_sites_service
 #   acsf_site_name
+#   drush_alias
 #   inventory_hostname
-#   sitefactory_environment
-#   drush_environment
-#   site_prefix
-#   stack
+#   link_attributes
+#   new_absolute_path
+#   protocols
+#   sar_fulltext_commands
+#   sarl_commands
 #
 # OUTPUTS:
-#   file_public_path
+# --
 #
 # ALTERNATIVE ROLES:
 # --
