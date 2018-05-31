@@ -1,7 +1,7 @@
 # SU-SWS Ansible Playbooks
 Collection of Ansible playbooks and roles used to migrate SWS sites, and configure Acquia servers.
 
-**Version: 1.x**
+**Version: 0.0.1**
 
 Maintainers: [kbrownell](https://github.com/kbrownell), [jbickar](https://github.com/jbickar)
 
@@ -16,6 +16,7 @@ This is a small collection of Ansible roles that we are using to migrate sites f
 1. If not already installed, `pip install ansible` or `brew install ansible`
 2. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
 3. `cd ansible-playbooks`
+4. `git clone https://github.com/SU-SWS/ansible-sync`
 
 ## Migrating Sites
 ````
@@ -40,11 +41,7 @@ ansible-playbook -i inventory/servers server-settings-playbook.yml
 
 ## Troubleshooting
 
-If a task fails, you can re-run the playbook from where it failed with: 
-
-```
-ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml --tags "[rolename]"
-```
+If a task fails, re-run the playbook from the top. 
 
 You can also add `-v(vvv)` for more debug information.
 
