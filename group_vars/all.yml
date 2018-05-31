@@ -5,6 +5,13 @@
 # These values will be used when Ansible runs the migration playbook
 # against all hosts.
 #
+# Release of ansible-playbooks used to migrate sites to production.  We
+# hope never to re-migrate a site once it's been launched in ACSF.  That
+# said, should we discover problems with a particular version or
+# versions of the script, this variable will give us the option to find
+# and re-migrate only those affected sites.
+migration_version: "0.0.1"
+#
 # Enter the profile you would like Site Factory to install initially, when
 # creating the site. Note, this value is kind of irrelevant because all
 # Site Factory sites on the same stack run off the same codebase.  And which

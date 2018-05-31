@@ -30,6 +30,10 @@ This playbook allows you to copy sites from `sites.stanford.edu` or `people.stan
 3. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary), for connecting to the .
 4. Run: `ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml` with the inventory you created or modified.
 
+### Release Process
+
+We will be tracking which version of the migration script was used to migrate individual sites.  Before punching a new release, make sure to update the `migration_version` variable in `group_vars/all.yml`.
+
 ## Configuring ACSF Servers
 ````
 ansible-playbook -i inventory/servers server-settings-playbook.yml

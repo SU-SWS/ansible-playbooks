@@ -54,6 +54,7 @@
     - "-y en acsf nobots stanford_ssp paranoia"
     - "ev 'acsf_openid_allow_local_user_logins();'"
     - 'ev "_paranoia_remove_risky_permissions();"'
+    - "-y vset sws_migration_version {{ migration_version }}"
     - "-y dis googleanalytics pingdom_rum"
     - "-y dis stanford_afs_quota"
     # Must truncate this table otherwise users will lose roles in WMD->SSP upgrade path.
