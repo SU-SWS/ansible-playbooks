@@ -64,7 +64,7 @@
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
     - "-y en nobots"
-    - "y dis googleanalytics pingdom_rum"
+    - "-y dis googleanalytics pingdom_rum"
   when: launch_tasks == ""
   notify: Clear site cache
 
