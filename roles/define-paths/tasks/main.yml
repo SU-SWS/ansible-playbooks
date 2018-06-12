@@ -46,7 +46,7 @@
 
 - name: What is the scripts_dir variable
   debug:
-msg: "scripts_dir is: {{ scripts_dir}}"
+    msg: "scripts_dir is: {{ scripts_dir}}"
 
 # Ex: sites
 - name: Set sites_service variable
