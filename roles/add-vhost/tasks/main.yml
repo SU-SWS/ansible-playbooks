@@ -7,11 +7,11 @@
 # existence of a vhost for a site in Site Factory.
 #
 # INPUTS:
-#   sitefactory_environment
-#   acquia_username
 #   acquia_api_key
-#   site_id
+#   acquia_username
 #   new_absolute_path
+#   site_id
+#   sitefactory_environment
 #
 # OUTPUTS:
 # --

@@ -7,27 +7,27 @@
 #   and "upload-site".
 #
 # INPUTS:
-#   acsf_site_name
 #   acsf_environment
+#   acsf_site_name
 #   drush_environment
-#   stack
 #   inventory_hostname
+#   launch_tasks
 #   site_prefix
 #   sites_service
+#   stack
 #   vhost
-#   launch_tasks
 #
 # OUTPUTS:
-#   sites_service
-#   absolute_vhost_path_sites_service
-#   absolute_path_sites_service
-#   absolute_path_testing
 #   absolute_path_launch
 #   absolute_path_prod
-#   new_absolute_path
+#   absolute_path_sites_service
+#   absolute_path_testing
+#   absolute_vhost_path_sites_service
 #   drush_alias
 #   file_public_path
+#   new_absolute_path
 #   scripts_dir
+#   sites_service
 #
 # ALTERNATIVE ROLES:
 # --

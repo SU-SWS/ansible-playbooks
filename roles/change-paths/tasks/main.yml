@@ -48,7 +48,6 @@
 
 # See discussion in https://github.com/SU-SWS/ansible-playbooks/pull/17
 # And https://github.com/SU-SWS/ansible-playbooks/pull/22
-# TODO: Determine how to treat for final migration (SITES-465)
 # Ex: drush sar -y 'https://sites.stanford.edu/g2scd7/' 'https://g2sc-dev.cardinalsites.stanford.edu/'
 - name: Update full paths in text
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_path_sites_service }}/' 'https://{{ new_absolute_path }}/'"
@@ -147,7 +146,6 @@
 # {{ protocols }} here (http and https), as we should have already handled that
 # in "Update full paths in text" or "Update full vhost paths in text". But it's
 # cheap to loop through.
-# TODO: Determine how to treat for final migration (SITES-465)
 # Ex. drush sar -y 'src="https://g2sc.stanford.edu/sites/default/files' 'src="https://g2sc.cardinalsites.stanford.edu/sites/g/files/sbiybj5000986/f'
 - name: Replace absolute sites/default/files with path to files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/sites/default/files' '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
