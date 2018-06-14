@@ -7,18 +7,19 @@
 # existence of a site in Site Factory.
 #
 # INPUTS:
-#   inventory_hostname
-#   sitefactory_environment
-#   profile
-#   group_ids
-#   stack_id
-#   acquia_username
 #   acquia_api_key
-#   existing_sites
+#   acquia_username
 #   drush_alias
+#   existing_sites
+#   group_ids
+#   inventory_hostname
+#   profile
+#   sitefactory_environment
+#   stack_id
 #   wait_time
 #
 # OUTPUTS:
+#   bootstrap_status
 #   site_created
 #
 # ALTERNATIVE ROLES:
