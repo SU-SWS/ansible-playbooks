@@ -7,12 +7,11 @@
 # existence of a vhost for a site in Site Factory.
 #
 # INPUTS:
-#   acsf_site_name
-#   sitefactory_environment
-#   stanford_environment
-#   acquia_username
 #   acquia_api_key
-#   existing_sites
+#   acquia_username
+#   new_absolute_path
+#   site_id
+#   sitefactory_environment
 #
 # OUTPUTS:
 # --
@@ -26,7 +25,7 @@
 # KNOWN ISSUES:
 # --
 
-- name: Add vhost as domain
+- name: Add custom domain
   uri:
     url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
     method: POST
@@ -35,9 +34,7 @@
     force_basic_auth: yes
     body_format: json
     body:
-      domain_name: "{{ vhost }}{{ stanford_environment }}.cardinalsites.stanford.edu"
-  when:
-    vhost is defined
+      domain_name: "{{ new_absolute_path }}"
 
 # Ex. drupal7-update-status.cardinalsites.stanford.edu.
 - name: Add inventory_hostname as domain

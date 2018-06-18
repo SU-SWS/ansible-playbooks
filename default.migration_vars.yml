@@ -12,6 +12,10 @@
 # prod: enter ""
 acsf_environment: "dev"
 #
+# Set this variable to `launch` if this is the final migration to
+# production before a site goes live.
+launch_tasks: ""
+#
 # Enter the number of minutes you should wait for all sites to complete
 # spinup on Site Factory. In general, it appears ACSF spins up 3 sites at a
 # time and that each batch takes around 6 minutes. So if you are migrating

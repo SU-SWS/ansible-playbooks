@@ -3,20 +3,20 @@
 # https://github.com/SU-SWS/ansible-playbooks
 # ==================================================================
 #
-# This role runs a number of tasks to transform the database in such a way that
-# images and absolute paths will work in the new ACSF environment. If any part
-# of this role fails for a site, restart from the tag "download-site".
+# This role runs a number of tasks to transform CSS Injector files in such a way
+# that images and absolute paths will work in the new ACSF environment.
 #
 # INPUTS:
-#   acsf_site_name
+#   absolute_path_sites_service
+#   absolute_vhost_path_sites_service
 #   inventory_hostname
-#   sitefactory_environment
-#   drush_environment
-#   site_prefix
-#   stack
+#   new_absolute_path
+#   protocols
+#   url_regex
+#   url_replace
 #
 # OUTPUTS:
-#   file_public_path
+#   css_injector_files
 #
 # ALTERNATIVE ROLES:
 # --
