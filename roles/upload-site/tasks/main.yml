@@ -33,6 +33,7 @@
   with_items:
     - "-y sql-drop"
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
+    - "-y updb"
   notify: Clear site cache
 
 - name: Set site up as a Department site
@@ -50,7 +51,6 @@
 - name: Do post-database-restore tasks
   shell: "{{drush_alias }} {{ item }}"
   with_items:
-    - "-y updb"
     - "-y en acsf stanford_ssp paranoia"
     - "ev 'acsf_openid_allow_local_user_logins();'"
     - 'ev "_paranoia_remove_risky_permissions();"'
