@@ -28,3 +28,8 @@ stack_id: "2"
 sitefactory_environment: ""
 stanford_environment: ""
 drush_environment: ""
+
+# This variable (ignore_updb_errors should be set to an empty string by
+# defaults, in order to avoid "undefined variable" error messages. It can be
+# set on a per-site basis in the inventory file.
+ignore_updb_errors: ""
