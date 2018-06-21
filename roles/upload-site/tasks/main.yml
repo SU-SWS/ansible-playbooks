@@ -51,7 +51,6 @@
     - "cc all"
     - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
     - "-y en acsf"
-    - "ev 'acsf_openid_allow_local_user_logins();'"
     - "rr"
   when: dept_site == "TRUE"
   notify: Clear site cache
@@ -59,10 +58,9 @@
 - name: Do post-database-restore tasks
   shell: "{{drush_alias }} {{ item }}"
   with_items:
-    - "-y en acsf stanford_ssp paranoia"
-    - "ev 'acsf_openid_allow_local_user_logins();'"
+    - "-y en acsf acsf_helper stanford_ssp paranoia"
     - 'ev "_paranoia_remove_risky_permissions();"'
-    - "-y dis stanford_afs_quota"
+    - "-y dis stanford_afs_quota acsf_openid"
     # Must truncate this table otherwise users will lose roles in WMD->SSP upgrade path.
     - "sqlq 'truncate table webauth_roles_history'"
     - "sspwmd"
