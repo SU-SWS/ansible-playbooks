@@ -36,7 +36,7 @@
     sites_drush_alias: "{{ server_alias }}.{{ sites_drush_prefix }}{{ inventory_hostname }}"
   when: sites_drush_prefix != 'default'
 
-- name: Download copy of database from sites
+- name: Download copy of database from sites when using a custom drush prefix
   shell: "drush @{{ sites_drush_alias }} sql-dump --structure-tables-key=common > /tmp/{{ inventory_hostname }}/dbdump.sql"
   when: sites_drush_prefix != 'default'
 
