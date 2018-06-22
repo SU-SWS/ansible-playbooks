@@ -40,9 +40,14 @@
     - "-y sql-drop"
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
     - "-y updb"
-    - "-y updb"
-  ignore_errors: "{% if ignore_updb_errors=='true' %}yes{% endif %}"
+  ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
   notify: Clear site cache
+
+- name: Run drush updb a second time for recalcitrant sites
+  shell: "{{drush_alias }} {{ item }}"
+  with_items:
+    - "-y updb"
+  when: ignore_updb_errors == "TRUE"
 
 - name: Set site up as a Department site
   shell: "{{drush_alias }} {{ item }}"
