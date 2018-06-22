@@ -14,9 +14,9 @@ This is a small collection of Ansible roles that we are using to migrate sites f
 ## Installation
 
 1. If not already installed, `pip3 install ansible` or `brew install ansible`
-1b. Install jmespath: `pip3 install jmespath`
-2. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
-3. `cd ansible-playbooks`
+2. Install jmespath: `pip3 install jmespath`
+3. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
+4. `cd ansible-playbooks`
 
 ## Migrating Sites
 ````
@@ -41,6 +41,8 @@ ansible-playbook -i inventory/servers server-settings-playbook.yml
 
 ## Troubleshooting
 
+### Failed Tasks
+
 If a task fails, you can re-run the playbook from where it failed with:
 
 ```
@@ -49,7 +51,17 @@ ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml --tags
 
 You can also add `-v(vvv)` for more debug information.
 
+### SSL Issues
+
 If you are on OSX and are having SSL certificate troubles please view: https://docs.ansible.com/ansible/latest/reference_appendices/python_3_support.html
+
+It may help to add one of the following to `migration_vars.yml`
+```
+ansible_python_interpreter=/usr/local/bin/python3
+ansible_python_interpreter=/usr/bin/python3
+```
+
+Or run `ansible-playbook` with the `-e ansible_python_interpreter=/usr/local/bin/python3` option.
 
 ## Contribution / Collaboration
 
