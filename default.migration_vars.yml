@@ -43,6 +43,8 @@ sunetid: ""
 # Example: fail
 php_candidates_consequence: "fail"
 
-# Your local drush alias prefix if something other than ds_ or dp_.
-# Eg: sse.shortname vs sse.ds_shortname
+# If your local drush alias prefixes are set to "ds_" for sites1/sites2 and
+# "dp_" for people1/people2, leave this set to "default". If you are NOT using
+# prefixes (e.g., you call "drush @sse.sitename" or "drush @ppl.sunetid"), then
+# set this to "".
 sites_drush_prefix: "default"
