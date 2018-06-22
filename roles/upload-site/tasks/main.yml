@@ -28,19 +28,23 @@
 # KNOWN ISSUES:
 # --
 
-# We sometimes have order-of-operation issues on drush updb.
-# For instance, a "Column not found: 1054 Unknown column 'base.status' in
-# 'field list'" error. Running "drush updb" twice allows us to get past that,
-# and we can set ignore_updb_errors="TRUE" in our inventory on a per-site
-# basis.
 - name: Drop database in Site Factory and install new database
   shell: "{{drush_alias }} {{ item }}"
   with_items:
     - "-y sql-drop"
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
+  notify: Clear site cache
+
+# We sometimes have order-of-operation issues on drush updb. For instance, a
+# "Column not found: 1054 Unknown column 'base.status' in 'field list'" error.
+# To get past that, we can set ignore_updb_errors="TRUE" in our inventory on a
+# per-site basis. That will allow us to move past errors in this task, and run
+# "drush updb" a second time in the following task.
+- name: Update database schema with drush updb
+  shell: "{{drush_alias }} {{ item }}"
+  with_items:
     - "-y updb"
   ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
-  notify: Clear site cache
 
 # This only runs "drush updb" if ignore_updb_errors == "TRUE"
 - name: Run drush updb a second time for recalcitrant sites
