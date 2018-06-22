@@ -35,6 +35,24 @@
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
   notify: Clear site cache
 
+# We sometimes have order-of-operation issues on drush updb. For instance, a
+# "Column not found: 1054 Unknown column 'base.status' in 'field list'" error.
+# To get past that, we can set ignore_updb_errors="TRUE" in our inventory on a
+# per-site basis. That will allow us to move past errors in this task, and run
+# "drush updb" a second time in the following task.
+- name: Update database schema with drush updb
+  shell: "{{drush_alias }} {{ item }}"
+  with_items:
+    - "-y updb"
+  ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
+
+# This only runs "drush updb" if ignore_updb_errors == "TRUE"
+- name: Run drush updb a second time for recalcitrant sites
+  shell: "{{drush_alias }} {{ item }}"
+  with_items:
+    - "-y updb"
+  when: ignore_updb_errors == "TRUE"
+
 - name: Set site up as a Department site
   shell: "{{drush_alias }} {{ item }}"
   with_items:
@@ -50,7 +68,6 @@
 - name: Do post-database-restore tasks
   shell: "{{drush_alias }} {{ item }}"
   with_items:
-    - "-y updb"
     - "-y en acsf stanford_ssp paranoia"
     - "ev 'acsf_openid_allow_local_user_logins();'"
     - 'ev "_paranoia_remove_risky_permissions();"'
