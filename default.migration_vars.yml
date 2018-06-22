@@ -42,3 +42,7 @@ sunetid: ""
 # have at least one string resembling PHP.  Options include: fail or continue.
 # Example: fail
 php_candidates_consequence: "fail"
+
+# Your local drush alias prefix if something other than ds_ or dp_.
+# Eg: sse.shortname vs sse.ds_shortname
+sites_drush_prefix: "default"

@@ -96,10 +96,6 @@
   set_fact:
     drush_alias: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}"
 
-- name: Set sites drush alias
-  set_fact:
-    sites_drush_alias: drush @{{ server_alias }}.{{ sites_drush_prefix }}{{ inventory_hostname }}
-
 - name: Get public files directory
   shell: "{{ drush_alias }} status --fields='File directory path' --field-labels=0 --strict=0"
   register: file_public_path
