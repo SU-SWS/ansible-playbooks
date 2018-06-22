@@ -29,6 +29,16 @@
 
 - name: Download copy of database from sites
   shell: "drush @{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }} sql-dump --structure-tables-key=common > /tmp/{{ inventory_hostname }}/dbdump.sql"
+  when: sites_drush_prefix == 'default'
+
+- name: Set sites drush alias
+  set_fact:
+    sites_drush_alias: "{{ server_alias }}.{{ sites_drush_prefix }}{{ inventory_hostname }}"
+  when: sites_drush_prefix != 'default'
+
+- name: Download copy of database from sites when using a custom drush prefix
+  shell: "drush @{{ sites_drush_alias }} sql-dump --structure-tables-key=common > /tmp/{{ inventory_hostname }}/dbdump.sql"
+  when: sites_drush_prefix != 'default'
 
 - name: Copy files from Sites to local
   shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/* /tmp/{{ inventory_hostname }}/files/."
