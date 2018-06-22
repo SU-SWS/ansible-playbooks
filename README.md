@@ -13,7 +13,8 @@ This is a small collection of Ansible roles that we are using to migrate sites f
 
 ## Installation
 
-1. If not already installed, `pip install ansible` or `brew install ansible`
+1. If not already installed, `pip3 install ansible` or `brew install ansible`
+1b. Install jmespath: `pip3 install jmespath`
 2. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
 3. `cd ansible-playbooks`
 
@@ -36,17 +37,19 @@ ansible-playbook -i inventory/servers server-settings-playbook.yml
 
 1. Copy `default.servers` to `inventory/servers`.
 2. Copy `default.server_vars.yml` to the root `ansible-playbooks` directory and name it `server_vars.yml`. Populate it with your information.
-3. Run: `ansible-playbook -i inventory/servers server-settings-playbook.yml` 
+3. Run: `ansible-playbook -i inventory/servers server-settings-playbook.yml`
 
 ## Troubleshooting
 
-If a task fails, you can re-run the playbook from where it failed with: 
+If a task fails, you can re-run the playbook from where it failed with:
 
 ```
 ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml --tags "[rolename]"
 ```
 
 You can also add `-v(vvv)` for more debug information.
+
+If you are on OSX and are having SSL certificate troubles please view: https://docs.ansible.com/ansible/latest/reference_appendices/python_3_support.html
 
 ## Contribution / Collaboration
 

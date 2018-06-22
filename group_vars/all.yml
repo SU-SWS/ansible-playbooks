@@ -33,3 +33,6 @@ drush_environment: ""
 # default, in order to avoid "undefined variable" error messages. It can be
 # set on a per-site basis to "TRUE" in the inventory file. It is case-sensitive.
 ignore_updb_errors: ""
+
+# If you have something different than ds_ or dp_
+sites_drush_alias: "default"
