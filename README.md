@@ -3,7 +3,7 @@ Collection of Ansible playbooks and roles used to migrate SWS sites, and configu
 
 **Version: 1.x**
 
-Maintainers: [kbrownell](https://github.com/kbrownell), [jbickar](https://github.com/jbickar)
+Maintainers: [kbrownell](https://github.com/kbrownell), [jbickar](https://github.com/jbickar), [sherakama](https://github.com/sherakama)
 
 Changelog: [Changelog.txt](CHANGELOG.txt)
 
