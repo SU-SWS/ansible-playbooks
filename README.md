@@ -14,9 +14,9 @@ This is a small collection of Ansible roles that we are using to migrate sites f
 ## Installation
 
 1. If not already installed, `pip3 install ansible` or `brew install ansible`
-1b. Install jmespath: `pip3 install jmespath`
-2. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
-3. `cd ansible-playbooks`
+2. Install jmespath: `pip3 install jmespath`
+3. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
+4. `cd ansible-playbooks`
 
 ## Migrating Sites
 ````
