@@ -44,8 +44,14 @@
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
     - "-y updb"
-    - "-y rr"
   ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
+
+# This only runs "drush rr" if ignore_updb_errors == "TRUE"
+- name: Run drush rr before running drush updb a second time for recalcitrant sites
+  shell: "{{ drush_alias }} {{ item }}"
+  with_items:
+    - "-y rr"
+  when: ignore_updb_errors == "TRUE"
 
 # This only runs "drush updb" if ignore_updb_errors == "TRUE"
 - name: Run drush updb a second time for recalcitrant sites
@@ -57,12 +63,12 @@
 - name: Set site up as a Department site
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
-    - "-y vset install_profile stanford_dept"
+    - "-y vset install_profile stanford_sites_jumpstart"
     - "cc all"
     - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
     - "-y en acsf"
     - "ev 'acsf_openid_allow_local_user_logins();'"
-    - "rr"
+    - "-y rr"
   when: dept_site == "TRUE"
   notify: Clear site cache
 
