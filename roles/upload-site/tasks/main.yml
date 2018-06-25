@@ -57,6 +57,7 @@
 - name: Run drush updb a second time for recalcitrant sites
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
+    - "-y rr"
     - "-y updb"
   when: ignore_updb_errors == "TRUE"
 
