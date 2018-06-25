@@ -41,20 +41,21 @@
 # per-site basis. That will allow us to move past errors in this task, and run
 # "drush updb" a second time in the following task.
 - name: Update database schema with drush updb
-  shell: "{{drush_alias }} {{ item }}"
+  shell: "{{ drush_alias }} {{ item }}"
   with_items:
     - "-y updb"
+    - "-y rr"
   ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
 
 # This only runs "drush updb" if ignore_updb_errors == "TRUE"
 - name: Run drush updb a second time for recalcitrant sites
-  shell: "{{drush_alias }} {{ item }}"
+  shell: "{{ drush_alias }} {{ item }}"
   with_items:
     - "-y updb"
   when: ignore_updb_errors == "TRUE"
 
 - name: Set site up as a Department site
-  shell: "{{drush_alias }} {{ item }}"
+  shell: "{{ drush_alias }} {{ item }}"
   with_items:
     - "-y vset install_profile stanford_dept"
     - "cc all"
@@ -66,7 +67,7 @@
   notify: Clear site cache
 
 - name: Do post-database-restore tasks
-  shell: "{{drush_alias }} {{ item }}"
+  shell: "{{ drush_alias }} {{ item }}"
   with_items:
     - "-y en acsf stanford_ssp paranoia"
     - "ev 'acsf_openid_allow_local_user_logins();'"
