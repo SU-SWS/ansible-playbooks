@@ -44,13 +44,13 @@
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
     - "-y updb"
-    - "-y rr"
   ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
 
 # This only runs "drush updb" if ignore_updb_errors == "TRUE"
 - name: Run drush updb a second time for recalcitrant sites
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
+    - "-y rr"
     - "-y updb"
   when: ignore_updb_errors == "TRUE"
 
