@@ -61,10 +61,22 @@
     - "-y updb"
   when: ignore_updb_errors == "TRUE"
 
+# Set the install profile by looking for the enabled supporting module.
+- name: Find and set the install profile by helper modules.
+  shell: "FOUND=$({{ drush_alias }} php-eval \"var_dump(module_exists('{{ item.module }}'));\"); if [[ \"$FOUND\" =~ 'true' ]]; then {{ drush_alias }} -y vset install_profile '{{ item.profile }}'; fi;"
+  with_items:
+    - { module: 'stanford_jumpstart', profile: 'stanford_sites_jumpstart' }
+    - { module: 'stanford_jumpstart_plus', profile: 'stanford_sites_jumpstart_plus' }
+    - { module: 'stanford_jumpstart_academic', profile: 'stanford_sites_jumpstart_academic' }
+    - { module: 'stanford_jumpstart_vpsa', profile: 'stanford_jumpstart_vpsa' }
+    - { module: 'stanford_jumpstart_lab', profile: 'stanford_sites_jumpstart_lab' }
+    - { module: 'stanford_jumpstart_engineering', profile: 'stanford_sites_jumpstart_engineering' }
+  when: product_site == "TRUE"
+
 - name: Set site up as a Department site
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
-    - "-y vset install_profile stanford_sites_jumpstart"
+    - "-y vset install_profile stanford_dept"
     - "cc all"
     - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
     - "-y en acsf"
