@@ -52,6 +52,7 @@
   with_items:
     - "-y rr"
   when: ignore_updb_errors == "TRUE"
+  ignore_errors: yes
 
 # This only runs "drush updb" if ignore_updb_errors == "TRUE"
 - name: Run drush updb a second time for recalcitrant sites
