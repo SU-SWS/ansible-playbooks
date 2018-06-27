@@ -28,3 +28,7 @@ site_prefix: "dp"
 # Department sites get extra treatment during the migration process. There shouldn't
 # be any department sites in the [people] group, so this value should be set to FALSE.
 dept_site: "FALSE"
+#
+# Jumpstart product flag. Set this to true to have the script automagically
+# find and set the installation profile variable.
+product_site: "FALSE"
