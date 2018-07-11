@@ -23,8 +23,8 @@ site_prefix: "ds"
 #
 # Department sites get extra treatment during the migration process. Help us
 # skip this for non-department sites, by setting this value to FALSE.
-dept_site: "TRUE"
+dept_site: "FALSE"
 #
 # Jumpstart product flag. Set this to true to have the script automagically
 # find and set the installation profile variable.
-product_site: "FALSE"
+product_site: "TRUE"

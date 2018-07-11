@@ -112,7 +112,6 @@
     - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
     - "{{ protocols }}"
-  notify: Clear site cache
   when: vhost is defined
   notify: Clear site cache
 
