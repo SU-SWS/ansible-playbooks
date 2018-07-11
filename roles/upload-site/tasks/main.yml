@@ -93,7 +93,7 @@
   with_items:
     - "-y en acsf acsf_helper stanford_ssp paranoia"
     - 'ev "_paranoia_remove_risky_permissions();"'
-    - "-y dis stanford_afs_quota acsf_openid"
+    - "-y dis stanford_afs_quota acsf_openid openid"
     # Must truncate this table otherwise users will lose roles in WMD->SSP upgrade path.
     - "sqlq 'truncate table webauth_roles_history'"
     - "sspwmd"
