@@ -53,15 +53,23 @@
   when:
     acsf_environment != ""
 
+# - name: Get list of sites on Site Factory
+#   uri:
+#     url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/sites?limit=100"
+#     method: GET
+#     user: "{{ acquia_username }}"
+#     password: "{{ acquia_api_key }}"
+#     force_basic_auth: yes
+#     return_content: yes
+#   register: existing_sites
+
 - name: Get list of sites on Site Factory
-  uri:
-    url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/sites?limit=100"
-    method: GET
-    user: "{{ acquia_username }}"
-    password: "{{ acquia_api_key }}"
-    force_basic_auth: yes
-    return_content: yes
-  register: existing_sites
+  command: drush @acsf{{ drush_environment }}.cardinald7.saml php-eval "include 'sites/sites.php';include '../scripts/migration/sites-json.php';"
+  register: existing_sites_raw
+
+- name:
+  set_fact:
+    existing_sites: "{{ existing_sites_raw.stdout|from_json }}"
 
 #- name: Display all site names
 #  debug:
@@ -70,11 +78,14 @@
 
 - name: Establish numerical id from existing_sites JSON response
   set_fact:
-    site_id: "{{ existing_sites | json_query(existing_sites_query) }}"
+    site_id: "{{ existing_sites|json_query(existing_sites_query) }}"
   vars:
-    existing_sites_query: "json.sites[?site=='{{ acsf_site_name }}'] | [0].id"
+    existing_sites_query: "sites.{{ acsf_site_name }}.id"
 
-#- name: Debug json formatting on sites_created id
-#  debug:
-#    var: site_id
-
+# - name: Debug existing_sites
+#   debug:
+#     var: existing_sites.sites.{{ acsf_site_name }}
+#
+# - name: Debug site_id
+#   debug:
+#     msg: "site_id: {{ (site_id) }}"

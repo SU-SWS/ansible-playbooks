@@ -31,6 +31,11 @@
 #
 # KNOWN ISSUES:
 # --
+
+# - name: More Debug
+#   debug:
+#     msg: "{{ existing_sites|json_query('sites.*.site') }}"
+
 - name: Create new site on Site Factory
   uri:
     url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/sites"
@@ -46,7 +51,7 @@
     body_format: json
     return_content: yes
   register: site_created
-  when: acsf_site_name not in existing_sites | json_query('json.sites[*].site')
+  when: acsf_site_name not in existing_sites|json_query('sites.*.site')
 
 - pause:
     minutes: 1
