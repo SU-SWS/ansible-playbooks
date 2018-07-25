@@ -4,7 +4,7 @@
 # ===========================================================
 #
 # The purpose of this role is to instantiate a STATE, in this case the state
-# in which acsf_site_name and existing_sites have values.
+# in which acsf_site_name and sites_formatted have values.
 #
 # INPUTS:
 #   inventory_hostname
@@ -14,7 +14,7 @@
 #
 # OUTPUTS:
 #   acsf_site_name
-#   existing_sites
+#   sites_formatted
 #   sitefactory_environment
 #   stanford_environment
 #
@@ -63,29 +63,47 @@
 #     return_content: yes
 #   register: existing_sites
 
-- name: Get list of sites on Site Factory
-  command: drush @acsf{{ drush_environment }}.cardinald7.saml php-eval "include 'sites/sites.php';include '../scripts/migration/sites-json.php';"
-  register: existing_sites_raw
+- name: Get sites.json from remote
+  command: drush @acsf{{ drush_environment }}.cardinald7.saml php-eval "include 'sites/sites.php'; drupal_json_output(gardens_site_data_load_file());"
+  register: sites_json_raw
 
-- name:
+- name: Get sites.json from remote
   set_fact:
-    existing_sites: "{{ existing_sites_raw.stdout|from_json }}"
+    sites_json: "{{ sites_json_raw.stdout|from_json }}"
 
-#- name: Display all site names
-#  debug:
-#    var: item
-#  with_items: "{{ existing_sites | json_query('json.sites[*].site') }}"
-
-- name: Establish numerical id from existing_sites JSON response
-  set_fact:
-    site_id: "{{ existing_sites|json_query(existing_sites_query) }}"
-  vars:
-    existing_sites_query: "sites.{{ acsf_site_name }}.id"
-
-# - name: Debug existing_sites
+# - name: debug sites.json
 #   debug:
-#     var: existing_sites.sites.{{ acsf_site_name }}
+#     var: sites_json
+
 #
-# - name: Debug site_id
-#   debug:
-#     msg: "site_id: {{ (site_id) }}"
+# Creates a format that looks like:
+# {
+#     "id": 5001626,
+#     "site": "crceducation",
+#     "url": "crceducation-dev.cardinalsites.stanford.edu"
+# },
+#
+- name: Manipulate sites.json
+  set_fact:
+    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': item.1.acsf_site_id, 'site': item.0|regex_replace('((-dev|-stage).cardinalsites.stanford.edu|.(dev-|stage-)cardinalsites.acsitefactory.com)', '') } ] }}"
+  with_together:
+    - "{{ sites_json.sites }}"
+    - "{{ sites_json|json_query('sites.*.conf') }}"
+
+- name: debug sites_formatted
+  debug:
+    var: sites_formatted
+
+- name: Establish numerical id from sites_formatted JSON response
+  set_fact:
+    site_id: "{{ sites_formatted|json_query(existing_sites_query)|first }}"
+  vars:
+    existing_sites_query: "[?site=='{{ acsf_site_name }}'].id"
+
+- name: Debug site_id
+  debug:
+    var: site_id
+
+- name: Acsf site name
+  debug:
+    var: acsf_site_name
