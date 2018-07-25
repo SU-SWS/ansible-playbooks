@@ -1,0 +1,9 @@
+# SU-SWS Ansible Playbooks
+
+Version 0.0.1                                                        2018-05-30
+-------------------------------------------------------------------------------
+- Initial release of playbooks and roles to setup servers on ACSF and migrate
+  sites from on premise infrastructure to Acquia Cloud Site Factory.
+- Checks for PHP in the database and logs results to /tmp/sitename/.
+- Attempts to change absolute and relative paths to match ACSF domains
+  and individual site file paths.
