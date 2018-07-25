@@ -46,9 +46,6 @@ ansible-playbook -i inventory/servers server-settings-playbook.yml
 
 ## Troubleshooting
 
-<<<<<<< HEAD
-If a task fails, re-run the playbook from the top.
-=======
 ### Failed Tasks
 
 If a task fails, you can re-run the playbook from where it failed with:
@@ -56,7 +53,6 @@ If a task fails, you can re-run the playbook from where it failed with:
 ```
 ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml --tags "[rolename]"
 ```
->>>>>>> master
 
 You can also add `-v(vvv)` for more debug information.
 
