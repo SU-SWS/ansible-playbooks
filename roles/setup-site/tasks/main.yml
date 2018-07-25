@@ -78,3 +78,8 @@
   delay: 50
   register: bootstrap_status
   until: bootstrap_status.stdout | search('Successful')
+
+- name: Re-call the site-json stuff
+  include_role:
+    name: get-sitename
+  when: not site_exists

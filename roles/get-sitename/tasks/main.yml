@@ -96,9 +96,14 @@
 
 - name: Establish numerical id from sites_formatted JSON response
   set_fact:
-    site_id: "{{ sites_formatted|json_query(existing_sites_query)|first }}"
+    possible_site_ids: "{{ sites_formatted|json_query(existing_sites_query) }}"
   vars:
     existing_sites_query: "[?site=='{{ acsf_site_name }}'].id"
+
+- name: Set site_id if site id exists
+  set_fact:
+    site_id: possible_site_ids|first
+  when: possible_site_ids|length > 0
 
 # - name: Debug site_id
 #   debug:
