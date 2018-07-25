@@ -93,6 +93,7 @@
   with_items:
     - "-y en acsf acsf_helper stanford_ssp paranoia"
     - 'ev "_paranoia_remove_risky_permissions();"'
+    - "-y vset sws_migration_version {{ migration_version }}"
     - "-y dis stanford_afs_quota acsf_openid openid"
     - "-y pm-uninstall stanford_afs_quota acsf_openid"
     - "-y pm-uninstall openid"

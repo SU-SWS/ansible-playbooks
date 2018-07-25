@@ -1,4 +1,4 @@
-# SU-SWS Ansible Playbooks
+SU-SWS Ansible Playbooks
 
 Version 0.0.1                                                        2018-07-25
 -------------------------------------------------------------------------------
