@@ -9,6 +9,7 @@
 #
 # INPUTS:
 #   inventory_hostname
+#   parens
 #   php_syntax
 #   php_callbacks
 #   php_candidates_consequence_prompted

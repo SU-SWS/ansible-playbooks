@@ -26,7 +26,7 @@
 #
 # PLAY 1: Migrate sites from SWS infrastructure to Site Factory
 # =============================================================
-- hosts: groups,depts,people
+- hosts: groups,depts,people,products
   connection: local
 
   vars_files:
@@ -37,9 +37,9 @@
     - { role: protect-prod }
     - { role: setup-local }
     - { role: download-site, tags: [download-site] }
+    - { role: setup-site, tags: [setup-site] }
     - { role: css-injector, tags: [download-site,css-injector] }
     - { role: check-php, tags: [download-site,css-injector,check-php] }
-    - { role: setup-site, tags: [download-site,check-php,setup-site] }
     - { role: upload-site, tags: [download-site,check-php,setup-site,upload-site] }
     - { role: change-paths, tags: [download-site,check-php,setup-site,upload-site,change-paths] }
     - { role: add-vhost, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost] }
