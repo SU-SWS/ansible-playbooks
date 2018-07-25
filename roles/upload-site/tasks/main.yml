@@ -61,6 +61,19 @@
     - "-y updb"
   when: ignore_updb_errors == "TRUE"
 
+- name: Get current install profile
+  shell: "{{ drush_alias }} vget install_profile"
+  register: get_profile_output
+
+- name: Set install_profile ansible var
+  set_fact:
+    install_profile: "{{ get_profile_output.stdout }}"
+
+# Set the installation profile if one does not exist.
+- name: Find and set default install profile to stanford
+  shell: "{{ drush_alias }} vset install_profile stanford"
+  when: install_profile != "stanford" and dept_site == "FALSE" and product_site == "FALSE"
+
 # Set the install profile by looking for the enabled supporting module.
 # Order of operations is important here, because a JSA site may have BOTH
 # "stanford_jumpstart" and "stanford_jumpstart_academic" enabled, yet we want
