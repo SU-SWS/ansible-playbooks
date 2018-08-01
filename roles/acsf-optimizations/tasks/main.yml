@@ -21,16 +21,16 @@
 # KNOWN ISSUES:
 # --
 - name: Enable page cache
-  shell: "{{ drush_alias }} -y vset cache 1"
+  shell: "{{ drush_alias }} -y --exact vset cache 1"
 
 - name: Enable css compression
-  shell: "{{ drush_alias }} -y vset preprocess_css 1"
+  shell: "{{ drush_alias }} -y --exact vset preprocess_css 1"
 
 - name: Enable js compression
-  shell: "{{ drush_alias }} -y vset preprocess_js 1"
+  shell: "{{ drush_alias }} -y --exact vset preprocess_js 1"
 
 - name: Set cache lifetime to infinite
-  shell: "{{ drush_alias }} -y vset cache_lifetime 0"
+  shell: "{{ drush_alias }} -y --exact vset cache_lifetime 0"
 
 - name: Disable error reporting
-  shell: "{{ drush_alias }} -y vset error_level 0"
+  shell: "{{ drush_alias }} -y --exact vset error_level 0"
