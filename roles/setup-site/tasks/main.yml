@@ -38,12 +38,12 @@
   vars:
     the_query: "[?site=='{{ acsf_site_name }}']"
 
-- name: Does the site exist?
+- name: Set site_exists to TRUE if it exists
   set_fact:
     site_exists: TRUE
   when: search_for_site|length > 0
 
-- name: Does the site exist?
+- name: Set site_exists to FALSE if it does not exist
   set_fact:
     site_exists: FALSE
   when: search_for_site|length == 0
@@ -79,7 +79,7 @@
   register: bootstrap_status
   until: bootstrap_status.stdout | search('Successful')
 
-- name: Re-call the site-json stuff
+- name: Re-call the sites-json stuff
   include_role:
     name: get-sitename
   when: not site_exists

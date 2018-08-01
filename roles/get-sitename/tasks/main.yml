@@ -102,7 +102,7 @@
 
 - name: Set site_id if site id exists
   set_fact:
-    site_id: possible_site_ids|first
+    site_id: "{{ possible_site_ids|first }}"
   when: possible_site_ids|length > 0
 
 # - name: Debug site_id
