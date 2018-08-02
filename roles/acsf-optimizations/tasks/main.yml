@@ -23,6 +23,9 @@
 - name: Enable page cache
   shell: "{{ drush_alias }} -y --exact vset cache 1"
 
+- name: Enable block cache
+  shell: "{{ drush_alias }} -y --exact vset block_cache 1"
+
 - name: Enable css compression
   shell: "{{ drush_alias }} -y --exact vset preprocess_css 1"
 
