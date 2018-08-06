@@ -1,0 +1,48 @@
+---
+# Ansible playbook that recreates in Site Factory sites on our infrastructure.
+# https://github.com/SU-SWS/ansible-playbooks
+# ============================================================================
+#
+# This playbook will create a new site in Acquia Cloud Site Factory, and
+# then sync a site from the SWS legacy hosting platform to the newly created
+# site.
+#
+# Can be run with: ansible-playbook -i inventory/sites migration-playbook.yml
+#
+# RE-STARTING:
+# If you need to restart the site-migration process, use --tags "" instead of
+# --start-at-task="". Tags allow us to re-start at a safe place in the
+# playbook and rely on dependencies to grab variables required for a role.
+#
+# Example:
+# ansible-playbook -i inventory/sites migration-playbook.yml --tags "download-site"
+#
+# Re-running this playbook with the "download-site" tag, will run download-site,
+# get-sitename (because get-sitename is a dependency of upload-site), then
+# upload-site.
+#
+# KNOWN ISSUES:
+# --
+#
+# PLAY 1: Migrate sites from SWS infrastructure to Site Factory
+# =============================================================
+- hosts: groups,depts,people,products
+  connection: local
+
+  vars_files:
+    - migration_vars.yml
+    - ansible-sync/prod-sites.yml
+
+  roles:
+    - { role: protect-prod }
+    - { role: setup-local }
+    - { role: download-site, tags: [download-site] }
+    - { role: setup-site, tags: [setup-site] }
+    - { role: css-injector, tags: [download-site,css-injector] }
+    - { role: check-php, tags: [download-site,css-injector,check-php] }
+    - { role: upload-site, tags: [download-site,check-php,setup-site,upload-site] }
+    - { role: change-paths, tags: [download-site,check-php,setup-site,upload-site,change-paths] }
+    - { role: add-vhost, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost] }
+    - { role: acsf-optimizations, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost,acsf-optimizations] }
+    - { role: cleanup-local, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost,acsf-optimizations,cleanup-local] }
+  serial: 12
