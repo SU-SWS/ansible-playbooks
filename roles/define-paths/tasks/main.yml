@@ -66,22 +66,22 @@
   set_fact:
     absolute_path_sites_service: "{{ sites_service }}.stanford.edu/{{ inventory_hostname }}"
 
-# Ex: g2sc-dev.cardinalsites.stanford.edu
+# Ex: g2sc-dev.sites.stanford.edu
 - name: Set absolute path for testing
   set_fact:
-    absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}-{{ acsf_environment }}.cardinalsites.stanford.edu"
+    absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}-{{ acsf_environment }}.sites.stanford.edu"
 
-# Ex: g2sc.cardinalsites.stanford.edu
+# Ex: g2sc.sites.stanford.edu
 - name: Set absolute path for production pre-launch
   set_fact:
-    absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.cardinalsites.stanford.edu"
+    absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.sites.stanford.edu"
 
 # Ex: g2sc.stanford.edu
 - name: Set absolute path for production at launch
   set_fact:
     absolute_path_launch: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.stanford.edu"
 
-# Ex: "g2sc-dev.cardinalsites.stanford.edu" if migrating to dev,
+# Ex: "g2sc-dev.sites.stanford.edu" if migrating to dev,
 #     "g2sc.stanford.edu" if launch_tasks = "launch"
 - name: Set new absolute path based on destination
   set_fact:
