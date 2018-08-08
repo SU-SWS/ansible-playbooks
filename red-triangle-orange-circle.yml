@@ -34,15 +34,12 @@
     - ansible-sync/prod-sites.yml
 
   roles:
-    - { role: protect-prod }
     - { role: setup-local }
     - { role: download-site, tags: [download-site] }
-    - { role: setup-site, tags: [setup-site] }
     - { role: css-injector, tags: [download-site,css-injector] }
     - { role: check-php, tags: [download-site,css-injector,check-php] }
     - { role: upload-site, tags: [download-site,check-php,setup-site,upload-site] }
     - { role: change-paths, tags: [download-site,check-php,setup-site,upload-site,change-paths] }
-    - { role: add-vhost, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost] }
-    - { role: acsf-optimizations, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost,acsf-optimizations] }
+#    - { role: acsf-optimizations, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost,acsf-optimizations] }
     - { role: cleanup-local, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost,acsf-optimizations,cleanup-local] }
   serial: 12
