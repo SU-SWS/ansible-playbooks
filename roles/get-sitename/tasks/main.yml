@@ -118,6 +118,13 @@
 #   debug:
 #     var: sites_formatted
 
+#
+# Now that we have a list of canonical machine names and ids in an ansible dict
+# use a json query look for that machine name and grab the node id of the acsf
+# site for use in validing wether it exists.
+# If the machine name cannot be found no available options will be placed in to
+# the new dict set in this task
+#
 - name: Establish numerical id from sites_formatted JSON response
   set_fact:
     possible_site_ids: "{{ sites_formatted|json_query(existing_sites_query) }}"
@@ -128,6 +135,9 @@
 #   debug:
 #     var: possible_site_ids
 
+#
+# If we did find a site then grab the id for use later.
+#
 - name: Set site_id if site id exists
   set_fact:
     site_id: "{{ possible_site_ids|first }}"
