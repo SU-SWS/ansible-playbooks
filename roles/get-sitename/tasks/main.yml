@@ -85,7 +85,7 @@
 #
 - name: Manipulate sites.json
   set_fact:
-    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': item.1.acsf_site_id, 'site': item.0|regex_replace('((-dev|-stage).cardinalsites.stanford.edu|.(dev-|stage-)cardinalsites.acsitefactory.com|(-dev|-stage).sites.stanford.edu)', '') } ] }}"
+    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': item.1.acsf_site_id, 'site': item.0|regex_replace('((-dev|-stage|-test).cardinalsites.stanford.edu|.(dev-|stage-|test-)cardinalsites.acsitefactory.com|(-dev|-stage|-test).sites.stanford.edu)', '') } ] }}"
   with_together:
     - "{{ sites_json.sites }}"
     - "{{ sites_json|json_query('sites.*.conf') }}"
@@ -106,7 +106,7 @@
 
 - name: Set site_id if site id exists
   set_fact:
-    site_id: possible_site_ids|first
+    site_id: "{{ possible_site_ids|first }}"
   when: possible_site_ids|length > 0
 
 # - name: Debug site_id
