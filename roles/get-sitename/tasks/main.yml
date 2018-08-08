@@ -83,12 +83,36 @@
 #     "url": "crceducation-dev.cardinalsites.stanford.edu"
 # },
 #
+# From something that looks like
+#  {
+#     "clayman.dev-cardinalsites.acsitefactory.com": {
+#     "name": "sbiybj5001706dev",
+#     "flags": [],
+#     "conf": {
+#       "gardens_site_id": 5001706,
+#       "gardens_db_name": "sbiybj5001706dev",
+#       "acsf_site_id": 5001706,
+#       "acsf_db_name": "sbiybj5001706dev",
+#       "site_api_key": "400b006fda61ada556d9e19171d4b88edef1fa82"
+#     }
+#   },
+#
+# The REST API has a restriction of 100 items per request and quickly falls over
+# for our needs. To bypass the API we are directly getting all of the site info
+# from sites.json on the acquia server. Unfortunately the initial format is not
+# usable and we need to parse out the machine name and id of the site factory
+# site by using the url for the sitefactory item as the machine name and getting
+# the key from the json array for the node id. We only use the acsitefactory uri
+# as it is the canonical machine name for the site and the other domains listed
+# cannot be trusted.
+#
 - name: Manipulate sites.json
   set_fact:
-    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': item.1.acsf_site_id, 'site': item.0|regex_replace('((-dev|-stage|-test).cardinalsites.stanford.edu|.(dev-|stage-|test-)cardinalsites.acsitefactory.com|(-dev|-stage|-test).sites.stanford.edu)', '') } ] }}"
+    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': item.1.acsf_site_id, 'site': item.0|regex_replace('.(dev-|stage-|test-)cardinalsites.acsitefactory.com', '') } ] }}"
   with_together:
     - "{{ sites_json.sites }}"
     - "{{ sites_json|json_query('sites.*.conf') }}"
+  when: item.0 | regex_search('acsitefactory')
 
 # - name: debug sites_formatted
 #   debug:
