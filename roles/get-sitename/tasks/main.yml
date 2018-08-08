@@ -78,7 +78,7 @@
 #
 # Creates a format that looks like:
 # {
-#     "id": 5001626,
+#     "id": 12345,
 #     "site": "crceducation",
 #     "url": "crceducation-dev.cardinalsites.stanford.edu"
 # },
@@ -86,14 +86,14 @@
 # From something that looks like
 #  {
 #     "clayman.dev-cardinalsites.acsitefactory.com": {
-#     "name": "sbiybj5001706dev",
+#     "name": "abc123dev",
 #     "flags": [],
 #     "conf": {
-#       "gardens_site_id": 5001706,
-#       "gardens_db_name": "sbiybj5001706dev",
-#       "acsf_site_id": 5001706,
-#       "acsf_db_name": "sbiybj5001706dev",
-#       "site_api_key": "400b006fda61ada556d9e19171d4b88edef1fa82"
+#       "gardens_site_id": 12345,
+#       "gardens_db_name": "asdfasdfasdfasdf",
+#       "acsf_site_id": 12345,
+#       "acsf_db_name": "abc123dev",
+#       "site_api_key": "456789235489789654897984135897564"
 #     }
 #   },
 #
