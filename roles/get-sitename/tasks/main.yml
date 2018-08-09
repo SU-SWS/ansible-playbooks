@@ -53,16 +53,6 @@
   when:
     acsf_environment != ""
 
-# - name: Get list of sites on Site Factory
-#   uri:
-#     url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/sites?limit=100"
-#     method: GET
-#     user: "{{ acquia_username }}"
-#     password: "{{ acquia_api_key }}"
-#     force_basic_auth: yes
-#     return_content: yes
-#   register: existing_sites
-
 - name: Get sites.json from remote
   command: drush @acsf{{ drush_environment }}.cardinald7.saml php-eval "include 'sites/sites.php'; drupal_json_output(gardens_site_data_load_file());"
   register: sites_json_raw
@@ -106,6 +96,10 @@
 # as it is the canonical machine name for the site and the other domains listed
 # cannot be trusted.
 #
+# In this task, we use a loop to build a dict. On the first pass, if it does not
+# exist we instantiate it with an empty array |default([]), then append the new
+# array of values to it. On the subsequent passes it gets more values appended.
+#
 - name: Manipulate sites.json
   set_fact:
     sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': item.1.acsf_site_id, 'site': item.0|regex_replace('.(dev-|stage-|test-)cardinalsites.acsitefactory.com', '') } ] }}"
@@ -114,6 +108,11 @@
     - "{{ sites_json|json_query('sites.*.conf') }}"
   when: item.0 | regex_search('acsitefactory')
 
+# Debug the sites_formatted array.
+#
+# The array will be output in alphabetical order (id, site, url), but as the keys
+# are object properties, the order does not matter.
+#
 # - name: debug sites_formatted
 #   debug:
 #     var: sites_formatted
