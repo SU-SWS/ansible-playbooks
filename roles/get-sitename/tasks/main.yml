@@ -102,7 +102,7 @@
 #
 - name: Manipulate sites.json
   set_fact:
-    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': item.1.acsf_site_id, 'site': item.0|regex_replace('.(dev-|stage-|test-)cardinalsites.acsitefactory.com', '') } ] }}"
+    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': item.1.acsf_site_id, 'site': item.0|regex_replace('.(dev-|test-)cardinalsites.acsitefactory.com', '') } ] }}"
   with_together:
     - "{{ sites_json.sites }}"
     - "{{ sites_json|json_query('sites.*.conf') }}"
