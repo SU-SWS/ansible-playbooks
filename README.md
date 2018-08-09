@@ -1,7 +1,7 @@
 # SU-SWS Ansible Playbooks
 Collection of Ansible playbooks and roles used to migrate SWS sites, and configure Acquia servers.
 
-**Version: 1.x**
+**Version: master**
 
 Maintainers: [kbrownell](https://github.com/kbrownell), [jbickar](https://github.com/jbickar)
 
@@ -17,6 +17,7 @@ This is a small collection of Ansible roles that we are using to migrate sites f
 2. Install jmespath: `pip3 install jmespath`
 3. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
 4. `cd ansible-playbooks`
+5. `git clone git@github.com:SU-SWS/ansible-sync`
 
 ## Migrating Sites
 ````
@@ -29,6 +30,18 @@ This playbook allows you to copy sites from `sites.stanford.edu` or `people.stan
     1. **NOTE**: Do not use your own ACSF account, as the API key cannot be reset. Use the credentials for the dedicated API user.
 3. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary), for connecting to the .
 4. Run: `ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml` with the inventory you created or modified.
+
+### Release Process and Versioning
+
+We track which version of the migration script was used to migrate individual sites.  When creating a new release, make sure to update the `migration_version` variable in `group_vars/all.yml`. This sets the Drupal variable `sws_migration_version` to the version number (e.g., `0.0.1`)
+
+For final pre-launch site migrations use _only_ a tagged version of this playbook.
+
+After creating a release, change the `migration_version` variable back to `master`. Thus:
+- dev/test site migrations should have:
+    - `sws_migration_version` = `master`
+- production launched migrations should have:
+    - `sws_migration_version` = `M.m.p`
 
 ## Configuring ACSF Servers
 ````
