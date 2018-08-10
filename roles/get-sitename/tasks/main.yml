@@ -102,10 +102,10 @@
 #
 - name: Manipulate sites.json
   set_fact:
-    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': item.1.acsf_site_id, 'site': item.0|regex_replace('.(dev-|test-)cardinalsites.acsitefactory.com', '') } ] }}"
+    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': sites_json.sites[item.0].conf.acsf_site_id, 'site': item.0|regex_replace('.(dev-|test-)cardinalsites.acsitefactory.com', '') } ] }}"
   with_together:
     - "{{ sites_json.sites }}"
-    - "{{ sites_json|json_query('sites.*.conf') }}"
+    - "{{ sites_json.sites }}"
   when: item.0 | regex_search('acsitefactory')
 
 # Debug the sites_formatted array.
