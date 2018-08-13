@@ -31,6 +31,27 @@
 #
 # KNOWN ISSUES:
 # --
+
+- name: Search for existing site
+  set_fact:
+    search_for_site: "{{ sites_formatted|json_query(the_query) }}"
+  vars:
+    the_query: "[?site=='{{ acsf_site_name }}']"
+
+- name: Set site_exists to TRUE if it exists
+  set_fact:
+    site_exists: TRUE
+  when: search_for_site|length > 0
+
+- name: Set site_exists to FALSE if it does not exist
+  set_fact:
+    site_exists: FALSE
+  when: search_for_site|length == 0
+
+# - name: debug
+#   debug:
+#     var: site_exists
+
 - name: Create new site on Site Factory
   uri:
     url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/sites"
@@ -46,7 +67,7 @@
     body_format: json
     return_content: yes
   register: site_created
-  when: acsf_site_name not in existing_sites | json_query('json.sites[*].site')
+  when: not site_exists
 
 - pause:
     minutes: 1
@@ -57,3 +78,8 @@
   delay: 50
   register: bootstrap_status
   until: bootstrap_status.stdout | search('Successful')
+
+- name: Re-call the sites-json stuff
+  include_role:
+    name: get-sitename
+  when: not site_exists

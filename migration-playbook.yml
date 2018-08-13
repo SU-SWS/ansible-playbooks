@@ -43,5 +43,6 @@
     - { role: upload-site, tags: [download-site,check-php,setup-site,upload-site] }
     - { role: change-paths, tags: [download-site,check-php,setup-site,upload-site,change-paths] }
     - { role: add-vhost, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost] }
-    - { role: cleanup-local, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost,cleanup-local] }
+    - { role: acsf-optimizations, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost,acsf-optimizations] }
+    - { role: cleanup-local, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost,acsf-optimizations,cleanup-local] }
   serial: 12
