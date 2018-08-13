@@ -25,6 +25,10 @@
 # KNOWN ISSUES:
 # --
 
+# - name: Debug new_absolute_path
+#   debug:
+#     var: new_absolute_path
+
 - name: Add custom domain
   uri:
     url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
