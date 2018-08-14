@@ -1,0 +1,40 @@
+---
+# Ansible playbook that recreates in Site Factory sites on our infrastructure.
+# https://github.com/SU-SWS/ansible-playbooks
+# ============================================================================
+#
+# This playbook will sync a site from the Stanford Sites legacy hosting platform
+# to its destination on ACSF.
+#
+# Can be run with: ansible-playbook -i inventory/sites migration-sync-only-playbook.yml
+#
+# SEE ALSO:
+#
+# full-migration-playbook.yml to create a new site on ACSF and sync from the
+# existing infrastructure.
+#
+# acsf-site-setup-playbook.yml to only run the roles that set up the site on
+# ACSF.
+#
+# KNOWN ISSUES:
+# --
+#
+# PLAY 1: Migrate sites from SWS infrastructure to Site Factory
+# =============================================================
+- hosts: groups,depts,people,products
+  connection: local
+
+  vars_files:
+    - migration_vars.yml
+    - ansible-sync/prod-sites.yml
+
+  roles:
+    - { role: setup-local }
+    - { role: download-site }
+    - { role: css-injector }
+    - { role: check-php }
+    - { role: upload-site }
+    - { role: change-paths }
+    - { role: acsf-optimizations }
+    - { role: cleanup-local }
+  serial: 12

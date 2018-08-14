@@ -10,16 +10,19 @@
 # Can be run with: ansible-playbook -i inventory/sites migration-playbook.yml
 #
 # RE-STARTING:
-# If you need to restart the site-migration process, use --tags "" instead of
-# --start-at-task="". Tags allow us to re-start at a safe place in the
-# playbook and rely on dependencies to grab variables required for a role.
+# If you need to restart the full site-migration process, restart from the top.
 #
-# Example:
-# ansible-playbook -i inventory/sites migration-playbook.yml --tags "download-site"
+# Dependencies are not run when you restart a playbook with --start-at-task=""
+# so you may miss requiring variables or operations on the files,
+# site, and database.
 #
-# Re-running this playbook with the "download-site" tag, will run download-site,
-# get-sitename (because get-sitename is a dependency of upload-site), then
-# upload-site.
+# SEE ALSO:
+#
+# acsf-site-setup-playbook.yml to only run the roles that set up the site on
+# ACSF.
+#
+# migration-sync-only-playbook.yml to run the download and syncing tasks,
+# given the site is already set up on ACSF.
 #
 # KNOWN ISSUES:
 # --
@@ -35,6 +38,14 @@
 
   roles:
     - { role: protect-prod }
+    - { role: setup-local }
+    - { role: download-site }
     - { role: setup-site }
+    - { role: css-injector }
+    - { role: check-php }
+    - { role: upload-site }
+    - { role: change-paths }
     - { role: add-vhost }
+    - { role: acsf-optimizations }
+    - { role: cleanup-local }
   serial: 12
