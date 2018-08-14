@@ -10,16 +10,11 @@
 # Can be run with: ansible-playbook -i inventory/sites migration-playbook.yml
 #
 # RE-STARTING:
-# If you need to restart the site-migration process, use --tags "" instead of
-# --start-at-task="". Tags allow us to re-start at a safe place in the
-# playbook and rely on dependencies to grab variables required for a role.
+# If you need to restart the site-migration process, restart from the top.
 #
-# Example:
-# ansible-playbook -i inventory/sites migration-playbook.yml --tags "download-site"
-#
-# Re-running this playbook with the "download-site" tag, will run download-site,
-# get-sitename (because get-sitename is a dependency of upload-site), then
-# upload-site.
+# Dependencies are not run when you restart a playbook with --start-at-task=""
+# so you may miss requiring variables or operations on the files,
+# site, and database.
 #
 # KNOWN ISSUES:
 # --
@@ -36,13 +31,13 @@
   roles:
     - { role: protect-prod }
     - { role: setup-local }
-    - { role: download-site, tags: [download-site] }
-    - { role: setup-site, tags: [setup-site] }
-    - { role: css-injector, tags: [download-site,css-injector] }
-    - { role: check-php, tags: [download-site,css-injector,check-php] }
-    - { role: upload-site, tags: [download-site,check-php,setup-site,upload-site] }
-    - { role: change-paths, tags: [download-site,check-php,setup-site,upload-site,change-paths] }
-    - { role: add-vhost, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost] }
-    - { role: acsf-optimizations, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost,acsf-optimizations] }
-    - { role: cleanup-local, tags: [download-site,check-php,setup-site,upload-site,change-paths,get-sitename,add-vhost,acsf-optimizations,cleanup-local] }
+    - { role: download-site }
+    - { role: setup-site }
+    - { role: css-injector }
+    - { role: check-php }
+    - { role: upload-site }
+    - { role: change-paths }
+    - { role: add-vhost }
+    - { role: acsf-optimizations }
+    - { role: cleanup-local }
   serial: 12
