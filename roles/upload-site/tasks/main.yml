@@ -120,6 +120,7 @@
     # Must truncate this table otherwise users will lose roles in WMD->SSP upgrade path.
     - "sqlq 'truncate table webauth_roles_history'"
     - "sspwmd"
+    - "-y pm-uninstall webauth_extras"
   notify: Clear site cache
 
 - name: Post-database-restore tasks if not launch
