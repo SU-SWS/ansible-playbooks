@@ -101,12 +101,19 @@
   when: dept_site == "TRUE"
   notify: Clear site cache
 
+- name: Set Certs Dir
+  set_fact:
+    certs_dir: "/mnt/www/html/{{ stack }}.02{% if acsf_environment=='' %}live{% elif acsf_environment=='test'%}test{% elif acsf_environment=='dev'%}dev{% endif %}/simplesamlphp/cert/"
+
 - name: Do post-database-restore tasks
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
     - "-y en acsf acsf_helper stanford_ssp paranoia"
     - 'ev "_paranoia_remove_risky_permissions();"'
-    - "-y vset sws_migration_version {{ migration_version }}"
+    - "-y --exact vset sws_migration_version {{ migration_version }}"
+    - "-y --exact vset stanford_ssp_role_map_source workgroup"
+    - "-y --exact vset stanford_ssp_workgroup_api_cert {{ certs_dir }}stanford_ssp.cert"
+    - "-y --exact vset stanford_ssp_workgroup_api_key {{ certs_dir }}stanford_ssp.key"
     - "-y dis stanford_afs_quota acsf_openid openid mollom xmlrpc statistics"
     - "-y pm-uninstall stanford_afs_quota acsf_openid mollom xmlrpc statistics"
     - "-y pm-uninstall openid"
