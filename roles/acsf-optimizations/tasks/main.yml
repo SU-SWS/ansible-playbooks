@@ -1,0 +1,39 @@
+---
+# Ansible role for post site setup acsf optimizations
+# https://github.com/SU-SWS/ansible-playbooks
+# =================================================
+#
+# The purpose of this role is to perform optimization tweaks for the
+# ACSF environment.
+#
+# INPUTS:
+# --
+#
+# OUTPUTS:
+# --
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+- name: Enable page cache
+  shell: "{{ drush_alias }} -y --exact vset cache 1"
+
+- name: Enable block cache
+  shell: "{{ drush_alias }} -y --exact vset block_cache 1"
+
+- name: Enable css compression
+  shell: "{{ drush_alias }} -y --exact vset preprocess_css 1"
+
+- name: Enable js compression
+  shell: "{{ drush_alias }} -y --exact vset preprocess_js 1"
+
+- name: Set cache lifetime to infinite
+  shell: "{{ drush_alias }} -y --exact vset cache_lifetime 0"
+
+- name: Disable error reporting
+  shell: "{{ drush_alias }} -y --exact vset error_level 0"
