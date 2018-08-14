@@ -1,7 +1,7 @@
 # SU-SWS Ansible Playbooks
 Collection of Ansible playbooks and roles used to migrate SWS sites, and configure Acquia servers.
 
-**Version: 1.x**
+**Version: master**
 
 Maintainers: [kbrownell](https://github.com/kbrownell), [jbickar](https://github.com/jbickar)
 
@@ -13,9 +13,11 @@ This is a small collection of Ansible roles that we are using to migrate sites f
 
 ## Installation
 
-1. If not already installed, `pip install ansible` or `brew install ansible`
-2. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
-3. `cd ansible-playbooks`
+1. If not already installed, `pip3 install ansible` or `brew install ansible`
+2. Install jmespath: `pip3 install jmespath`
+3. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
+4. `cd ansible-playbooks`
+5. `git clone git@github.com:SU-SWS/ansible-sync`
 
 ## Migrating Sites
 ````
@@ -29,6 +31,18 @@ This playbook allows you to copy sites from `sites.stanford.edu` or `people.stan
 3. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary), for connecting to the .
 4. Run: `ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml` with the inventory you created or modified.
 
+### Release Process and Versioning
+
+We track which version of the migration script was used to migrate individual sites.  When creating a new release, make sure to update the `migration_version` variable in `group_vars/all.yml`. This sets the Drupal variable `sws_migration_version` to the version number (e.g., `0.0.1`)
+
+For final pre-launch site migrations use _only_ a tagged version of this playbook.
+
+After creating a release, change the `migration_version` variable back to `master`. Thus:
+- dev/test site migrations should have:
+    - `sws_migration_version` = `master`
+- production launched migrations should have:
+    - `sws_migration_version` = `M.m.p`
+
 ## Configuring ACSF Servers
 ````
 ansible-playbook -i inventory/servers server-settings-playbook.yml
@@ -36,17 +50,31 @@ ansible-playbook -i inventory/servers server-settings-playbook.yml
 
 1. Copy `default.servers` to `inventory/servers`.
 2. Copy `default.server_vars.yml` to the root `ansible-playbooks` directory and name it `server_vars.yml`. Populate it with your information.
-3. Run: `ansible-playbook -i inventory/servers server-settings-playbook.yml` 
+3. Run: `ansible-playbook -i inventory/servers server-settings-playbook.yml`
 
 ## Troubleshooting
 
-If a task fails, you can re-run the playbook from where it failed with: 
+### Failed Tasks
+
+If a task fails, you can re-run the playbook from where it failed with:
 
 ```
 ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml --tags "[rolename]"
 ```
 
 You can also add `-v(vvv)` for more debug information.
+
+### SSL Issues
+
+If you are on OSX and are having SSL certificate troubles please view: https://docs.ansible.com/ansible/latest/reference_appendices/python_3_support.html
+
+It may help to add one of the following to `migration_vars.yml`
+```
+ansible_python_interpreter=/usr/local/bin/python3
+ansible_python_interpreter=/usr/bin/python3
+```
+
+Or run `ansible-playbook` with the `-e ansible_python_interpreter=/usr/local/bin/python3` option.
 
 ## Contribution / Collaboration
 

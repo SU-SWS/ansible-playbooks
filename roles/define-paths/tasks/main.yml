@@ -3,24 +3,31 @@
 # https://github.com/SU-SWS/ansible-playbooks
 # ==================================================================
 #
-# This role is required for "change-paths" and "css-injector".
+# This role is required for "change-paths", "css-injector", "setup-site",
+#   and "upload-site".
 #
 # INPUTS:
+#   acsf_environment
 #   acsf_site_name
-#   inventory_hostname
 #   drush_environment
+#   inventory_hostname
+#   launch_tasks
 #   site_prefix
+#   sites_service
 #   stack
 #   vhost
 #
 # OUTPUTS:
-#   sites_service
-#   absolute_vhost_path_sites_service
+#   absolute_path_launch
+#   absolute_path_prod
 #   absolute_path_sites_service
 #   absolute_path_testing
-#   absolute_path_prod
-#   new_absolute_path
+#   absolute_vhost_path_sites_service
 #   drush_alias
+#   file_public_path
+#   new_absolute_path
+#   scripts_dir
+#   sites_service
 #
 # ALTERNATIVE ROLES:
 # --
@@ -64,15 +71,21 @@
   set_fact:
     absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}-{{ acsf_environment }}.cardinalsites.stanford.edu"
 
-# Ex: g2sc.stanford.edu
-- name: Set absolute path for production
+# Ex: g2sc.cardinalsites.stanford.edu
+- name: Set absolute path for production pre-launch
   set_fact:
-    absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.stanford.edu"
+    absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.cardinalsites.stanford.edu"
 
-# Ex: g2sc-dev.cardinalsites.stanford.edu if migrating to dev
+# Ex: g2sc.stanford.edu
+- name: Set absolute path for production at launch
+  set_fact:
+    absolute_path_launch: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.stanford.edu"
+
+# Ex: "g2sc-dev.cardinalsites.stanford.edu" if migrating to dev,
+#     "g2sc.stanford.edu" if launch_tasks = "launch"
 - name: Set new absolute path based on destination
   set_fact:
-    new_absolute_path: "{% if acsf_environment == '' %}{{ absolute_path_prod }}{% else %}{{ absolute_path_testing }}{% endif %}"
+    new_absolute_path: "{% if launch_tasks == 'launch' %}{{ absolute_path_launch }}{% elif acsf_environment == '' %}{{ absolute_path_prod }}{% else %}{{ absolute_path_testing }}{% endif %}"
 
 - name: Debug absolute path for site
   debug:
@@ -82,16 +95,3 @@
 - name: Set drush alias
   set_fact:
     drush_alias: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}"
-
-- name: Get public files directory
-  shell: "{{ drush_alias }} status --fields='File directory path' --field-labels=0 --strict=0"
-  register: file_public_path
-
-- name: Print file_public_path
-  debug:
-    msg: "File public path: {{ file_public_path.stdout }}"
-
-- name: Be sure response does not include drush warnings
-  fail:
-    msg: "There appear to be drush warning messages cluttering the file_public_path variable"
-  when: file_public_path.stdout | search('The following module is missing')

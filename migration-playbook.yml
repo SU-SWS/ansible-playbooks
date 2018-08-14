@@ -21,7 +21,7 @@
 #
 # PLAY 1: Migrate sites from SWS infrastructure to Site Factory
 # =============================================================
-- hosts: groups,depts,people
+- hosts: groups,depts,people,products
   connection: local
 
   vars_files:
@@ -32,11 +32,12 @@
     - { role: protect-prod }
     - { role: setup-local }
     - { role: download-site }
+    - { role: setup-site }
     - { role: css-injector }
     - { role: check-php }
-    - { role: setup-site }
     - { role: upload-site }
     - { role: change-paths }
     - { role: add-vhost }
+    - { role: acsf-optimizations }
     - { role: cleanup-local }
   serial: 12

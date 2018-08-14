@@ -12,6 +12,10 @@
 # prod: enter ""
 acsf_environment: "dev"
 #
+# Set this variable to `launch` if this is the final migration to
+# production before a site goes live.
+launch_tasks: ""
+#
 # Enter the number of minutes you should wait for all sites to complete
 # spinup on Site Factory. In general, it appears ACSF spins up 3 sites at a
 # time and that each batch takes around 6 minutes. So if you are migrating
@@ -38,3 +42,9 @@ sunetid: ""
 # have at least one string resembling PHP.  Options include: fail or continue.
 # Example: fail
 php_candidates_consequence: "fail"
+
+# If your local drush alias prefixes are set to "ds_" for sites1/sites2 and
+# "dp_" for people1/people2, leave this set to "default". If you are NOT using
+# prefixes (e.g., you call "drush @sse.sitename" or "drush @ppl.sunetid"), then
+# set this to "".
+sites_drush_prefix: "default"
