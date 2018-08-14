@@ -83,3 +83,16 @@
   include_role:
     name: get-sitename
   when: not site_exists
+
+- name: Get public files directory
+  shell: "{{ drush_alias }} status --fields='File directory path' --field-labels=0 --strict=0"
+  register: file_public_path
+
+- name: Print file_public_path
+  debug:
+    msg: "File public path: {{ file_public_path.stdout }}"
+
+- name: Be sure response does not include drush warnings
+  fail:
+    msg: "There appear to be drush warning messages cluttering the file_public_path variable"
+  when: file_public_path.stdout | search('The following module is missing')
