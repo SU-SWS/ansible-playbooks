@@ -16,6 +16,8 @@
 # acsf-site-setup-playbook.yml to only run the roles that set up the site on
 # ACSF.
 #
+# add-vhost-playbook.yml if you wish only to add a vhost as a custom domain.
+#
 # KNOWN ISSUES:
 # --
 #
