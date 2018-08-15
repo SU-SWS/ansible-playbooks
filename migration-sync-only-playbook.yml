@@ -3,18 +3,18 @@
 # https://github.com/SU-SWS/ansible-playbooks
 # ============================================================================
 #
-# This playbook will create a new site in Acquia Cloud Site Factory, and
-# then sync a site from the SWS legacy hosting platform to the newly created
-# site.
+# This playbook will sync a site from the Stanford Sites legacy hosting platform
+# to its destination on ACSF.
 #
-# Can be run with: ansible-playbook -i inventory/sites migration-playbook.yml
+# Can be run with: ansible-playbook -i inventory/sites migration-sync-only-playbook.yml
 #
-# RE-STARTING:
-# If you need to restart the site-migration process, restart from the top.
+# SEE ALSO:
 #
-# Dependencies are not run when you restart a playbook with --start-at-task=""
-# so you may miss requiring variables or operations on the files,
-# site, and database.
+# full-migration-playbook.yml to create a new site on ACSF and sync from the
+# existing infrastructure.
+#
+# acsf-site-setup-playbook.yml to only run the roles that set up the site on
+# ACSF.
 #
 # KNOWN ISSUES:
 # --
@@ -29,15 +29,12 @@
     - ansible-sync/prod-sites.yml
 
   roles:
-    - { role: protect-prod }
     - { role: setup-local }
     - { role: download-site }
-    - { role: setup-site }
     - { role: css-injector }
     - { role: check-php }
     - { role: upload-site }
     - { role: change-paths }
-    - { role: add-vhost }
     - { role: acsf-optimizations }
     - { role: cleanup-local }
   serial: 12
