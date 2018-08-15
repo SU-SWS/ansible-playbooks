@@ -2,3 +2,4 @@
 dependencies:
   - { role: protect-prod }
   - { role: get-sitename }
+  - { role: define-paths }

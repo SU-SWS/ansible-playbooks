@@ -24,6 +24,8 @@
 # migration-sync-only-playbook.yml to run the download and syncing tasks,
 # given the site is already set up on ACSF.
 #
+# add-vhost-playbook.yml if you wish only to add a vhost as a custom domain.
+#
 # KNOWN ISSUES:
 # --
 #
