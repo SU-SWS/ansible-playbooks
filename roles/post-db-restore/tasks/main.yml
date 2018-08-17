@@ -1,0 +1,110 @@
+---
+# Ansible role for uploading the database and files to Site Factory.
+# https://github.com/SU-SWS/ansible-playbooks
+# ==================================================================
+#
+# This role uploads the database and files from local to Site Factory. It also
+# runs a number of tasks to transform the database in such a way that images
+# and absolute paths will work in the new ACSF environment. If any part of this
+# role fails for a site, start from the top with a fresh download of the site.
+#
+# INPUTS:
+#   acsf_site_name
+#   inventory_hostname
+#   sitefactory_environment
+#   drush_alias
+#   drush_environment
+#   stack
+#
+# OUTPUTS:
+# --
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+# --
+#
+# KNOWN ISSUES:
+# --
+
+- name: Get current install profile
+  shell: "{{ drush_alias }} ev 'echo variable_get(\"install_profile\", \"set_me\");'"
+  register: get_profile_output
+
+- name: Set install_profile ansible var
+  set_fact:
+    install_profile: "{{ get_profile_output.stdout }}"
+
+# Set the installation profile if one does not exist.
+- name: Find and set default install profile to stanford
+  shell: "{{ drush_alias }} vset install_profile stanford"
+  when: install_profile == "set_me" and dept_site == "FALSE" and product_site == "FALSE"
+
+# Set the install profile by looking for the enabled supporting module.
+# Order of operations is important here, because a JSA site may have BOTH
+# "stanford_jumpstart" and "stanford_jumpstart_academic" enabled, yet we want
+# to be sure to set "install_profile" to "stanford_sites_jumpstart_academic" for
+# JSA sites (so that they get all the correct code).
+- name: Find and set the install profile by helper modules.
+  shell: "FOUND=$({{ drush_alias }} php-eval \"var_dump(module_exists('{{ item.module }}'));\"); if [[ \"$FOUND\" =~ 'true' ]]; then {{ drush_alias }} -y vset install_profile '{{ item.profile }}'; fi;"
+  with_items:
+    - { module: 'stanford_jumpstart', profile: 'stanford_sites_jumpstart' }
+    - { module: 'stanford_jumpstart_plus', profile: 'stanford_sites_jumpstart_plus' }
+    - { module: 'stanford_jumpstart_academic', profile: 'stanford_sites_jumpstart_academic' }
+    - { module: 'stanford_jumpstart_vpsa', profile: 'stanford_jumpstart_vpsa' }
+    - { module: 'stanford_jumpstart_lab', profile: 'stanford_sites_jumpstart_lab' }
+    - { module: 'stanford_jumpstart_engineering', profile: 'stanford_sites_jumpstart_engineering' }
+  when: product_site == "TRUE"
+
+- name: Set site up as a Department site
+  shell: "{{ drush_alias }} {{ item }}"
+  with_items:
+    - "-y vset install_profile stanford_dept"
+    - "cc all"
+    - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
+    - "-y en acsf"
+    - "rr"
+  when: dept_site == "TRUE"
+  notify: Clear site cache
+
+- name: Set Certs Dir
+  set_fact:
+    certs_dir: "/mnt/www/html/{{ stack }}.02{% if acsf_environment=='' %}live{% elif acsf_environment=='test'%}test{% elif acsf_environment=='dev'%}dev{% endif %}/simplesamlphp/cert/"
+
+- name: Do post-database-restore tasks
+  shell: "{{ drush_alias }} {{ item }}"
+  with_items:
+    - "-y en acsf acsf_helper stanford_ssp paranoia"
+    - 'ev "_paranoia_remove_risky_permissions();"'
+    - "-y --exact vset sws_migration_version {{ migration_version }}"
+    - "-y --exact vset stanford_ssp_role_map_source workgroup"
+    - "-y --exact vset stanford_ssp_workgroup_api_cert {{ certs_dir }}stanford_ssp.cert"
+    - "-y --exact vset stanford_ssp_workgroup_api_key {{ certs_dir }}stanford_ssp.key"
+    - "-y dis stanford_afs_quota acsf_openid openid mollom xmlrpc statistics"
+    - "-y pm-uninstall stanford_afs_quota acsf_openid mollom xmlrpc statistics"
+    - "-y pm-uninstall openid"
+    # Must truncate this table otherwise users will lose roles in WMD->SSP upgrade path.
+    - "sqlq 'truncate table webauth_roles_history'"
+    - "sspwmd"
+    - "-y pm-uninstall webauth_extras"
+  notify: Clear site cache
+  ignore_errors: "yes"
+
+- name: Post-database-restore tasks if not launch
+  shell: "{{ drush_alias }} {{ item }}"
+  with_items:
+    - "-y en nobots"
+    - "-y dis googleanalytics pingdom_rum"
+  when: launch_tasks == ""
+  notify: Clear site cache
+
+# Copy public files first so that they exist and Drupal can find them if needed
+- name: Copy public files from local to Site Factory
+  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/ --exclude-paths=sites/default/files/js_injector/"
+  notify: Clear site cache
+
+# Copy private files first so that they exist and Drupal can find them if needed
+- name: Copy private files from local to Site Factory
+  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/private/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%private/"
+  notify: Clear site cache

@@ -61,6 +61,20 @@ It **only** syncs the content of the sites to ACSF; it does **not** create them.
 3. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary), for connecting to the sites/people servers.
 4. Run: `ansible-playbook -i inventory/[inventory-filename] migration-sync-only-playbook.yml` with the inventory you created or modified.
 
+### Configure ACSF Sites after Restoring from Sites Database Dump
+````
+ansible-playbook -i inventory/sites post-db-restore-playbook.yml
+````
+There are a number of database and file system changes that we make on ACSF after restoring from a database dump. Sometimes, "drush updb" fails after restoring from the database dump; this playbook allows you to continue from that point forward, ignoring the failed database schema update at your own peril.
+
+It does not create sites or custom domains.
+
+1. Copy `default.sites` into the `/inventory` directory and modify it to include only the sites you want to create, grouped by their site type. You can name it whatever you wish.
+2. Copy `default.migration_vars.yml` to the root `ansible-playbooks` directory and name it `migration_vars.yml`. Populate it with your information.
+    1. **NOTE**: Do not use your own ACSF account, as the API key cannot be reset. Use the credentials for the dedicated API user.
+3. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary), for connecting to the sites/people servers.
+4. Run: `ansible-playbook -i inventory/[inventory-filename] post-db-restore-playbook.yml` with the inventory you created or modified.
+
 ### Adding Virtual Hosts as Custom Domains to Sites on ACSF (only)
 ````
 ansible-playbook -i inventory/sites add-vhost-playbook.yml

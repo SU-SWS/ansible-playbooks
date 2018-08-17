@@ -18,6 +18,8 @@
 # migration-sync-only-playbook.yml to run the download and syncing tasks,
 # given the site is already set up on ACSF.
 #
+# post-db-restore-playbook.yml to only run the tasks that happen after the ACSF
+# site has been restored from the database dump.
 #
 # KNOWN ISSUES:
 # --

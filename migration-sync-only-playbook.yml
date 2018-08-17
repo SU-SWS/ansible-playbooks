@@ -18,6 +18,9 @@
 #
 # add-vhost-playbook.yml if you wish only to add a vhost as a custom domain.
 #
+# post-db-restore-playbook.yml to only run the tasks that happen after the ACSF
+# site has been restored from the database dump.
+#
 # KNOWN ISSUES:
 # --
 #
@@ -36,6 +39,7 @@
     - { role: css-injector }
     - { role: check-php }
     - { role: upload-site }
+    - { role: post-db-restore }
     - { role: change-paths }
     - { role: acsf-optimizations }
     - { role: cleanup-local }
