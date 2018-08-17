@@ -1,0 +1,38 @@
+---
+# Ansible playbook that recreates in Site Factory sites on our infrastructure.
+# https://github.com/SU-SWS/ansible-playbooks
+# ============================================================================
+#
+# This playbook will (only) add a vhost as a custom domain in ACSF.
+#
+# Can be run with: ansible-playbook -i inventory/sites add-vhost-playbook.yml
+#
+# SEE ALSO:
+#
+# full-migration-playbook.yml to create a new site on ACSF and sync from the
+# existing infrastructure.
+#
+# acsf-site-setup-playbook.yml to only run the roles that set up the site on
+# ACSF.
+#
+# migration-sync-only-playbook.yml to run the download and syncing tasks,
+# given the site is already set up on ACSF.
+#
+# post-db-restore-playbook.yml to only run the tasks that happen after the ACSF
+# site has been restored from the database dump.
+#
+# KNOWN ISSUES:
+# --
+#
+# PLAY 1: Add custom domains to sites on Site Factory
+# =============================================================
+- hosts: groups,depts,people,products
+  connection: local
+
+  vars_files:
+    - migration_vars.yml
+    - ansible-sync/prod-sites.yml
+
+  roles:
+    - { role: add-vhost }
+  serial: 12

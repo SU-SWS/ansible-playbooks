@@ -10,11 +10,24 @@
 # Can be run with: ansible-playbook -i inventory/sites migration-playbook.yml
 #
 # RE-STARTING:
-# If you need to restart the site-migration process, restart from the top.
+# If you need to restart the full site-migration process, restart from the top.
 #
 # Dependencies are not run when you restart a playbook with --start-at-task=""
 # so you may miss requiring variables or operations on the files,
 # site, and database.
+#
+# SEE ALSO:
+#
+# acsf-site-setup-playbook.yml to only run the roles that set up the site on
+# ACSF.
+#
+# migration-sync-only-playbook.yml to run the download and syncing tasks,
+# given the site is already set up on ACSF.
+#
+# post-db-restore-playbook.yml to only run the tasks that happen after the ACSF
+# site has been restored from the database dump.
+#
+# add-vhost-playbook.yml if you wish only to add a vhost as a custom domain.
 #
 # KNOWN ISSUES:
 # --
@@ -36,6 +49,7 @@
     - { role: css-injector }
     - { role: check-php }
     - { role: upload-site }
+    - { role: post-db-restore }
     - { role: change-paths }
     - { role: add-vhost }
     - { role: acsf-optimizations }

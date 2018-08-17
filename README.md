@@ -20,16 +20,73 @@ This is a small collection of Ansible roles that we are using to migrate sites f
 5. `git clone git@github.com:SU-SWS/ansible-sync`
 
 ## Migrating Sites
+
+### Creating and Migrating Sites
 ````
-ansible-playbook -i inventory/sites migration-playbook.yml
+ansible-playbook -i inventory/sites full-migration-playbook.yml
 ````
 This playbook allows you to copy sites from `sites.stanford.edu` or `people.stanford.edu`. It supports virtual hosts.
 
 1. Copy `default.sites` into the `/inventory` directory and modify it to include only the sites you want to migrate, grouped by their site type. You can name it whatever you wish.
 2. Copy `default.migration_vars.yml` to the root `ansible-playbooks` directory and name it `migration_vars.yml`. Populate it with your information.
     1. **NOTE**: Do not use your own ACSF account, as the API key cannot be reset. Use the credentials for the dedicated API user.
-3. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary), for connecting to the .
-4. Run: `ansible-playbook -i inventory/[inventory-filename] migration-playbook.yml` with the inventory you created or modified.
+3. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary), for connecting to the sites/people servers.
+4. Run: `ansible-playbook -i inventory/[inventory-filename] full-migration-playbook.yml` with the inventory you created or modified.
+
+### Creating Sites on ACSF (only)
+````
+ansible-playbook -i inventory/sites acsf-site-setup-playbook.yml
+````
+This playbook allows you to create sites on ACSF based on values of sites on `sites.stanford.edu` or `people.stanford.edu`. It supports virtual hosts.
+
+It **only** sets up the sites on ACSF; it does **not** migrate them. When creating new sites via the ACSF API, the factory will queue the new site creation and only create 3 at a time. Thus, this playbook can be run prior to a mass migration.
+
+1. Copy `default.sites` into the `/inventory` directory and modify it to include only the sites you want to create, grouped by their site type. You can name it whatever you wish.
+2. Copy `default.migration_vars.yml` to the root `ansible-playbooks` directory and name it `migration_vars.yml`. Populate it with your information.
+    1. **NOTE**: Do not use your own ACSF account, as the API key cannot be reset. Use the credentials for the dedicated API user.
+3. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary), for connecting to the sites/people servers.
+4. Run: `ansible-playbook -i inventory/[inventory-filename] acsf-site-setup-playbook.yml` with the inventory you created or modified.
+
+### Migrating Sites on ACSF (only)
+````
+ansible-playbook -i inventory/sites migration-sync-only-playbook.yml
+````
+This playbook allows you to migrate sites from `sites.stanford.edu` or `people.stanford.edu` to ACSF.
+
+It **only** syncs the content of the sites to ACSF; it does **not** create them. The sites **must** exist on ACSF, or else you will be a sad puppy.
+
+1. Copy `default.sites` into the `/inventory` directory and modify it to include only the sites you want to create, grouped by their site type. You can name it whatever you wish.
+2. Copy `default.migration_vars.yml` to the root `ansible-playbooks` directory and name it `migration_vars.yml`. Populate it with your information.
+    1. **NOTE**: Do not use your own ACSF account, as the API key cannot be reset. Use the credentials for the dedicated API user.
+3. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary), for connecting to the sites/people servers.
+4. Run: `ansible-playbook -i inventory/[inventory-filename] migration-sync-only-playbook.yml` with the inventory you created or modified.
+
+### Configure ACSF Sites after Restoring from Sites Database Dump
+````
+ansible-playbook -i inventory/sites post-db-restore-playbook.yml
+````
+There are a number of database and file system changes that we make on ACSF after restoring from a database dump. Sometimes, "drush updb" fails after restoring from the database dump; this playbook allows you to continue from that point forward, ignoring the failed database schema update at your own peril.
+
+It does not create sites or custom domains.
+
+1. Copy `default.sites` into the `/inventory` directory and modify it to include only the sites you want to create, grouped by their site type. You can name it whatever you wish.
+2. Copy `default.migration_vars.yml` to the root `ansible-playbooks` directory and name it `migration_vars.yml`. Populate it with your information.
+    1. **NOTE**: Do not use your own ACSF account, as the API key cannot be reset. Use the credentials for the dedicated API user.
+3. Make sure you have an active Kerberos ticket, and are on Stanford VPN (if necessary), for connecting to the sites/people servers.
+4. Run: `ansible-playbook -i inventory/[inventory-filename] post-db-restore-playbook.yml` with the inventory you created or modified.
+
+### Adding Virtual Hosts as Custom Domains to Sites on ACSF (only)
+````
+ansible-playbook -i inventory/sites add-vhost-playbook.yml
+````
+This playbook allows you to add vhosts as custom domains to sites on ACSF.
+
+It **only** add custom domains to sites *already on* ACSF; it does **not** create or migrate them. The sites **must** exist on ACSF, or else this playbook will fail.
+
+1. Copy `default.sites` into the `/inventory` directory and modify it to include only the sites you want to create, grouped by their site type. You can name it whatever you wish.
+2. Copy `default.migration_vars.yml` to the root `ansible-playbooks` directory and name it `migration_vars.yml`. Populate it with your information.
+    1. **NOTE**: Do not use your own ACSF account, as the API key cannot be reset. Use the credentials for the dedicated API user.
+3. Run: `ansible-playbook -i inventory/[inventory-filename] add-vhost-playbook.yml` with the inventory you created or modified.
 
 ### Release Process and Versioning
 
