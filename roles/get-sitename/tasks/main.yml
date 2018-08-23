@@ -15,6 +15,7 @@
 # OUTPUTS:
 #   acsf_site_name
 #   sites_formatted
+#   sites_service
 #   sitefactory_environment
 #   stanford_environment
 #
@@ -26,6 +27,12 @@
 #
 # KNOWN ISSUES:
 # --
+
+# Ex: sites
+# Ex: people
+- name: Set sites_service variable
+  set_fact:
+    sites_service: "{% if site_prefix=='dp' %}people{% elif site_prefix=='ds'%}sites{% endif %}"
 
 - name: Sanitize inventory_hostname
   set_fact:
@@ -53,11 +60,19 @@
   when:
     acsf_environment != ""
 
-- name: Get sites.json from remote
+- name: Get sites.json from cardinald7
   command: drush @acsf{{ drush_environment }}.cardinald7.saml php-eval "include 'sites/sites.php'; drupal_json_output(gardens_site_data_load_file());"
   register: sites_json_raw
+  when:
+    sites_service == "sites"
 
-- name: Get sites.json from remote
+- name: Get sites.json from leland
+  command: drush @acsf{{ drush_environment }}.leland.peoplesaml php-eval "include 'sites/sites.php'; drupal_json_output(gardens_site_data_load_file());"
+  register: sites_json_raw
+  when:
+    sites_service == "people"
+
+- name: Clean the sites.json from the response
   set_fact:
     sites_json: "{{ sites_json_raw.stdout|from_json }}"
 

@@ -13,7 +13,6 @@
 #   inventory_hostname
 #   launch_tasks
 #   site_prefix
-#   sites_service
 #   stack
 #   vhost
 #
@@ -48,11 +47,6 @@
 - name: What is the scripts_dir variable
   debug:
     msg: "scripts_dir is: {{ scripts_dir}}"
-
-# Ex: sites
-- name: Set sites_service variable
-  set_fact:
-    sites_service: "{% if site_prefix=='dp' %}people{% elif site_prefix=='ds'%}sites{% endif %}"
 
 # Ex: g2sc.stanford.edu
 # Found example of a site with a vhost, hard linking to images by non-vhost path.
