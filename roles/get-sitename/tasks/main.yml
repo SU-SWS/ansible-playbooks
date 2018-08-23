@@ -60,21 +60,32 @@
   when:
     acsf_environment != ""
 
-- name: Get sites.json from cardinald7
-  command: drush @acsf{{ drush_environment }}.cardinald7.saml php-eval "include 'sites/sites.php'; drupal_json_output(gardens_site_data_load_file());"
-  register: sites_json_raw
-  when:
-    sites_service == "sites"
-
+# Splitting these out into two different "sites_json_raw" variables because
+# we were getting a "unexpected templating type error" when using the same
+# "sites_json_raw" variable name, even though it should have been independent.
 - name: Get sites.json from leland
   command: drush @acsf{{ drush_environment }}.leland.peoplesaml php-eval "include 'sites/sites.php'; drupal_json_output(gardens_site_data_load_file());"
-  register: sites_json_raw
+  register: sites_json_raw_leland
   when:
     sites_service == "people"
 
+- name: Get sites.json from cardinald7
+  command: drush @acsf{{ drush_environment }}.cardinald7.saml php-eval "include 'sites/sites.php'; drupal_json_output(gardens_site_data_load_file());"
+  register: sites_json_raw_cardinald7
+  when:
+    sites_service == "sites"
+
 - name: Clean the sites.json from the response
   set_fact:
-    sites_json: "{{ sites_json_raw.stdout|from_json }}"
+    sites_json: "{{ sites_json_raw_cardinald7.stdout|from_json }}"
+  when:
+    sites_service == "sites"
+
+- name: Clean the sites.json from the response
+  set_fact:
+    sites_json: "{{ sites_json_raw_leland.stdout|from_json }}"
+  when:
+    sites_service == "people"
 
 # - name: debug sites.json
 #   debug:
