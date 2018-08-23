@@ -38,18 +38,18 @@
 # See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
 #                                                                            #
 # Text fields should replace http(s)://people.stanford.edu/sunetid with      #
-# https://sunetid(-env).cardinalsites.stanford.edu. This will need to be     #
+# https://sunetid(-env).sites.stanford.edu. This will need to be     #
 # changed when/if we decide on a URL syntax for people sites. Also, we are   #
 # using {{ acsf_site_name }} here because we can rely on it being the same   #
 # as the person's SUNetID due to validation rules for SUNetIDs.              #
 #                                                                            #
 # Text fields should replace http(s)://sites.stanford.edu/sitename with      #
-# https://(acsf_site_name|vhost)(-env).cardinalsites.stanford.edu.           #
+# https://(acsf_site_name|vhost)(-env).sites.stanford.edu.           #
 ##############################################################################
 
 # See discussion in https://github.com/SU-SWS/ansible-playbooks/pull/17
 # And https://github.com/SU-SWS/ansible-playbooks/pull/22
-# Ex: drush sar -y 'https://sites.stanford.edu/g2scd7/' 'https://g2sc-dev.cardinalsites.stanford.edu/'
+# Ex: drush sar -y 'https://sites.stanford.edu/g2scd7/' 'https://g2sc-dev.sites.stanford.edu/'
 - name: Update full paths in text
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_path_sites_service }}/' 'https://{{ new_absolute_path }}/'"
   with_nested:
@@ -70,7 +70,7 @@
   notify: Clear site cache
 
 # Note: I don't think this will ever get run, because we've already replaced
-# https://sites.stanford.edu/g2scd7/ with https://g2sc.cardinalsites.stanford.edu/
+# https://sites.stanford.edu/g2scd7/ with https://g2sc.sites.stanford.edu/
 # These are separated out because we are only using sar (not sarl or sarm) to do
 # a string replacement of 'src="https://sites.stanford.edu/sitename/' with 'src="/'
 # Ex: drush sar -y 'src="https://sites.stanford.edu/g2scd7/' 'src="/'
@@ -83,7 +83,7 @@
   notify: Clear site cache
 
 # Have to run these again for links that might include vhosts
-# Ex: drush sar -y 'https://g2sc.stanford.edu/' 'https://g2sc-dev.cardinalsites.stanford.edu/'
+# Ex: drush sar -y 'https://g2sc.stanford.edu/' 'https://g2sc-dev.sites.stanford.edu/'
 - name: Update full vhost paths in text
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ absolute_vhost_path_sites_service }}/' '{{ item[1] }}{{ new_absolute_path }}/'"
   with_nested:
@@ -103,7 +103,7 @@
   notify: Clear site cache
 
 # Note: I don't think we ever get to this either, because we've already replaced
-# https://g2sc.stanford.edu/ with https://g2sc.cardinalsites.stanford.edu/
+# https://g2sc.stanford.edu/ with https://g2sc.sites.stanford.edu/
 # These are separated out because we are only using sar (not sarl or sarm) to do
 # a string replacement of 'src="https://vhost.stanford.edu/' with 'src="/'
 # Ex. drush sar -y 'src="https://g2sc.stanford.edu/' 'src="/'
@@ -140,13 +140,13 @@
 ##############################################################################
 
 # We already did a global find/replace of vhost.stanford.edu and
-# sites.stanford.edu with https://acsf_site_name.cardinalsites.stanford.edu,
+# sites.stanford.edu with https://acsf_site_name.sites.stanford.edu,
 # so we just need to find/replace the "sites/default/files" string with
 # the ACSF file_public_path value. We probably don't need to loop through
 # {{ protocols }} here (http and https), as we should have already handled that
 # in "Update full paths in text" or "Update full vhost paths in text". But it's
 # cheap to loop through.
-# Ex. drush sar -y 'src="https://g2sc.stanford.edu/sites/default/files' 'src="https://g2sc.cardinalsites.stanford.edu/sites/g/files/sbiybj5000986/f'
+# Ex. drush sar -y 'src="https://g2sc.stanford.edu/sites/default/files' 'src="https://g2sc.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
 - name: Replace absolute sites/default/files with path to files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/sites/default/files' '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:

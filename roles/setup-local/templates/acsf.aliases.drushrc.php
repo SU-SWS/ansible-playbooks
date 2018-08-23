@@ -63,7 +63,14 @@ else {
 $stack_id = array(
   "cardinalsites" => "01",
   "cardinald7" => "02",
+  "leland" => "03",
 );
+
+// Set the string for sites.stanford.edu or people.stanford.edu.
+$sites_people = "sites";
+if ($stack == "leland") {
+  $sites_people = "people";
+}
 
 // Sanitize for drush rysnc. eg: @alias:%files/
 $site = array_shift(explode(":", $site));
@@ -74,7 +81,7 @@ $aliases[$stack . "." . $site] = array(
   'ac-site' => $stack,
   'ac-env' => $stack_id[$stack] . 'live',
   'ac-realm' => 'enterprise-g1',
-  'uri' => 'https://'. $site . '.cardinalsites.stanford.edu',
+  'uri' => 'https://'. $site . '.' . $sites_people '.stanford.edu',
   'remote-host' => $stack . $stack_id[$stack] . 'live.ssh.enterprise-g1.acquia-sites.com',
   'remote-user' => $stack . '.' . $stack_id[$stack] . 'live',
   'path-aliases' => array(
@@ -88,7 +95,7 @@ $aliases["test." . $stack . "." . $site] = array(
   'ac-site' => $stack,
   'ac-env' => $stack_id[$stack] . 'test',
   'ac-realm' => 'enterprise-g1',
-  'uri' => 'https://' . $site . '-test.cardinalsites.stanford.edu',
+  'uri' => 'https://' . $site . '-test.' . $sites_people . '.stanford.edu',
   'remote-host' => $stack . $stack_id[$stack] . 'test.ssh.enterprise-g1.acquia-sites.com',
   'remote-user' => $stack . '.' . $stack_id[$stack] . 'test',
   'path-aliases' => array(
@@ -102,7 +109,7 @@ $aliases["dev." . $stack . "." . $site] = array(
   'ac-site' => $stack,
   'ac-env' => $stack_id[$stack] . 'dev',
   'ac-realm' => 'enterprise-g1',
-  'uri' => 'https://' . $site . '-dev.cardinalsites.stanford.edu',
+  'uri' => 'https://' . $site . '-dev.' . $sites_people . '.stanford.edu',
   'remote-host' => $stack . $stack_id[$stack] . 'dev.ssh.enterprise-g1.acquia-sites.com',
   'remote-user' => $stack . '.' . $stack_id[$stack] . 'dev',
   'path-aliases' => array(

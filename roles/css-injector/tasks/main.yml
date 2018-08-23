@@ -33,16 +33,13 @@
 # See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
 #                                                                            #
 # Text fields should replace http(s)://people.stanford.edu/sunetid with      #
-# https://sunetid(-env).cardinalsites.stanford.edu. This will need to be     #
-# changed when/if we decide on a URL syntax for people sites. Also, we are   #
-# using {{ acsf_site_name }} here because we can rely on it being the same   #
-# as the person's SUNetID due to validation rules for SUNetIDs.              #
+# https://sunetid(-env).people.stanford.edu.                                 #
 #                                                                            #
 # Text fields should replace http(s)://sites.stanford.edu/sitename with      #
-# https://(acsf_site_name|vhost)(-env).cardinalsites.stanford.edu.           #
+# https://(acsf_site_name|vhost)(-env).sites.stanford.edu.                   #
 #                                                                            #
 # 1. Find and replace full paths (sites.stanford.edu/foo,                    #
-#     people.stanford.edu/SUNetID). See "Update full paths in text" in the   #
+#     people.stanford.edu/sunetid). See "Update full paths in text" in the   #
 #    "change-paths" role.                                                    #
 # 2. Find and replace full paths with relative for src and url references.   #
 #    See "Remove absolute paths for href, src, and url attributes" in the    #
@@ -56,8 +53,8 @@
 #    for src and url references. See "Remove relative paths for href, src,   #
 #    and url attributes" in the "change-paths" role.                         #
 # 6. Find and replace                                                        #
-#    "https://foo.cardinalsites.stanford.edu/sites/default/files" with       #
-#    "https://foo.cardinalsites.stanford.edu/sites/g/files/sbiybj5000986/f". #
+#    "https://foo.sites.stanford.edu/sites/default/files" with               #
+#    "https://foo.sites.stanford.edu/sites/g/files/sbiybj5000986/f".         #
 #    See "Replace absolute sites/default/files with path to files directory" #
 #    in the "change-paths" role.                                             #
 # 7. Find and replace relative sites/default/files for src and url           #
@@ -81,12 +78,11 @@
     msg: "CSS Injector files: {{ css_injector_files.files }}"
 
 # 1
-# TODO: Determine how to treat for final migration (SITES-465)
 # See https://docs.ansible.com/ansible/latest/modules/replace_module.html
 # Examples:
 #   path: /tmp/eao/files/css_injector/css_injector_2.css
 #   regexp: http://sites.stanford.edu/eao/
-#   replace: https://eao.cardinalsites.stanford.edu/
+#   replace: https://eao.sites.stanford.edu/
 - name: Update full paths in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
@@ -124,11 +120,10 @@
   notify: Clear site cache
 
 # 3
-# TODO: Determine how to treat for final migration (SITES-465)
 # Examples:
 #   path: /tmp/eao/files/css_injector/css_injector_2.css
 #   regexp: http://eao.stanford.edu/
-#   replace: https://eao.cardinalsites.stanford.edu/
+#   replace: https://eao.sites.stanford.edu/
 - name: Update full vhost paths in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
@@ -195,11 +190,10 @@
   notify: Clear site cache
 
 # 6
-# TODO: Determine how to treat for final migration (SITES-465)
 # Examples:
 #   path: /tmp/eao/files/css_injector/css_injector_2.css
-#   regexp: http://eao.cardinalsites.stanford.edu/sites/default/files
-#   replace: https://eao.cardinalsites.stanford.edu/sites/g/files/sbiybj5000986/f
+#   regexp: http://eao.sites.stanford.edu/sites/default/files
+#   replace: https://eao.sites.stanford.edu/sites/g/files/sbiybj5000986/f
 - name: Replace absolute sites/default/files with path to files directory in CSS Injector files
   replace:
     path: "{{ item[0].path }}"
