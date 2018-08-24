@@ -16,6 +16,7 @@
 #   inventory_hostname
 #   profile
 #   sitefactory_environment
+#   sites_formatted
 #   stack_id
 #   wait_time
 #

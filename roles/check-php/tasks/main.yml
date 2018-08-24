@@ -53,5 +53,5 @@
     create: yes
     state: present
     insertafter: EOF
-  when: database_php_candidates|failed
+  when: database_php_candidates is failed
   failed_when: php_candidates_consequence == "fail"
