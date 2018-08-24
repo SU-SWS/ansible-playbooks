@@ -14,6 +14,7 @@
 #   launch_tasks
 #   site_prefix
 #   stack
+#   stack_id
 #   vhost
 #
 # OUTPUTS:
