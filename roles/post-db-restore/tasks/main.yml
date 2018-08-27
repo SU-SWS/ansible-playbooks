@@ -110,8 +110,6 @@
   notify: Clear site cache
 
 - name: Generate random password
-#  shell: "cat /dev/urandom | tr -cd a-zA-Z0-9_+=* | fold -w18 | head -n 1"
-#  register: random_pw
 # See https://stackoverflow.com/a/45080709
   set_fact:
     random_pw: "{{ 999999999999999999999 | random | string + (lookup('pipe', 'date +%s%N')) | to_uuid() }}"
