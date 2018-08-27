@@ -1,5 +1,5 @@
 <?php
-### Wildcard for ACSF: Stanford & Cardinal
+### Wildcard for ACSF: cardinalsites, cardinald7, leland
 ###
 ### Examples:
 ### @acsf.[stack].[acsf_site_name]
@@ -9,6 +9,8 @@
 ### @acsf.dev.cardinald7.sheatest
 ### @acsf.cardinalsites.jsa2071012
 ### @acsf.test.cardinalsites.jsa2071012
+### @acsf.leland.jbickar
+### @acsf.test.leland.jbickar
 
 // Fron the top of the Acquia exports.
 if (!isset($drush_major_version)) {
@@ -18,11 +20,11 @@ if (!isset($drush_major_version)) {
 
 // The command from the CLI.
 $command = $_SERVER['argv'];
-$alias_key = "acsf";
+$alias_key = "@acsf";
 $stored = [];
 $command_aliases = array_filter($command,
   function ($var) use ($alias_key) {
-    return preg_match("/\b$alias_key\b/i", $var);
+    return preg_match("/$alias_key/i", $var);
   }
 );
 
@@ -38,7 +40,7 @@ $alias = array_shift($command_aliases);
 $parts = explode(".", $alias);
 
 // End if we don't match the key, end.
-if ($parts[0] !== "@" . $alias_key) {
+if ($parts[0] !== $alias_key) {
   // @todo: Find out if I can return here without impacting other alias files.
   return;
 }
@@ -63,14 +65,15 @@ else {
 $stack_id = array(
   "cardinalsites" => "01",
   "cardinald7" => "02",
-  "leland" => "03",
+  'leland' => "03",
 );
 
-// Set the string for sites.stanford.edu or people.stanford.edu.
-$sites_people = "sites";
-if ($stack == "leland") {
-  $sites_people = "people";
-}
+// Define the alias.
+$stack_uri = array(
+  "cardinalsites" => "sites.stanford.edu",
+  "cardinald7" => "sites.stanford.edu",
+  "leland" => "people.stanford.edu",
+);
 
 // Sanitize for drush rysnc. eg: @alias:%files/
 $site = array_shift(explode(":", $site));
@@ -81,7 +84,7 @@ $aliases[$stack . "." . $site] = array(
   'ac-site' => $stack,
   'ac-env' => $stack_id[$stack] . 'live',
   'ac-realm' => 'enterprise-g1',
-  'uri' => 'https://'. $site . '.' . $sites_people . '.stanford.edu',
+  'uri' => 'https://'. $site . '.' . $stack_uri[$stack],
   'remote-host' => $stack . $stack_id[$stack] . 'live.ssh.enterprise-g1.acquia-sites.com',
   'remote-user' => $stack . '.' . $stack_id[$stack] . 'live',
   'path-aliases' => array(
@@ -95,7 +98,7 @@ $aliases["test." . $stack . "." . $site] = array(
   'ac-site' => $stack,
   'ac-env' => $stack_id[$stack] . 'test',
   'ac-realm' => 'enterprise-g1',
-  'uri' => 'https://' . $site . '-test.' . $sites_people . '.stanford.edu',
+  'uri' => 'https://' . $site . '-test.' . $stack_uri[$stack],
   'remote-host' => $stack . $stack_id[$stack] . 'test.ssh.enterprise-g1.acquia-sites.com',
   'remote-user' => $stack . '.' . $stack_id[$stack] . 'test',
   'path-aliases' => array(
@@ -109,7 +112,7 @@ $aliases["dev." . $stack . "." . $site] = array(
   'ac-site' => $stack,
   'ac-env' => $stack_id[$stack] . 'dev',
   'ac-realm' => 'enterprise-g1',
-  'uri' => 'https://' . $site . '-dev.' . $sites_people . '.stanford.edu',
+  'uri' => 'https://' . $site . '-dev.' . $stack_uri[$stack],
   'remote-host' => $stack . $stack_id[$stack] . 'dev.ssh.enterprise-g1.acquia-sites.com',
   'remote-user' => $stack . '.' . $stack_id[$stack] . 'dev',
   'path-aliases' => array(
