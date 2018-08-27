@@ -76,6 +76,7 @@
 - name: Debug CSS Injector files variable
   debug:
     msg: "CSS Injector files: {{ css_injector_files.files }}"
+  when: print_debug_messages == "TRUE"
 
 # 1
 # See https://docs.ansible.com/ansible/latest/modules/replace_module.html

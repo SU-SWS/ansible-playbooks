@@ -48,3 +48,8 @@ php_candidates_consequence: "fail"
 # prefixes (e.g., you call "drush @sse.sitename" or "drush @ppl.sunetid"), then
 # set this to "".
 sites_drush_prefix: "default"
+
+# Print out various debug messages. Set to FALSE by default; you can set it to
+# TRUE in migration_vars.yml, or set it at runtime with
+# --extra-vars "print_debug_messages=TRUE"
+print_debug_messages: "FALSE"

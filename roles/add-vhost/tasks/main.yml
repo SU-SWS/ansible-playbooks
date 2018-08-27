@@ -26,9 +26,10 @@
 # KNOWN ISSUES:
 # --
 
-# - name: Debug new_absolute_path
-#   debug:
-#     var: new_absolute_path
+- name: Debug new_absolute_path
+  debug:
+    var: new_absolute_path
+  when: print_debug_messages == "TRUE"
 
 - name: Add custom domain
   uri:

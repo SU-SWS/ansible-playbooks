@@ -119,3 +119,14 @@ $aliases["dev." . $stack . "." . $site] = array(
     '%drush-script' => 'drush' . $drush_major_version,
   )
 );
+
+// Custom aliases to get around issue with periods.
+$aliases['sse.ds_dhminor.stanford.edu'] = array(
+  'remote-host' => "sites2.stanford.edu",
+  'remote-user' => $remote_user,
+  'root' => '/var/www/ds_dhminor.stanford.edu/public_html',
+  'uri' => "https://sites.stanford.edu/dhminor.stanford.edu",
+  'path-aliases' => array(
+    '%dump-dir' => '/afs/ir/group/webservices/tmp',
+  ),
+);
