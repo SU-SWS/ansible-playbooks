@@ -48,6 +48,7 @@
 - name: What is the scripts_dir variable
   debug:
     msg: "scripts_dir is: {{ scripts_dir}}"
+  when: print_debug_messages == "TRUE"
 
 # Ex: g2sc.stanford.edu
 # Found example of a site with a vhost, hard linking to images by non-vhost path.
@@ -86,6 +87,7 @@
 - name: Debug absolute path for site
   debug:
     msg: "Absolute path: {{ new_absolute_path }}"
+  when: print_debug_messages == "TRUE"
 
 # Ex: drush @acsf.dev.cardinald7.g2scd7
 - name: Set drush alias

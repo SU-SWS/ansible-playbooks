@@ -49,9 +49,10 @@
     site_exists: FALSE
   when: search_for_site|length == 0
 
-#- name: debug
-#  debug:
-#    var: site_exists
+- name: debug
+  debug:
+    var: site_exists
+  when: print_debug_messages == "TRUE"
 
 - name: Create new site on Site Factory
   uri:

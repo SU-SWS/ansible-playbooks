@@ -139,9 +139,10 @@
 # The array will be output in alphabetical order (id, site, url), but as the keys
 # are object properties, the order does not matter.
 #
-# - name: debug sites_formatted
-#   debug:
-#     var: sites_formatted
+- name: debug sites_formatted
+  debug:
+    var: sites_formatted
+  when: print_debug_messages == "TRUE"
 
 #
 # Now that we have a list of canonical machine names and ids in an ansible dict
@@ -156,9 +157,10 @@
   vars:
     existing_sites_query: "[?site=='{{ acsf_site_name }}'].id"
 
-# - name: debug possible_site_ids
-#   debug:
-#     var: possible_site_ids
+- name: debug possible_site_ids
+  debug:
+    var: possible_site_ids
+  when: print_debug_messages == "TRUE"
 
 #
 # If we did find a site then grab the id for use later.
@@ -168,10 +170,12 @@
     site_id: "{{ possible_site_ids|first }}"
   when: possible_site_ids|length > 0
 
-# - name: Debug site_id
-#   debug:
-#     var: site_id
-#
-# - name: Acsf site name
-#   debug:
-#     var: acsf_site_name
+- name: Debug site_id
+  debug:
+  var: site_id
+  when: print_debug_messages == "TRUE"
+
+- name: Acsf site name
+  debug:
+    var: acsf_site_name
+  when: print_debug_messages == "TRUE"

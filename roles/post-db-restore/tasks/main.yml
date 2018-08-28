@@ -68,7 +68,7 @@
   when: dept_site == "TRUE"
   notify: Clear site cache
 
-- name: Set Certs Dir
+- name: Set SimpleSAMLphp Certs Dir
   set_fact:
     certs_dir: "/mnt/www/html/{{ stack }}.02{% if acsf_environment=='' %}live{% elif acsf_environment=='test'%}test{% elif acsf_environment=='dev'%}dev{% endif %}/simplesamlphp/cert/"
 
@@ -108,3 +108,16 @@
 - name: Copy private files from local to Site Factory
   shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/private/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%private/"
   notify: Clear site cache
+
+- name: Generate random password
+# See https://stackoverflow.com/a/45080709
+  set_fact:
+    random_pw: "{{ 999999999999999999999 | random | string + (lookup('pipe', 'date +%s%N')) | to_uuid() }}"
+
+- name: Debug random password
+  debug:
+    var: random_pw
+  when: print_debug_messages == "TRUE"
+
+- name: Randomize User 1 password
+  shell: "{{ drush_alias }} user-password 1 --password=\"{{ random_pw }}\""

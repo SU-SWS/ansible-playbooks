@@ -26,6 +26,7 @@
 - name: Print file_public_path
   debug:
     msg: "File public path: {{ file_public_path.stdout }}"
+  when: print_debug_messages == "TRUE"
 
 - name: Be sure response does not include drush warnings
   fail:
