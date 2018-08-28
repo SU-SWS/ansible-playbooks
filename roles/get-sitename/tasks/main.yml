@@ -172,7 +172,7 @@
 
 - name: Debug site_id
   debug:
-  var: site_id
+    var: site_id
   when: print_debug_messages == "TRUE"
 
 - name: Acsf site name
