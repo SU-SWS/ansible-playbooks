@@ -43,7 +43,7 @@
 # Ex. /var/www/html/cardinald7.02dev/scripts
 - name: Set scripts_dir variable
   set_fact:
-    scripts_dir: "/var/www/html/{{ stack }}.0{{ stack_id }}{% if acsf_environment=='' %}live{% elif acsf_environment=='test'%}test{% elif acsf_environment=='dev'%}dev{% endif %}/scripts"
+    scripts_dir: "/var/www/html/{{ stack }}.0{{ stack_id }}{% if acsf_environment=='' %}live{% elif acsf_environment=='test'%}test{% elif acsf_environment=='dev' %}dev{% endif %}/scripts"
 
 - name: What is the scripts_dir variable
   debug:
