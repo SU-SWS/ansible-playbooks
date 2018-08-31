@@ -70,7 +70,7 @@
 
 - name: Set SimpleSAMLphp Certs Dir
   set_fact:
-    certs_dir: "/mnt/www/html/{{ stack }}.02{% if acsf_environment=='' %}live{% elif acsf_environment=='test'%}test{% elif acsf_environment=='dev'%}dev{% endif %}/simplesamlphp/cert/"
+    certs_dir: "/mnt/www/html/{{ stack }}.02{% if acsf_environment=='' %}live{% elif acsf_environment=='test' %}test{% elif acsf_environment=='dev' %}dev{% endif %}/simplesamlphp/cert/"
 
 - name: Do post-database-restore tasks
   shell: "{{ drush_alias }} {{ item }}"
