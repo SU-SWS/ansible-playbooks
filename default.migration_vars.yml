@@ -53,3 +53,8 @@ sites_drush_prefix: "default"
 # TRUE in migration_vars.yml, or set it at runtime with
 # --extra-vars "print_debug_messages=TRUE"
 print_debug_messages: "FALSE"
+
+#
+# Enable direct AFS access when running ansible on an AFS ready environment.
+# Example: TRUE
+afs_available: "FALSE"
