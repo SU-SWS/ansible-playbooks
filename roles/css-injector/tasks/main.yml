@@ -69,7 +69,7 @@
 
 - name: Get list of CSS Injector files
   find:
-    paths: /tmp/{{ inventory_hostname }}/files/css_injector/
+    paths: "{% if afs_available == 'TRUE' %}/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}{% else %}/tmp/{{ inventory_hostname }}{% endif %}/files/css_injector/"
     patterns: "*.css"
   register: css_injector_files
 

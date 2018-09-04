@@ -42,3 +42,5 @@
 
 - name: Copy files from Sites to local
   shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/* /tmp/{{ inventory_hostname }}/files/."
+  when:
+    afs_available != "TRUE"
