@@ -16,6 +16,7 @@
 #   inventory_hostname
 #   profile
 #   sitefactory_environment
+#   sites_formatted
 #   stack_id
 #   wait_time
 #
@@ -48,9 +49,10 @@
     site_exists: FALSE
   when: search_for_site|length == 0
 
-# - name: debug
-#   debug:
-#     var: site_exists
+- name: debug
+  debug:
+    var: site_exists
+  when: print_debug_messages == "TRUE"
 
 - name: Create new site on Site Factory
   uri:
@@ -77,7 +79,7 @@
   retries: "{{ wait_time }}"
   delay: 50
   register: bootstrap_status
-  until: bootstrap_status.stdout | search('Successful')
+  until: bootstrap_status.stdout is search('Successful')
 
 - name: Re-call the sites-json stuff
   include_role:

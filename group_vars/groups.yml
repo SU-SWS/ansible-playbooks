@@ -28,3 +28,12 @@ dept_site: "FALSE"
 # Jumpstart product flag. Set this to true to have the script automagically
 # find and set the installation profile variable.
 product_site: "FALSE"
+#
+# The Site Factory API requires that we pass it the stack ID.
+# The "cardinalsites" (Drupal 8) stack ID is 1.
+# The "cardinald7" (Drupal 7, groups and depts) stack ID is 2.
+# The "leland" (Drupal 7, people) stack ID is 3.
+stack_id: "2"
+#
+# Drupal 7 group sites go on the `cardinald7` stack.
+stack: "cardinald7"

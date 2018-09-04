@@ -21,6 +21,8 @@ This is a small collection of Ansible roles that we are using to migrate sites f
 
 ## Migrating Sites
 
+![Diagram of role relationships](img/playbooks-roles.jpg)
+
 ### Creating and Migrating Sites
 ````
 ansible-playbook -i inventory/sites full-migration-playbook.yml

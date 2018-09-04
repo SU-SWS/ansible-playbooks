@@ -12,6 +12,7 @@
 #   new_absolute_path
 #   site_id
 #   sitefactory_environment
+#   sites_service
 #
 # OUTPUTS:
 # --
@@ -25,9 +26,10 @@
 # KNOWN ISSUES:
 # --
 
-# - name: Debug new_absolute_path
-#   debug:
-#     var: new_absolute_path
+- name: Debug new_absolute_path
+  debug:
+    var: new_absolute_path
+  when: print_debug_messages == "TRUE"
 
 - name: Add custom domain
   uri:
@@ -40,7 +42,7 @@
     body:
       domain_name: "{{ new_absolute_path }}"
 
-# Ex. drupal7-update-status.cardinalsites.stanford.edu.
+# Ex. drupal7-update-status.sites.stanford.edu.
 - name: Add inventory_hostname as domain
   uri:
     url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
@@ -50,8 +52,24 @@
     force_basic_auth: yes
     body_format: json
     body:
-      domain_name: "{{ inventory_hostname }}{{ stanford_environment }}.cardinalsites.stanford.edu"
+      domain_name: "{{ inventory_hostname }}{{ stanford_environment }}.{{ sites_service }}.stanford.edu"
     return_content: yes
     register: inventory_hostname_domain_response
   when:
     inventory_hostname != acsf_site_name
+
+# Ex. sunetid.people.stanford.edu
+- name: Add SUNetID as custom domain
+  uri:
+    url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
+    method: POST
+    user: "{{ acquia_username }}"
+    password: "{{ acquia_api_key }}"
+    force_basic_auth: yes
+    body_format: json
+    body:
+      domain_name: "{{ inventory_hostname }}{{ stanford_environment }}.{{ sites_service }}.stanford.edu"
+    return_content: yes
+    register: inventory_hostname_domain_response
+  when:
+    sites_service == "people"
