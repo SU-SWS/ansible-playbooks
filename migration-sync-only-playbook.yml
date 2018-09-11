@@ -36,6 +36,7 @@
   roles:
     - { role: setup-local }
     - { role: download-site }
+    - { role: get-sitename }
     - { role: css-injector }
     - { role: check-php }
     - { role: upload-site }
