@@ -41,6 +41,7 @@
 # before we try to update.
 - name: Run drush rr before running anything else
   shell: "{{ drush_alias }} {{ item }}"
+  ignore_errors: yes
   with_items:
     - "-y rr"
 
