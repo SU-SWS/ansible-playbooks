@@ -35,10 +35,10 @@
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
   notify: Clear site cache
 
-# BEANS BEANS BEANS,
-# The change in the entity class can cause fatal errors and not allow the rest
-# to continue. This is to ensure that all the parts are in the right place
-# before we try to update.
+# BEANS FEEDS and probably bears too.,
+# The change in where the entity class exists can cause fatal errors and not
+# allow the rest to continue. This drush rr is to ensure that all the PHP
+# classes are registered and in the right place before we try to run updates.
 - name: Run drush rr before running anything else
   shell: "{{ drush_alias }} {{ item }}"
   ignore_errors: yes
