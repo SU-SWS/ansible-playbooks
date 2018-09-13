@@ -87,9 +87,10 @@
   when:
     sites_service == "people"
 
-# - name: debug sites.json
-#   debug:
-#     var: sites_json
+- name: debug sites.json
+  debug:
+    var: sites_json
+  when: print_debug_messages == "TRUE"
 
 #
 # Creates a format that looks like:
