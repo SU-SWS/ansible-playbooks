@@ -128,7 +128,7 @@
 #
 - name: Manipulate sites.json
   set_fact:
-    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': sites_json.sites[item.0].conf.acsf_site_id, 'site': item.0|regex_replace('.(dev-|test-)cardinalsites.acsitefactory.com', '') } ] }}"
+    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': sites_json.sites[item.0].conf.acsf_site_id, 'site': item.0|regex_replace('.(dev-|test-|)cardinalsites.acsitefactory.com', '') } ] }}"
   with_together:
     - "{{ sites_json.sites }}"
     - "{{ sites_json.sites }}"
@@ -155,7 +155,7 @@
   set_fact:
     possible_site_ids: "{{ sites_formatted|json_query(existing_sites_query) }}"
   vars:
-    existing_sites_query: "[?site=='{{ acsf_site_name }}'].id"
+    existing_sites_query: "[?site=='{{ acsf_site_name|lower }}'].id"
 
 - name: debug possible_site_ids
   debug:
