@@ -35,6 +35,15 @@
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
   notify: Clear site cache
 
+# BEANS BEANS BEANS,
+# The change in the entity class can cause fatal errors and not allow the rest
+# to continue. This is to ensure that all the parts are in the right place
+# before we try to update.
+- name: Run drush rr before running anything else
+  shell: "{{ drush_alias }} {{ item }}"
+  with_items:
+    - "-y rr"
+
 # We sometimes have order-of-operation issues on drush updb. For instance, a
 # "Column not found: 1054 Unknown column 'base.status' in 'field list'" error.
 # To get past that, we can set ignore_updb_errors="TRUE" in our inventory on a
