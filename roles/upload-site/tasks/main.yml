@@ -35,7 +35,7 @@
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
   notify: Clear site cache
 
-# BEANS FEEDS and probably bears too.,
+# BEANS, FEEDS, and probably bears too!
 # The change in where the entity class exists can cause fatal errors and not
 # allow the rest to continue. This drush rr is to ensure that all the PHP
 # classes are registered and in the right place before we try to run updates.
