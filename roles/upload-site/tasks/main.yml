@@ -35,6 +35,17 @@
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
   notify: Clear site cache
 
+# BEANS, FEEDS, and probably bears too!
+# The change in where the entity class exists can cause fatal errors and not
+# allow the rest to continue. This drush rr is to ensure that all the PHP
+# classes are registered and in the right place before we try to run updates.
+- name: Run drush rr before running anything else if we're having issues
+  shell: "{{ drush_alias }} {{ item }}"
+  ignore_errors: yes
+  with_items:
+    - "-y rr"
+  ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
+
 # We sometimes have order-of-operation issues on drush updb. For instance, a
 # "Column not found: 1054 Unknown column 'base.status' in 'field list'" error.
 # To get past that, we can set ignore_updb_errors="TRUE" in our inventory on a
@@ -60,3 +71,10 @@
   with_items:
     - "-y updb"
   when: ignore_updb_errors == "TRUE"
+
+# Rebuild the registry on all sites
+- name: Rebuild the registry after updating the database schema
+  shell: "{{ drush_alias }} {{ item }}"
+  ignore_errors: yes
+  with_items:
+    - "-y rr"
