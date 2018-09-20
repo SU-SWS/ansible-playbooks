@@ -1,0 +1,150 @@
+---
+# Ansible role for checking whether a site is in the Factory.
+# https://github.com/SU-SWS/ansible-playbooks
+# ===========================================================
+#
+# The purpose of this role is to instantiate a STATE, in this case the state
+# in which site_id is the numerical site ID of the website on ACSF.
+#
+# INPUTS:
+#   acsf_site_name
+#   sites_formatted
+#   sites_service
+#   sitefactory_environment
+#   stanford_environment
+#
+# OUTPUTS:
+#   possible_site_ids
+#   site_id
+#   sites_formatted
+#   sites_json
+#   sites_json_raw_cardinald7
+#   sites_json_raw_leland
+#   sites_service
+#   sitefactory_environment
+#   stanford_environment
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+#   get-sitename
+#
+# KNOWN ISSUES:
+# --
+
+# Splitting these out into two different "sites_json_raw" variables because
+# we were getting a "unexpected templating type error" when using the same
+# "sites_json_raw" variable name, even though it should have been independent.
+- name: Get sites.json from leland
+  command: drush @acsf{{ drush_environment }}.leland.peoplesaml php-eval "include 'sites/sites.php'; drupal_json_output(gardens_site_data_load_file());"
+  register: sites_json_raw_leland
+  when:
+    sites_service == "people"
+
+- name: Get sites.json from cardinald7
+  command: drush @acsf{{ drush_environment }}.cardinald7.saml php-eval "include 'sites/sites.php'; drupal_json_output(gardens_site_data_load_file());"
+  register: sites_json_raw_cardinald7
+  when:
+    sites_service == "sites"
+
+- name: Clean the sites.json from the response
+  set_fact:
+    sites_json: "{{ sites_json_raw_cardinald7.stdout|from_json }}"
+  when:
+    sites_service == "sites"
+
+- name: Clean the sites.json from the response
+  set_fact:
+    sites_json: "{{ sites_json_raw_leland.stdout|from_json }}"
+  when:
+    sites_service == "people"
+
+- name: debug sites.json
+  debug:
+    var: sites_json
+  when: print_debug_messages == "TRUE"
+
+#
+# Creates a format that looks like:
+# {
+#     "id": 12345,
+#     "site": "crceducation",
+#     "url": "crceducation-dev.sites.stanford.edu"
+# },
+#
+# From something that looks like
+#  {
+#     "clayman.dev-cardinalsites.acsitefactory.com": {
+#     "name": "abc123dev",
+#     "flags": [],
+#     "conf": {
+#       "gardens_site_id": 12345,
+#       "gardens_db_name": "asdfasdfasdfasdf",
+#       "acsf_site_id": 12345,
+#       "acsf_db_name": "abc123dev",
+#       "site_api_key": "456789235489789654897984135897564"
+#     }
+#   },
+#
+# The REST API has a restriction of 100 items per request and quickly falls over
+# for our needs. To bypass the API we are directly getting all of the site info
+# from sites.json on the acquia server. Unfortunately the initial format is not
+# usable and we need to parse out the machine name and id of the site factory
+# site by using the url for the sitefactory item as the machine name and getting
+# the key from the json array for the node id. We only use the acsitefactory uri
+# as it is the canonical machine name for the site and the other domains listed
+# cannot be trusted.
+#
+# In this task, we use a loop to build a dict. On the first pass, if it does not
+# exist we instantiate it with an empty array |default([]), then append the new
+# array of values to it. On the subsequent passes it gets more values appended.
+#
+- name: Manipulate sites.json
+  set_fact:
+    sites_formatted: "{{ sites_formatted|default([]) + [ {'url': item.0, 'id': sites_json.sites[item.0].conf.acsf_site_id, 'site': item.0|regex_replace('.(dev-|test-|)cardinalsites.acsitefactory.com', '') } ] }}"
+  with_together:
+    - "{{ sites_json.sites }}"
+    - "{{ sites_json.sites }}"
+  when: item.0 | regex_search('acsitefactory')
+
+# Debug the sites_formatted array.
+#
+# The array will be output in alphabetical order (id, site, url), but as the keys
+# are object properties, the order does not matter.
+#
+- name: debug sites_formatted
+  debug:
+    var: sites_formatted
+  when: print_debug_messages == "TRUE"
+
+#
+# Now that we have a list of canonical machine names and ids in an ansible dict
+# use a json query look for that machine name and grab the node id of the acsf
+# site for use in validing wether it exists.
+# If the machine name cannot be found no available options will be placed in to
+# the new dict set in this task
+#
+- name: Establish numerical id from sites_formatted JSON response
+  set_fact:
+    possible_site_ids: "{{ sites_formatted|json_query(existing_sites_query) }}"
+  vars:
+    existing_sites_query: "[?site=='{{ acsf_site_name|lower }}'].id"
+
+- name: debug possible_site_ids
+  debug:
+    var: possible_site_ids
+  when: print_debug_messages == "TRUE"
+
+#
+# If we did find a site then grab the id for use later.
+#
+- name: Set site_id if site id exists
+  set_fact:
+    site_id: "{{ possible_site_ids|first }}"
+  when: possible_site_ids|length > 0
+
+- name: Debug site_id
+  debug:
+    var: site_id
+  when: print_debug_messages == "TRUE"
