@@ -35,6 +35,7 @@
 
   roles:
     - { role: protect-prod }
+    - { role: sites-json }
     - { role: setup-site }
     - { role: add-vhost }
   serial: 12

@@ -37,4 +37,4 @@
     - { role: protect-prod }
     - { role: setup-site }
     - { role: add-vhost }
-  serial: 120
+  serial: 12
