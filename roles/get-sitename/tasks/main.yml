@@ -1,17 +1,18 @@
 ---
-# Ansible role for checking whether a site is in the Factory.
+# Ansible role for preparing site names for use with ACSF environments and drush.
 # https://github.com/SU-SWS/ansible-playbooks
 # ===========================================================
 #
-# The purpose of this role is to instantiate a STATE, in this case the state
-# in which acsf_site_name, drush_environment, sites_service,
-# sitefactory_environment, and stanford_environment have values.
+# The purpose of this role is to take the sitename from sites.stanford.edu or
+# people.stanford.edu, sanitize it for the ACSF environment, and create various
+# tokens from it for use on ACSF and drush.
 #
 # INPUTS:
-#   inventory_hostname
 #   acsf_environment
 #   acquia_username
 #   acquia_api_key
+#   inventory_hostname
+#   site_prefix
 #
 # OUTPUTS:
 #   acsf_site_name
@@ -35,16 +36,18 @@
   set_fact:
     sites_service: "{% if site_prefix=='dp' %}people{% elif site_prefix=='ds'%}sites{% endif %}"
 
+# Ex. My-Awesome-Website becomes myawesomewebsite
 - name: Sanitize inventory_hostname
   set_fact:
     acsf_site_name: "{{ inventory_hostname | lower | regex_replace('[^a-z0-9]') }}"
     cacheable: TRUE
 
-- name: ACSF site name
+- name: Debug ACSF site name
   debug:
     var: acsf_site_name
   when: print_debug_messages == "TRUE"
 
+# Ex. "myaweseomwebsite-" when the environment is DEV or TEST
 - name: Create token for Site Factory environment URL
   set_fact:
     sitefactory_environment: "{{ acsf_environment }}-"
@@ -52,6 +55,7 @@
   when:
     acsf_environment != ""
 
+# Ex. "-dev" or "-test" for DEV or TEST, respectively
 - name: Create token for stanford.edu environment URL
   set_fact:
     stanford_environment: "-{{ acsf_environment }}"
@@ -59,6 +63,7 @@
   when:
     acsf_environment != ""
 
+# Ex. ".dev" or ".test" for DEV or TEST, respectively
 - name: Create token for drush environment
   set_fact:
     drush_environment: ".{{ acsf_environment }}"

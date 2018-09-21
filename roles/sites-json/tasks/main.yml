@@ -1,10 +1,10 @@
 ---
-# Ansible role for checking whether a site is in the Factory.
+# Ansible role for getting the numerical site ID (nid) of a site in ACSF.
 # https://github.com/SU-SWS/ansible-playbooks
 # ===========================================================
 #
-# The purpose of this role is to instantiate a STATE, in this case the state
-# in which site_id is the numerical site ID of the website on ACSF.
+# The purpose of this role is establish the numerical site ID (nid)
+# of the website on ACSF.
 #
 # INPUTS:
 #   acsf_site_name
@@ -31,7 +31,9 @@
 #   get-sitename
 #
 # KNOWN ISSUES:
-# --
+#   When there are many hundreds of sites in a Factory environment, the
+#   sites.json file becomes extremely large, and this role becomes extremely
+#   memory-intensive.
 
 # Splitting these out into two different "sites_json_raw" variables because
 # we were getting a "unexpected templating type error" when using the same
