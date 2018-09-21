@@ -3,4 +3,4 @@ dependencies:
   - { role: get-public-files-path }
   - { role: define-paths }
   - { role: protect-prod }
-  - { role: get-sitename }
+  - { role: sites-json }
