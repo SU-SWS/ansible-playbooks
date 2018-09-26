@@ -27,6 +27,14 @@
 # KNOWN ISSUES:
 # --
 
+- name: Put Sites 1.x site and ACSF site in maintenance mode for final pre-launch migration
+  shell: "{{ item }} -y --exact vset maintenance_mode 1"
+  with_items:
+    - " {{ drush_alias }}"
+    - " drush @{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }} "
+  when:
+    launch_tasks == "launch"
+
 - name: Download copy of database from sites
   shell: "drush @{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }} sql-dump --structure-tables-key=common > /tmp/{{ inventory_hostname }}/dbdump.sql"
   when: sites_drush_prefix == 'default'
