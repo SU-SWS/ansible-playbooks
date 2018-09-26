@@ -53,12 +53,14 @@
 - name: Clean the sites.json from the response
   set_fact:
     sites_json: "{{ sites_json_raw_cardinald7.stdout|from_json }}"
+    cacheable: true
   when:
     sites_service == "sites"
 
 - name: Clean the sites.json from the response
   set_fact:
     sites_json: "{{ sites_json_raw_leland.stdout|from_json }}"
+    cacheable: true
   when:
     sites_service == "people"
 
