@@ -75,11 +75,11 @@
     minutes: 1
 
 - name: Check drush can bootstrap site
-  shell: "{{ drush_alias }} status --fields='Drupal bootstrap' --field-labels=0 --strict=0"
+  shell: "{{ drush_alias }} status"
   retries: "{{ wait_time }}"
   delay: 50
   register: bootstrap_status
-  until: bootstrap_status.stdout is search('Successful')
+  until: bootstrap_status.stdout is search('Database name')
 
 - name: Re-call the sites-json stuff
   include_role:
