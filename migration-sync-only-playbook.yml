@@ -41,5 +41,6 @@
     - { role: post-db-restore }
     - { role: change-paths }
     - { role: acsf-optimizations }
+    - { role: add-vhost }
     - { role: cleanup-local }
   serial: 12
