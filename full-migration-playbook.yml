@@ -47,7 +47,6 @@
     - { role: download-site }
     - { role: setup-site }
     - { role: css-injector }
-    - { role: check-php }
     - { role: upload-site }
     - { role: post-db-restore }
     - { role: change-paths }
