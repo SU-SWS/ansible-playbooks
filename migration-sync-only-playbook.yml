@@ -37,10 +37,10 @@
     - { role: setup-local }
     - { role: download-site }
     - { role: css-injector }
-    - { role: check-php }
     - { role: upload-site }
     - { role: post-db-restore }
     - { role: change-paths }
     - { role: acsf-optimizations }
+    - { role: add-vhost }
     - { role: cleanup-local }
   serial: 12
