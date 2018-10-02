@@ -32,8 +32,8 @@
 # sites on a Factory environment. It even has site information when the site
 # is not ready yet. Copy it to local so that we can parse it.
 #
-# Ex. "drush @acsf.cardinald7.saml rsync /mnt/files/cardinald7.02live/files-private/sites.json /tmp/saml/sites.json"
-# Ex. "drush @acsf.leland.jbickar rsync /mnt/files/leland.03live/files-private/sites.json /tmp/jbickar/sites.json"
+# Ex. "leland.03dev.@leland03dev.ssh.enterprise-g1.acquia-sites.com:/mnt/files/leland.03dev/files-private/sites.json /tmp/jbickar/sites.json"
+# Ex. "cardinald7.02live.@cardinald702live.ssh.enterprise-g1.acquia-sites.com:/mnt/files/cardinald7.02live/files-private/sites.json /tmp/english/sites.json"
 - name: Get sites.json from leland
   command: "scp {{ remote_username }}@{{ remote_hostname }}:{{ sites_json_dir }}/sites.json /tmp/{{ inventory_hostname }}/"
 
