@@ -56,8 +56,7 @@
 - name: Debug cat_output
   debug:
     var: cat_output.stdout
-  when:
-    print_debug_messages: TRUE
+  when: print_debug_messages == "TRUE"
 
 - name: Set site_id
   set_fact:
@@ -66,5 +65,4 @@
 - name: Debug site_id
   debug:
     var: site_id
-  when:
-    print_debug_messages: TRUE
+  when: print_debug_messages == "TRUE"
