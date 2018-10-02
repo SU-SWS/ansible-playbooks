@@ -1,0 +1,53 @@
+---
+# Ansible role for getting the numerical site ID (nid) of a site in ACSF.
+# https://github.com/SU-SWS/ansible-playbooks
+# ===========================================================
+#
+# The purpose of this role is establish the numerical site ID (nid)
+# of the website on ACSF.
+#
+# INPUTS:
+#   acsf_site_name
+#   sites_formatted
+#   sites_json_dir
+#   sites_service
+#   sitefactory_environment
+#   stanford_environment
+#
+# OUTPUTS:
+#   possible_site_ids
+#   site_id
+#   sites_formatted
+#   sites_json
+#   sites_json_raw_cardinald7
+#   sites_json_raw_leland
+#   sites_service
+#   sitefactory_environment
+#   stanford_environment
+#
+# ALTERNATIVE ROLES:
+# --
+#
+# REQUIREMENTS:
+#   get-sitename
+#
+# KNOWN ISSUES:
+
+# Ex. "drush @acsf.cardinald7.saml rsync /mnt/files/cardinald7.02live/files-private/sites.json /tmp/saml/sites.json"
+# Ex. "drush @acsf.leland.jbickar rsync /mnt/files/leland.03live/files-private/sites.json /tmp/jbickar/sites.json"
+- name: Get sites.json from leland
+  command: "{{ drush_alias }}" rsync {{ sites_json_dir }}/sites.json /tmp/{{ inventory_hostname }}/sites.json"
+
+- name: Grep sites.json file for our sitename
+  command: grep /tmp/{{ inventory_hostname }}/sites.json {{ acsf_site_name }}.cardinalsites.acsitefactory.com > /tmp/{{ inventory_hostname }}/sites_json_raw
+
+- name: Use sed to strip out everything except the site_id
+  shell: {{ item }}
+  with_items:
+    - "sed -i 's/^.*acsf_site_id/acsf_site_id/g' /tmp/{{ inventory_hostname }}/sites_json_raw"
+    - "sed -i  's/\,\"acsf_db_name.*$//g' /tmp/{{ inventory_hostname }}/sites_json_raw"
+    - "sed -i  's/^acsf_site_id\"\://g' /tmp/{{ inventory_hostname }}/sites_json_raw"
+
+- name: Grab site_id from sites_json_raw
+  shell: "cat /tmp/{{ inventory_hostname }}/sites_json_raw"
+  register: site_id
