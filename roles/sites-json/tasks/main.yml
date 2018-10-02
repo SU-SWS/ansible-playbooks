@@ -39,7 +39,7 @@
   command: "{{ drush_alias }} -y rsync {{ sites_json_dir }}/sites.json /tmp/{{ inventory_hostname }}/"
 
 - name: Grep sites.json file for our sitename
-  command: grep /tmp/{{ inventory_hostname }}/sites.json {{ acsf_site_name }}.cardinalsites.acsitefactory.com > /tmp/{{ inventory_hostname }}/sites_json_raw
+  command: "grep {{ acsf_site_name }}.cardinalsites.acsitefactory.com /tmp/{{ inventory_hostname }}/sites.json > /tmp/{{ inventory_hostname }}/sites_json_raw"
 
 - name: Use sed to strip out everything except the site_id
   shell: "{{ item }}"
