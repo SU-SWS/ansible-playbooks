@@ -51,8 +51,20 @@
 
 - name: Grab site_id from sites_json_raw
   shell: "cat /tmp/{{ inventory_hostname }}/sites_json_raw"
-  register: site_id
+  register: cat_output
+
+- name: Debug cat_output
+  debug:
+    var: cat_output.stdout
+  when:
+    print_debug_messages: TRUE
+
+- name: Set site_id
+  set_fact:
+    site_id: "{{ cat_output.stdout }}"
 
 - name: Debug site_id
   debug:
     var: site_id
+  when:
+    print_debug_messages: TRUE
