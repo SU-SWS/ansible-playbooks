@@ -47,8 +47,21 @@
 
 - name: What is the scripts_dir variable
   debug:
-    msg: "scripts_dir is: {{ scripts_dir}}"
+    msg: "scripts_dir is: {{ scripts_dir }}"
   when: print_debug_messages == "TRUE"
+
+# Ex. /mnt/files/cardinald7.02live/files-private
+# Ex. /mnt/files/cardinald7.02test/files-private
+# Ex. /mnt/files/cardinald7.02dev/files-private
+- name: Set sites_json_dir variable
+  set_fact:
+    scripts_dir: "/mnt/files/{{ stack }}.0{{ stack_id }}{% if acsf_environment=='' %}live{% elif acsf_environment=='test' %}test{% elif acsf_environment=='dev' %}dev{% endif %}/files-private"
+
+- name: What is the sites_json_dir variable
+  debug:
+    msg: "sites_json_dir is: {{ sites_json_dir }}"
+  when: print_debug_messages == "TRUE"
+
 
 # Ex: g2sc.stanford.edu
 # Found example of a site with a vhost, hard linking to images by non-vhost path.
