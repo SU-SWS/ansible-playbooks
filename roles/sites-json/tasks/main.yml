@@ -36,7 +36,7 @@
 # Ex. "drush @acsf.cardinald7.saml rsync /mnt/files/cardinald7.02live/files-private/sites.json /tmp/saml/sites.json"
 # Ex. "drush @acsf.leland.jbickar rsync /mnt/files/leland.03live/files-private/sites.json /tmp/jbickar/sites.json"
 - name: Get sites.json from leland
-  command: "drush -y rsync @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:{{ sites_json_dir }}/sites.json /tmp/{{ inventory_hostname }}/"
+  command: "scp {{ remote_username }}@{{ remote_hostname }}:{{ sites_json_dir }}/sites.json /tmp/{{ inventory_hostname }}/"
 
 - name: Grep sites.json file for our sitename
   shell: "grep {{ acsf_site_name }}.{{ sitefactory_environment }}cardinalsites.acsitefactory.com /tmp/{{ inventory_hostname }}/sites.json > /tmp/{{ inventory_hostname }}/sites_json_raw"
