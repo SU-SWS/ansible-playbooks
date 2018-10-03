@@ -46,7 +46,7 @@
   ignore_errors: true
 
 # sites_json_raw will be a really long string like this:
-# "jbickar.cardinalsites.acsitefactory.com": {"name":"sbiybj3061","flags":{"preferred_domain":true},"conf":{"gardens_site_id":3061,"gardens_db_name":"sbiybj3061","acsf_site_id":3061,"acsf_db_name":"sbiybj3061","site_api_key":"*************************"}},
+# "jbickar.cardinalsites.acsitefactory.com": {"name":"sbitbj3091","flags":{"preferred_domain":true},"conf":{"gardens_site_id":3091,"gardens_db_name":"sbitbj3091","acsf_site_id":3091,"acsf_db_name":"sbitbj3091","site_api_key":"*************************"}},
 # Use sed to strip out everything leading up to "acsf_site_id"
 # Use sed to strip out everything after the numeric site_id, starting with
 # ',"acsf_db_name'
