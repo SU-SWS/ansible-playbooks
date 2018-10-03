@@ -55,9 +55,9 @@
 - name: Use sed to strip out everything except the site_id
   shell: "{{ item }}"
   with_items:
-    - 'sed -i ".original" -e "s/^.*acsf_site_id/acsf_site_id/g" /tmp/{{ inventory_hostname }}/sites_json_raw'
-    - 'sed -i ".original" -e "s/\,\"acsf_db_name.*$//g" /tmp/{{ inventory_hostname }}/sites_json_raw'
-    - 'sed -i ".original" -e "s/^acsf_site_id\"\://g" /tmp/{{ inventory_hostname }}/sites_json_raw'
+    - 'sed -i.original -e "s/^.*acsf_site_id/acsf_site_id/g" /tmp/{{ inventory_hostname }}/sites_json_raw'
+    - 'sed -i.original -e "s/\,\"acsf_db_name.*$//g" /tmp/{{ inventory_hostname }}/sites_json_raw'
+    - 'sed -i.original -e "s/^acsf_site_id\"\://g" /tmp/{{ inventory_hostname }}/sites_json_raw' && rm -- "/tmp/{{ inventory_hostname }}/sites_json_raw.original"
 
 # Cat our file and store it as a variable
 - name: Grab site_id from sites_json_raw
