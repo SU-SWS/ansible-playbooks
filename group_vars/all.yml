@@ -32,3 +32,7 @@ drush_environment: ""
 # default, in order to avoid "undefined variable" error messages. It can be
 # set on a per-site basis to "TRUE" in the inventory file. It is case-sensitive.
 ignore_updb_errors: ""
+
+# Set site_exists to FALSE initially to avoid undefined variable errors. See
+# roles/setup-site/tasks/main.yml.
+site_exists: "FALSE"
