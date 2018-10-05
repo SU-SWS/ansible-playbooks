@@ -44,3 +44,4 @@
     - { role: add-vhost }
     - { role: cleanup-local }
   serial: 12
+  max_fail_percentage: 100
