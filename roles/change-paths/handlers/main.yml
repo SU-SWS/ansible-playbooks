@@ -7,3 +7,4 @@
     password: "{{ acquia_api_key }}"
     force_basic_auth: yes
   with_items: "{{ site_id }}"
+  ignore_errors: yes
