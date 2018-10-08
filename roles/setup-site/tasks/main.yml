@@ -73,4 +73,4 @@
 - name: Re-call the sites-json stuff
   include_role:
     name: get-sitename
-  when: not site_exists
+  when: sites_exists = "FALSE"
