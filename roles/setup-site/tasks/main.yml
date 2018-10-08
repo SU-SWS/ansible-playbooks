@@ -23,6 +23,7 @@
 # OUTPUTS:
 #   bootstrap_status
 #   site_created
+#   site_exists
 #
 # ALTERNATIVE ROLES:
 # --
@@ -58,7 +59,7 @@
     body_format: json
     return_content: yes
   register: site_created
-  when: not site_exists
+  when: site_exists == "FALSE"
 
 - pause:
     minutes: 1
@@ -73,4 +74,4 @@
 - name: Re-call the sites-json stuff
   include_role:
     name: get-sitename
-  when: not site_exists
+  when: site_exists = "FALSE"
