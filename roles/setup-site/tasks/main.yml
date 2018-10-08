@@ -58,7 +58,7 @@
     body_format: json
     return_content: yes
   register: site_created
-  when: not site_exists
+  when: site_exists == "FALSE"
 
 - pause:
     minutes: 1
