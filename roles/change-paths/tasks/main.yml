@@ -56,6 +56,7 @@
     - "{{ sar_fulltext_commands }}"
     - "{{ protocols }}"
   notify: Clear site cache
+  ignore_errors: yes
 
 # We are purposefully excluding sar from this because we can't assume that all
 # absolute URLs should be relative.
@@ -68,6 +69,7 @@
     - "{{ sarl_commands }}"
     - "{{ protocols }}"
   notify: Clear site cache
+  ignore_errors: yes
 
 # Note: I don't think this will ever get run, because we've already replaced
 # https://sites.stanford.edu/g2scd7/ with https://g2sc.sites.stanford.edu/
@@ -81,6 +83,7 @@
     - "{{ link_attributes }}"
     - "{{ protocols }}"
   notify: Clear site cache
+  ignore_errors: yes
 
 # Have to run these again for links that might include vhosts
 # Ex: drush sar -y 'https://g2sc.stanford.edu/' 'https://g2sc-dev.sites.stanford.edu/'
@@ -91,6 +94,7 @@
     - "{{ protocols }}"
   when: vhost is defined
   notify: Clear site cache
+  ignore_errors: yes
 
 # Exclude sar from this
 # Ex. drush sarl -y 'https://g2sc.stanford.edu/' ''
@@ -101,6 +105,7 @@
     - "{{ protocols }}"
   when: vhost is defined
   notify: Clear site cache
+  ignore_errors: yes
 
 # Note: I don't think we ever get to this either, because we've already replaced
 # https://g2sc.stanford.edu/ with https://g2sc.sites.stanford.edu/
@@ -115,6 +120,7 @@
     - "{{ protocols }}"
   when: vhost is defined
   notify: Clear site cache
+  ignore_errors: yes
 
 # One more for things like src="/methane..."
 # We only do this if the vhost is defined, because of the edge case where
@@ -129,6 +135,7 @@
     - "{{ link_attributes }}"
   when: vhost is not defined
   notify: Clear site cache
+  ignore_errors: yes
 
 ##############################################################################
 # Database surgery: Find and replace references to sites/default/files with  #
@@ -153,6 +160,8 @@
     - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
     - "{{ protocols }}"
+  notify: Clear site cache
+  ignore_errors: yes
 
 # Same here: we already replaced absolute references in href and src
 # attributes, so we only need to replace the "sites/default/files" string
@@ -164,6 +173,7 @@
     - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
   notify: Clear site cache
+  ignore_errors: yes
 
 # We already replaced relative references in href and src attributes (like
 # src="/methane/), but we only did it if the vhost is defined, because of the
@@ -177,6 +187,7 @@
     - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
   notify: Clear site cache
+  ignore_errors: yes
 
 # We already replaced absolute references in menus and links
 # attributes, so we only need to replace relative references to
@@ -188,6 +199,7 @@
   with_together:
     - "{{ sarl_commands }}"
   notify: Clear site cache
+  ignore_errors: yes
 
 # Ex. drush @acsf.test.cardinald7.eao scr /var/www/html/cardinald7.02test/scripts/js-injector.php
 - name: Save modified JS Injector rules to disk
