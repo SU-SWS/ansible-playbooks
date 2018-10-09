@@ -1,5 +1,5 @@
 ---
 dependencies:
   - { role: protect-prod }
-  - { role: get-sitename }
+  - { role: sites-json }
   - { role: define-paths }

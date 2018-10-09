@@ -57,19 +57,3 @@
     register: inventory_hostname_domain_response
   when:
     inventory_hostname != acsf_site_name
-
-# Ex. sunetid.people.stanford.edu
-- name: Add SUNetID as custom domain
-  uri:
-    url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
-    method: POST
-    user: "{{ acquia_username }}"
-    password: "{{ acquia_api_key }}"
-    force_basic_auth: yes
-    body_format: json
-    body:
-      domain_name: "{{ inventory_hostname }}{{ stanford_environment }}.{{ sites_service }}.stanford.edu"
-    return_content: yes
-    register: inventory_hostname_domain_response
-  when:
-    sites_service == "people"

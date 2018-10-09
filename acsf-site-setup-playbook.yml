@@ -34,6 +34,7 @@
     - ansible-sync/prod-sites.yml
 
   roles:
+    - { role: get-sitename }
     - { role: protect-prod }
     - { role: setup-site }
     - { role: add-vhost }

@@ -75,7 +75,7 @@
 - name: Do post-database-restore tasks
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
-    - "-y en acsf acsf_helper stanford_ssp paranoia"
+    - "-y en acsf acsf_helper stanford_ssp paranoia syslog"
     - 'ev "_paranoia_remove_risky_permissions();"'
     - "-y --exact vset sws_migration_version {{ migration_version }}"
     - "-y --exact vset stanford_ssp_role_map_source workgroup"
