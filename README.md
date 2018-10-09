@@ -18,7 +18,7 @@ This is a small collection of Ansible roles that we are using to migrate sites f
 3. `git clone git@github.com:SU-SWS/ansible-playbooks.git`
 4. `cd ansible-playbooks`
 5. `git clone git@github.com:SU-SWS/ansible-sync`
-6. `cp ansible-sync/acsf.aliases.drushrc.php roles/setup-local/templates`
+6. `cp ansible-sync/acsf.aliases.drushrc.php roles/setup-local/templates/`
 
 ## Migrating Sites
 
