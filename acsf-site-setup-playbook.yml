@@ -36,6 +36,7 @@
   roles:
     - { role: get-sitename }
     - { role: protect-prod }
+    - { role: setup-local }
     - { role: setup-site }
     - { role: add-vhost }
   serial: 12
