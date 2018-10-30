@@ -42,8 +42,8 @@
 # "sitename.cardinalsites.acsitefactory.com" is the canonical name for a given
 # site. Grep for that and output it to a file.
 - name: Grep sites.json file for our sitename
-  shell: "grep {{ acsf_site_name }}.{{ sitefactory_environment }}cardinalsites.acsitefactory.com /tmp/{{ inventory_hostname }}/sites.json > /tmp/{{ inventory_hostname }}/sites_json_raw"
-  ignore_errors: true
+  shell: "grep '\"{{ acsf_site_name }}.{{ sitefactory_environment }}cardinalsites.acsitefactory.com' /tmp/{{ inventory_hostname }}/sites.json > /tmp/{{ inventory_hostname }}/sites_json_raw"
+  ignore_errors: yes
 
 # sites_json_raw will be a really long string like this:
 # "jbickar.cardinalsites.acsitefactory.com": {"name":"sbitbj3091","flags":{"preferred_domain":true},"conf":{"gardens_site_id":3091,"gardens_db_name":"sbitbj3091","acsf_site_id":3091,"acsf_db_name":"sbitbj3091","site_api_key":"*************************"}},

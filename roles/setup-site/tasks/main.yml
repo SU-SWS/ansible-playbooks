@@ -23,6 +23,7 @@
 # OUTPUTS:
 #   bootstrap_status
 #   site_created
+#   site_exists
 #
 # ALTERNATIVE ROLES:
 # --
@@ -58,19 +59,27 @@
     body_format: json
     return_content: yes
   register: site_created
-  when: not site_exists
+  when: site_exists == "FALSE"
 
 - pause:
     minutes: 1
 
-- name: Check drush can bootstrap site
-  shell: "{{ drush_alias }} status"
-  retries: "{{ wait_time }}"
-  delay: 50
-  register: bootstrap_status
-  until: bootstrap_status.stdout is search('Database name')
-
 - name: Re-call the sites-json stuff
   include_role:
-    name: get-sitename
-  when: not site_exists
+    name: sites-json
+  when: site_exists == "FALSE"
+
+- name: Check that site is available
+  uri:
+    url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/sites/{{ site_id }}"
+    method: GET
+    user: "{{ acquia_username }}"
+    password: "{{ acquia_api_key }}"
+    force_basic_auth: yes
+    body_format: json
+    return_content: yes
+  retries: "{{ wait_time }}"
+  delay: 50
+  register: site_created
+  until: site_created is not failed
+  when: site_exists == "FALSE"

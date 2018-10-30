@@ -14,6 +14,8 @@ acsf_environment: "dev"
 #
 # Set this variable to `launch` if this is the final migration to
 # production before a site goes live.
+# NOTE: this is only for sites with vhosts; do NOT use for
+# people.stanford.edu/sunetid or sites.stanford.edu/sitename websites.
 launch_tasks: ""
 #
 # Enter the number of minutes you should wait for all sites to complete
