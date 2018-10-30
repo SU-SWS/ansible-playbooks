@@ -36,3 +36,11 @@ ignore_updb_errors: ""
 # Set site_exists to FALSE initially to avoid undefined variable errors. See
 # roles/setup-site/tasks/main.yml.
 site_exists: "FALSE"
+
+# Set enable_maintenance_mode_source to FALSE initially, to avoid undefined
+# variable errors. It can be overridden in migration_vars.yml
+enable_maintenance_mode_source: "FALSE"
+
+# Set disable_maintenance_mode_dest to FALSE initially, to avoid undefined
+# variable errors. It can be overridden in migration_vars.yml
+disable_maintenance_mode_dest: "FALSE"

@@ -34,7 +34,7 @@
 - name: Put Sites 1.x site in maintenance mode for final pre-launch migration
   shell: "drush @{{ sites_drush_alias }} -y --exact vset maintenance_mode 1"
   when:
-    maintenance_mode_source == "TRUE"
+    enable_maintenance_mode_source == "TRUE"
 
 - name: Download copy of database from sites
   shell: "drush @{{ sites_drush_alias }} sql-dump --structure-tables-key=common > /tmp/{{ inventory_hostname }}/dbdump.sql"
