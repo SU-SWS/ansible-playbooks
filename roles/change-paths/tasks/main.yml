@@ -210,4 +210,4 @@
 - name: Turn off maintenance mode for ACSF site
   shell: "{{ drush_alias }} -y --exact vset maintenance_mode 0"
   notify: Clear site cache
-  when: maintenance_mode_dest = "TRUE"
+  when: maintenance_mode_dest == "TRUE"
