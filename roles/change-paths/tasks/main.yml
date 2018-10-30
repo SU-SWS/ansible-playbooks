@@ -207,8 +207,6 @@
   notify: Clear site cache
 
 # Bring 'er out of hyperspace, Chewy
-- name: Turn off maintenance mode for Sites 1.x site and ACSF site
-  shell: "{{ item }} -y --exact vset maintenance_mode 0"
-  with_items:
-    - " {{ drush_alias }}"
-    - " drush @{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }} "
+- name: Turn off maintenance mode for ACSF site
+  shell: "{{ drush_alias }} -y --exact vset maintenance_mode 0"
+  notify: Clear site cache

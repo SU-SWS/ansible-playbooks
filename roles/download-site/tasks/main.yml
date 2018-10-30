@@ -27,26 +27,18 @@
 # KNOWN ISSUES:
 # --
 
-- name: Put Sites 1.x site and ACSF site in maintenance mode for final pre-launch migration
-  shell: "{{ item }} -y --exact vset maintenance_mode 1"
-  with_items:
-    - " {{ drush_alias }}"
-    - " drush @{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }} "
-  when:
-    launch_tasks == "launch"
-
-- name: Download copy of database from sites
-  shell: "drush @{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }} sql-dump --structure-tables-key=common > /tmp/{{ inventory_hostname }}/dbdump.sql"
-  when: sites_drush_prefix == 'default'
-
 - name: Set sites drush alias
   set_fact:
-    sites_drush_alias: "{{ server_alias }}.{{ sites_drush_prefix }}{{ inventory_hostname }}"
-  when: sites_drush_prefix != 'default'
+    sites_drush_alias: "{% if sites_drush_prefix == "default" %}{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }}{% else %}{{ server_alias }}.{{ sites_drush_prefix }}{{ inventory_hostname }}{% endif %}"
 
-- name: Download copy of database from sites when using a custom drush prefix
+- name: Put Sites 1.x site in maintenance mode for final pre-launch migration
+  shell: "drush @{{ sites_drush_alias }} -y --exact vset maintenance_mode 1"
+  when:
+    maintenance_mode_source == "TRUE"
+
+- name: Download copy of database from sites
   shell: "drush @{{ sites_drush_alias }} sql-dump --structure-tables-key=common > /tmp/{{ inventory_hostname }}/dbdump.sql"
-  when: sites_drush_prefix != 'default'
+  when: sites_drush_prefix == 'default'
 
 - name: Copy files from Sites to local
   shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/* /tmp/{{ inventory_hostname }}/files/."
