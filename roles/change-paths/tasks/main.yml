@@ -205,9 +205,3 @@
 - name: Save modified JS Injector rules to disk
   shell: "{{ drush_alias }} scr {{ scripts_dir }}/js-injector.php"
   notify: Clear site cache
-
-# Bring 'er out of hyperspace, Chewy
-- name: Turn off maintenance mode for ACSF site
-  shell: "{{ drush_alias }} -y --exact vset maintenance_mode 0"
-  notify: Clear site cache
-  when: disable_maintenance_mode_dest == "TRUE"

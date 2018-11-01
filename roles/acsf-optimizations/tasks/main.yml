@@ -37,3 +37,9 @@
 
 - name: Disable error reporting
   shell: "{{ drush_alias }} -y --exact vset error_level 0"
+
+# Bring 'er out of hyperspace, Chewy
+- name: Turn off maintenance mode for ACSF site
+  shell: "{{ drush_alias }} -y --exact vset maintenance_mode 0"
+  notify: Clear site cache
+  when: disable_maintenance_mode_dest == "TRUE"
