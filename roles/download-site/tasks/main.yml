@@ -31,6 +31,10 @@
   set_fact:
     sites_drush_alias: '{% if sites_drush_prefix == "default" %}{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }}{% else %}{{ server_alias }}.{{ sites_drush_prefix }}{{ inventory_hostname }}{% endif %}'
 
+# Per internal conversation, John and Shea decided that it was a risk tradeoff
+# to put the site in maintenance mode *before* making the database dump vs.
+# *after*. See conversation in https://github.com/SU-SWS/ansible-playbooks/pull/72
+# If this causes problems in the future, blame jbickar.
 - name: Put Sites 1.x site in maintenance mode for final pre-launch migration
   shell: "drush @{{ sites_drush_alias }} -y --exact vset maintenance_mode 1"
   when:
