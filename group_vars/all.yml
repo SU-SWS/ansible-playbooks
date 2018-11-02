@@ -43,4 +43,4 @@ enable_maintenance_mode_source: "FALSE"
 
 # Set disable_maintenance_mode_dest to TRUE initially, to avoid undefined
 # variable errors. It can be overridden in migration_vars.yml
-disable_maintenance_mode_dest: "TRUE"
+disable_maintenance_mode_dest: "FALSE"
