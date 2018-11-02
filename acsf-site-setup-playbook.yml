@@ -39,4 +39,5 @@
     - { role: setup-local }
     - { role: setup-site }
     - { role: add-vhost }
-  serial: 12
+  serial: 6
+  max_fail_percentage: 100

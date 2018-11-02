@@ -43,5 +43,5 @@
     - { role: acsf-optimizations }
     - { role: add-vhost }
     - { role: cleanup-local }
-  serial: 6
+  serial: 3
   max_fail_percentage: 100
