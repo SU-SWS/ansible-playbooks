@@ -1,7 +1,7 @@
 # SU-SWS Ansible Playbooks
 Collection of Ansible playbooks and roles used to migrate SWS sites, and configure Acquia servers.
 
-**Version: master**
+**Version: 0.0.3-rc1**
 
 Maintainers: [kbrownell](https://github.com/kbrownell), [jbickar](https://github.com/jbickar)
 
