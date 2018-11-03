@@ -27,18 +27,21 @@
 # KNOWN ISSUES:
 # --
 
-- name: Download copy of database from sites
-  shell: "drush @{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }} sql-dump --structure-tables-key=common > /tmp/{{ inventory_hostname }}/dbdump.sql"
-  when: sites_drush_prefix == 'default'
-
 - name: Set sites drush alias
   set_fact:
-    sites_drush_alias: "{{ server_alias }}.{{ sites_drush_prefix }}{{ inventory_hostname }}"
-  when: sites_drush_prefix != 'default'
+    sites_drush_alias: '{% if sites_drush_prefix == "default" %}{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }}{% else %}{{ server_alias }}.{{ sites_drush_prefix }}{{ inventory_hostname }}{% endif %}'
 
-- name: Download copy of database from sites when using a custom drush prefix
+# Per internal conversation, John and Shea decided that it was a risk tradeoff
+# to put the site in maintenance mode *before* making the database dump vs.
+# *after*. See conversation in https://github.com/SU-SWS/ansible-playbooks/pull/72
+# If this causes problems in the future, blame jbickar.
+- name: Put Sites 1.x site in maintenance mode for final pre-launch migration
+  shell: "drush @{{ sites_drush_alias }} -y --exact vset maintenance_mode 1"
+  when:
+    enable_maintenance_mode_source == "TRUE"
+
+- name: Download copy of database from sites
   shell: "drush @{{ sites_drush_alias }} sql-dump --structure-tables-key=common > /tmp/{{ inventory_hostname }}/dbdump.sql"
-  when: sites_drush_prefix != 'default'
 
 - name: Copy files from Sites to local
   shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/* /tmp/{{ inventory_hostname }}/files/."
