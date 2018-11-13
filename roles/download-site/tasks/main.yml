@@ -44,6 +44,6 @@
   shell: "drush @{{ sites_drush_alias }} sql-dump --structure-tables-key=common > /tmp/{{ inventory_hostname }}/dbdump.sql"
 
 - name: Copy files from Sites to local
-  shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/* /tmp/{{ inventory_hostname }}/files/."
+  shell: "rsync -avz {{ sunetid }}@{{ server }}.stanford.edu:/afs/ir/dist/drupal/{{ site_prefix }}_{{ afsdirname }}/files/* /tmp/{{ inventory_hostname }}/files/."
   when:
     afs_available != "TRUE"
