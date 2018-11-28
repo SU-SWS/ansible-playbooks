@@ -35,17 +35,6 @@
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
   notify: Clear site cache
 
-# BEANS, FEEDS, and probably bears too!
-# The change in where the entity class exists can cause fatal errors and not
-# allow the rest to continue. This drush rr is to ensure that all the PHP
-# classes are registered and in the right place before we try to run updates.
-- name: Run drush rr before running anything else if we're having issues
-  shell: "{{ drush_alias }} {{ item }}"
-  ignore_errors: yes
-  with_items:
-    - "-y rr"
-  ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
-
 # We sometimes have order-of-operation issues on drush updb. For instance, a
 # "Column not found: 1054 Unknown column 'base.status' in 'field list'" error.
 # To get past that, we can set ignore_updb_errors="TRUE" in our inventory on a
@@ -57,13 +46,25 @@
     - "-y updb"
   ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
 
-# This only runs "drush rr" if ignore_updb_errors == "TRUE"
-- name: Run drush rr before running drush updb a second time for recalcitrant sites
+
+# We must enable the profile as drush rr disables it.
+- name: Reenable the install profile after Rebuild the registry disables it.
   shell: "{{ drush_alias }} {{ item }}"
+  ignore_errors: yes
+  with_items:
+    - "-y en stanford_dept"
+
+
+# BEANS, FEEDS, and probably bears too!
+# The change in where the entity class exists can cause fatal errors and not
+# allow the rest to continue. This drush rr is to ensure that all the PHP
+# classes are registered and in the right place before we try to run updates.
+- name: Run drush rr before running anything else if we're having issues
+  shell: "{{ drush_alias }} {{ item }}"
+  ignore_errors: yes
   with_items:
     - "-y rr"
-  when: ignore_updb_errors == "TRUE"
-  ignore_errors: yes
+  ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
 
 # This only runs "drush updb" if ignore_updb_errors == "TRUE"
 - name: Run drush updb a second time for recalcitrant sites
@@ -78,3 +79,5 @@
   ignore_errors: yes
   with_items:
     - "-y rr"
+
+
