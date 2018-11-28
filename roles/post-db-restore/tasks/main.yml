@@ -62,11 +62,13 @@
   with_items:
     - "-y vset install_profile stanford_dept"
     - "cc all"
-    - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
+#    - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
+    - "-y en stanford_dept"
     - "-y en acsf"
     - "rr"
   when: dept_site == "TRUE"
   notify: Clear site cache
+  ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
 
 - name: Set SimpleSAMLphp Certs Dir
   set_fact:
