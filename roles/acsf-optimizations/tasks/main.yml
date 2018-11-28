@@ -38,5 +38,6 @@
 - name: Disable error reporting
   shell: "{{ drush_alias }} -y --exact vset error_level 0"
 
-- name: Enable stanford_dept
+- name: Enable stanford_dept again
   shell: "{{ drush_alias }} -y en stanford_dept"
+  ignore_errors: "yes"
