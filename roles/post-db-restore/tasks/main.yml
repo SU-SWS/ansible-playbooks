@@ -65,7 +65,6 @@
     - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
     - "-y en acsf"
     - "rr"
-    - "-y en stanford_dept"
   when: dept_site == "TRUE"
   notify: Clear site cache
 
