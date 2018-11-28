@@ -46,14 +46,12 @@
     - "-y updb"
   ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
 
-
 # We must enable the profile as drush rr disables it.
 - name: Reenable the install profile after Rebuild the registry disables it.
   shell: "{{ drush_alias }} {{ item }}"
   ignore_errors: yes
   with_items:
     - "-y en stanford_dept"
-
 
 # BEANS, FEEDS, and probably bears too!
 # The change in where the entity class exists can cause fatal errors and not
@@ -79,5 +77,4 @@
   ignore_errors: yes
   with_items:
     - "-y rr"
-
-
+    
