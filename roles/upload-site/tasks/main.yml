@@ -35,13 +35,6 @@
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
   notify: Clear site cache
 
-# Let's enable the stanford_dept install profile
-- name: Enable stanford_dept before we rr
-  shell: "{{ drush_alias }} {{ item }}"
-  ignore_errors: yes
-  with_items:
-    - "-y en stanford_dept"
-
 # BEANS, FEEDS, and probably bears too!
 # The change in where the entity class exists can cause fatal errors and not
 # allow the rest to continue. This drush rr is to ensure that all the PHP
