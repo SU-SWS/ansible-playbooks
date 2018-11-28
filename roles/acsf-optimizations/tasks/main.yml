@@ -41,3 +41,14 @@
 #- name: Enable stanford_dept again to fix when drush rr disables it
 #  shell: "{{ drush_alias }} -y en stanford_dept"
 #  ignore_errors: "yes"
+
+- name: Debug disable_maintenance_mode_dest variable
+  debug:
+    var: disable_maintenance_mode_dest
+  when: print_debug_messages == "TRUE"
+
+# Bring 'er out of hyperspace, Chewy
+- name: Turn off maintenance mode for ACSF site
+  shell: "{{ drush_alias }} -y --exact vset maintenance_mode 0"
+  notify: Clear site cache
+  when: disable_maintenance_mode_dest == "TRUE"

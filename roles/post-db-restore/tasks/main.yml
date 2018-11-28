@@ -52,7 +52,7 @@
     - { module: 'stanford_jumpstart', profile: 'stanford_sites_jumpstart' }
     - { module: 'stanford_jumpstart_plus', profile: 'stanford_sites_jumpstart_plus' }
     - { module: 'stanford_jumpstart_academic', profile: 'stanford_sites_jumpstart_academic' }
-    - { module: 'stanford_jumpstart_vpsa', profile: 'stanford_jumpstart_vpsa' }
+    - { module: 'stanford_jumpstart_vpsa', profile: 'stanford_sites_jumpstart_vpsa' }
     - { module: 'stanford_jumpstart_lab', profile: 'stanford_sites_jumpstart_lab' }
     - { module: 'stanford_jumpstart_engineering', profile: 'stanford_sites_jumpstart_engineering' }
   when: product_site == "TRUE"

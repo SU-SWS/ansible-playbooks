@@ -34,5 +34,6 @@
     - ansible-sync/prod-sites.yml
 
   roles:
+    - { role: setup-local }
     - { role: add-vhost }
   serial: 12
