@@ -107,7 +107,7 @@
     recurse: yes
     mode: "a+r"
   when:
-    afs_available == "TRUE"
+    afs_available == "TRUE" and chmod == "TRUE"
 
 # Copy public files so that they exist and Drupal can find them if needed
 - name: Copy public files from local to Site Factory
