@@ -105,7 +105,7 @@
   file:
     path: "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/"
     recurse: yes
-    mode: "a+r,o-w"
+    mode: "a+r"
   when:
     afs_available == "TRUE"
 
