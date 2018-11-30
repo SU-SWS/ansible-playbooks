@@ -99,7 +99,7 @@
   when: launch_tasks == ""
   notify: Clear site cache
 
-# Chmod files directory so that there are not permission issues when going from
+# chmod files directory so that there are not permissions issues when going from
 # AFS ACLs to Unix file permissions
 - name: Make all files readable on AFS
   file:
