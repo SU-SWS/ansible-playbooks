@@ -68,7 +68,6 @@
     - "rr"
   when: dept_site == "TRUE"
   notify: Clear site cache
-  ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
 
 - name: Set SimpleSAMLphp Certs Dir
   set_fact:
