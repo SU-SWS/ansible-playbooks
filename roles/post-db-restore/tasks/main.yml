@@ -62,8 +62,8 @@
   with_items:
     - "-y vset install_profile stanford_dept"
     - "cc all"
-#    - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
-    - "-y en stanford_dept"
+    - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
+    - "sqlq 'update system set schema_version=\"0\" where name=\"stanford_dept\"'"
     - "-y en acsf"
     - "rr"
   when: dept_site == "TRUE"
