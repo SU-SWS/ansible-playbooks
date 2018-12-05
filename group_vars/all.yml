@@ -44,3 +44,7 @@ enable_maintenance_mode_source: "FALSE"
 # Set disable_maintenance_mode_dest to TRUE initially, to avoid undefined
 # variable errors. It can be overridden in migration_vars.yml
 disable_maintenance_mode_dest: "FALSE"
+
+# This is a little-used variable; only used when there are file permissions
+# issues from files that were not created/saved by Drupal.
+chmod: "FALSE"
