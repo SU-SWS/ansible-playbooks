@@ -1,10 +1,10 @@
 ---
-# Ansible role for creating a site on Site Factory.
+# Ansible role for creating a site on ACE.
 # https://github.com/SU-SWS/ansible-playbooks
 # =================================================
 #
 # The purpose of this role is to instantiate a STATE, in this case the
-# existence of a vhost for a site in Site Factory.
+# existence of a vhost for a site in ACE.
 #
 # INPUTS:
 #   acquia_api_key
@@ -26,35 +26,16 @@
 # KNOWN ISSUES:
 # --
 
-- name: Debug new_absolute_path
-  debug:
-    var: new_absolute_path
-  when: print_debug_messages == "TRUE" and sites_service == "sites"
+- name: Add sites-pro dev domain
+  shell: "drush @stanfordpro.dev ac-domain-add {{ inventory_hostname }}-dev.sites-pro.stanford.edu"
 
-# We only do this for group/dept sites. People sites get automagic hostnames.
+- name: Add sites-pro test domain
+  shell: "drush @stanfordpro.test ac-domain-add {{ inventory_hostname }}-test.sites-pro.stanford.edu"
+
+- name: Add sites-pro prod domain
+  shell: "drush @stanfordpro.prod ac-domain-add {{ inventory_hostname }}.sites-pro.stanford.edu"
+
+# We only do this for production sites with vhosts.
 - name: Add custom domain
-  uri:
-    url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
-    method: POST
-    user: "{{ acquia_username }}"
-    password: "{{ acquia_api_key }}"
-    force_basic_auth: yes
-    body_format: json
-    body:
-      domain_name: "{{ new_absolute_path }}"
-  when: sites_service == "sites"
-
-# Ex. drupal7-update-status.sites.stanford.edu.
-- name: Add inventory_hostname as domain
-  uri:
-    url: "https://www.{{ sitefactory_environment }}cardinalsites.acsitefactory.com/api/v1/domains/{{ site_id }}/add"
-    method: POST
-    user: "{{ acquia_username }}"
-    password: "{{ acquia_api_key }}"
-    force_basic_auth: yes
-    body_format: json
-    body:
-      domain_name: "{{ inventory_hostname }}{{ stanford_environment }}.{{ sites_service }}.stanford.edu"
-    return_content: yes
-    register: inventory_hostname_domain_response
-  when: inventory_hostname != acsf_site_name and sites_service == "sites"
+  shell: "drush @stanfordpro.prod ac-domain-add {{ new_absolute_path }}"
+  # when: sites_service == "sites"

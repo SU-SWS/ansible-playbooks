@@ -1,10 +1,10 @@
 ---
-# Ansible role for post site setup acsf optimizations
+# Ansible role for post site setup ace optimizations
 # https://github.com/SU-SWS/ansible-playbooks
 # =================================================
 #
 # The purpose of this role is to perform optimization tweaks for the
-# ACSF environment.
+# ACE environment.
 #
 # INPUTS:
 # --
@@ -44,7 +44,7 @@
   when: print_debug_messages == "TRUE"
 
 # Bring 'er out of hyperspace, Chewy
-- name: Turn off maintenance mode for ACSF site
+- name: Turn off maintenance mode for ACE site
   shell: "{{ drush_alias }} -y --exact vset maintenance_mode 0"
   notify: Clear site cache
   when: disable_maintenance_mode_dest == "TRUE"
