@@ -7,8 +7,8 @@
 #   and "upload-site".
 #
 # INPUTS:
-#   acsf_environment
-#   acsf_site_name
+#   ace_environment
+#   ace_site_name
 #   drush_environment
 #   inventory_hostname
 #   launch_tasks
@@ -43,30 +43,18 @@
 # Ex. /var/www/html/cardinald7.02dev/scripts
 - name: Set scripts_dir variable
   set_fact:
-    scripts_dir: "/var/www/html/{{ stack }}.0{{ stack_id }}{% if acsf_environment=='' %}live{% elif acsf_environment=='test' %}test{% elif acsf_environment=='dev' %}dev{% endif %}/scripts"
+    scripts_dir: "/var/www/html/stanfordpro.{% if ace_environment=='' %}prod{% elif ace_environment=='test' %}test{% elif ace_environment=='dev' %}dev{% endif %}/scripts"
 
 - name: What is the scripts_dir variable
   debug:
     msg: "scripts_dir is: {{ scripts_dir }}"
   when: print_debug_messages == "TRUE"
 
-# Ex. /mnt/files/cardinald7.02live/files-private
-# Ex. /mnt/files/cardinald7.02test/files-private
-# Ex. /mnt/files/cardinald7.02dev/files-private
-- name: Set sites_json_dir variable
-  set_fact:
-    sites_json_dir: "/mnt/files/{{ stack }}.0{{ stack_id }}{% if acsf_environment=='' %}live{% elif acsf_environment=='test' %}test{% elif acsf_environment=='dev' %}dev{% endif %}/files-private"
-
-- name: What is the sites_json_dir variable
-  debug:
-    msg: "sites_json_dir is: {{ sites_json_dir }}"
-  when: print_debug_messages == "TRUE"
-
 # Ex. cardinald7.02live
 # Ex. leland.03dev
 - name: Set remote_username
   set_fact:
-    remote_username: "{{ stack }}.0{{ stack_id }}{% if acsf_environment=='' %}live{% elif acsf_environment=='test' %}test{% elif acsf_environment=='dev' %}dev{% endif %}"
+    remote_username: "stanfordpro.{% if ace_environment=='' %}prod{% elif ace_environment=='test' %}test{% elif ace_environment=='dev' %}dev{% endif %}"
 
 - name: What is the remote_username variable
   debug:
@@ -77,7 +65,7 @@
 # Ex. leland03dev.ssh.enterprise-g1.acquia-sites.com
 - name: Set remote_hostname
   set_fact:
-    remote_hostname: "{{ stack }}0{{ stack_id }}{% if acsf_environment=='' %}live{% elif acsf_environment=='test' %}test{% elif acsf_environment=='dev' %}dev{% endif %}.ssh.enterprise-g1.acquia-sites.com"
+    remote_hostname: "stanfordpro{% if ace_environment=='' %}{% elif ace_environment=='test' %}stg{% elif ace_environment=='dev' %}dev{% endif %}.ssh.prod.acquia-sites.com"
 
 - name: What is the remote_hostname variable
   debug:
@@ -93,31 +81,30 @@
   when: vhost is defined
 
 # Ex: sites.stanford.edu/g2scd7
-# Ex: people.stanford.edu/jbickar
 - name: Set absolute non-vhost path from sites service
   set_fact:
     absolute_path_sites_service: "{{ sites_service }}.stanford.edu/{{ inventory_hostname }}"
 
-# Ex: g2sc-dev.sites.stanford.edu
+# Ex: g2sc-dev.sites-pro.stanford.edu
 - name: Set absolute path for testing
   set_fact:
-    absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}-{{ acsf_environment }}.{{ sites_service }}.stanford.edu"
+    absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ inventory_hostname }}{% endif %}-{{ ace_environment }}.sites-pro.stanford.edu"
 
-# Ex: g2sc.sites.stanford.edu
+# Ex: g2sc.sites-pro.stanford.edu
 - name: Set absolute path for production pre-launch
   set_fact:
-    absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.{{ sites_service }}.stanford.edu"
+    absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ inventory_hostname }}{% endif %}.sites-pro.stanford.edu"
 
 # Ex: g2sc.stanford.edu
 - name: Set absolute path for production at launch
   set_fact:
-    absolute_path_launch: "{% if vhost is defined %}{{ vhost }}{% else %}{{ acsf_site_name }}{% endif %}.stanford.edu"
+    absolute_path_launch: "{% if vhost is defined %}{{ vhost }}{% else %}{{ inventory_hostname }}{% endif %}.stanford.edu"
 
 # Ex: "g2sc-dev.sites.stanford.edu" if migrating to dev,
 #     "g2sc.stanford.edu" if launch_tasks = "launch"
 - name: Set new absolute path based on destination
   set_fact:
-    new_absolute_path: "{% if launch_tasks == 'launch' %}{{ absolute_path_launch }}{% elif acsf_environment == '' %}{{ absolute_path_prod }}{% else %}{{ absolute_path_testing }}{% endif %}"
+    new_absolute_path: "{% if launch_tasks == 'launch' %}{{ absolute_path_launch }}{% elif ace_environment == '' %}{{ absolute_path_prod }}{% else %}{{ absolute_path_testing }}{% endif %}"
 
 - name: Debug absolute path for site
   debug:
@@ -127,4 +114,4 @@
 # Ex: drush @acsf.dev.cardinald7.g2scd7
 - name: Set drush alias
   set_fact:
-    drush_alias: "drush @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}"
+    drush_alias: "drush @stanfordpro{{ drush_environment }}.{{ ace_site_name }}"

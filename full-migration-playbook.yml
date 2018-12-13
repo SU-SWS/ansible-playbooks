@@ -34,7 +34,7 @@
 #
 # PLAY 1: Migrate sites from SWS infrastructure to Site Factory
 # =============================================================
-- hosts: groups,depts,people,products
+- hosts: products
   connection: local
 
   vars_files:

@@ -1,5 +1,4 @@
 ---
 dependencies:
   - { role: get-public-files-path }
-  - { role: sites-json }
   - { role: define-paths }

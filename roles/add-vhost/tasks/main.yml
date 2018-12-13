@@ -11,7 +11,7 @@
 #   acquia_username
 #   new_absolute_path
 #   site_id
-#   sitefactory_environment
+#   site_environment
 #   sites_service
 #
 # OUTPUTS:
@@ -38,4 +38,4 @@
 # We only do this for production sites with vhosts.
 - name: Add custom domain
   shell: "drush @stanfordpro.prod ac-domain-add {{ new_absolute_path }}"
-  # when: sites_service == "sites"
+  when: new_absolute_path !== ""

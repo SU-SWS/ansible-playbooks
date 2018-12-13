@@ -26,7 +26,7 @@
 #
 # PLAY 1: Add custom domains to sites on Site Factory
 # =============================================================
-- hosts: groups,depts,people,products
+- hosts: products
   connection: local
 
   vars_files:

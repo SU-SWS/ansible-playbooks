@@ -8,17 +8,17 @@
 # tokens from it for use on ACSF and drush.
 #
 # INPUTS:
-#   acsf_environment
+#   ace_environment
 #   acquia_username
 #   acquia_api_key
 #   inventory_hostname
 #   site_prefix
 #
 # OUTPUTS:
-#   acsf_site_name
+#   ace_site_name
 #   drush_environment
 #   sites_service
-#   sitefactory_environment
+#   site_environment
 #   stanford_environment
 #
 # ALTERNATIVE ROLES:
@@ -34,39 +34,39 @@
 # Ex: people
 - name: Set sites_service variable
   set_fact:
-    sites_service: "{% if site_prefix=='dp' %}people{% elif site_prefix=='ds'%}sites{% endif %}"
+    sites_service: "sites"
 
 # Ex. My-Awesome-Website becomes myawesomewebsite
 - name: Sanitize inventory_hostname
   set_fact:
-    acsf_site_name: "{{ inventory_hostname | lower | regex_replace('[^a-z0-9]') }}"
+    ace_site_name: "{{ inventory_hostname | lower | regex_replace('[^a-z0-9]') }}"
     cacheable: TRUE
 
-- name: Debug ACSF site name
+- name: Debug ACE site name
   debug:
-    var: acsf_site_name
+    var: ace_site_name
   when: print_debug_messages == "TRUE"
 
 # Ex. "myaweseomwebsite-" when the environment is DEV or TEST
-- name: Create token for Site Factory environment URL
+- name: Create token for site environment URL
   set_fact:
-    sitefactory_environment: "{{ acsf_environment }}-"
+    site_environment: "{{ ace_environment }}-"
     cacheable: TRUE
   when:
-    acsf_environment != ""
+    ace_environment != ""
 
 # Ex. "-dev" or "-test" for DEV or TEST, respectively
 - name: Create token for stanford.edu environment URL
   set_fact:
-    stanford_environment: "-{{ acsf_environment }}"
+    stanford_environment: "-{{ ace_environment }}"
     cacheable: TRUE
   when:
-    acsf_environment != ""
+    ace_environment != ""
 
 # Ex. ".dev" or ".test" for DEV or TEST, respectively
 - name: Create token for drush environment
   set_fact:
-    drush_environment: ".{{ acsf_environment }}"
+    drush_environment: ".{{ ace_environment }}"
     cacheable: TRUE
   when:
-    acsf_environment != ""
+    ace_environment != ""

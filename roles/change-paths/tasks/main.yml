@@ -11,7 +11,7 @@
 # INPUTS:
 #   absolute_path_sites_service
 #   absolute_vhost_path_sites_service
-#   acsf_site_name
+#   ace_site_name
 #   drush_alias
 #   inventory_hostname
 #   link_attributes
@@ -40,11 +40,11 @@
 # Text fields should replace http(s)://people.stanford.edu/sunetid with      #
 # https://sunetid(-env).sites.stanford.edu. This will need to be     #
 # changed when/if we decide on a URL syntax for people sites. Also, we are   #
-# using {{ acsf_site_name }} here because we can rely on it being the same   #
+# using {{ ace_site_name }} here because we can rely on it being the same   #
 # as the person's SUNetID due to validation rules for SUNetIDs.              #
 #                                                                            #
 # Text fields should replace http(s)://sites.stanford.edu/sitename with      #
-# https://(acsf_site_name|vhost)(-env).sites.stanford.edu.           #
+# https://(ace_site_name|vhost)(-env).sites.stanford.edu.           #
 ##############################################################################
 
 # See discussion in https://github.com/SU-SWS/ansible-playbooks/pull/17
@@ -147,7 +147,7 @@
 ##############################################################################
 
 # We already did a global find/replace of vhost.stanford.edu and
-# sites.stanford.edu with https://acsf_site_name.sites.stanford.edu,
+# sites.stanford.edu with https://ace_site_name.sites.stanford.edu,
 # so we just need to find/replace the "sites/default/files" string with
 # the ACSF file_public_path value. We probably don't need to loop through
 # {{ protocols }} here (http and https), as we should have already handled that

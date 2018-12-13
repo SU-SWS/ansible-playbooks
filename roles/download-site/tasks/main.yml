@@ -29,7 +29,7 @@
 
 - name: Set sites drush alias
   set_fact:
-    sites_drush_alias: '{% if sites_drush_prefix == "default" %}{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }}{% else %}{{ server_alias }}.{{ sites_drush_prefix }}{{ inventory_hostname }}{% endif %}'
+    sites_drush_alias: '{{ server_alias }}.{{ site_prefix }}_{{ inventory_hostname }}'
 
 # Per internal conversation, John and Shea decided that it was a risk tradeoff
 # to put the site in maintenance mode *before* making the database dump vs.

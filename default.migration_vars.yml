@@ -10,7 +10,7 @@
 # dev: enter "dev"
 # test: enter "test"
 # prod: enter ""
-acsf_environment: "dev"
+ace_environment: "dev"
 #
 # Set this variable to `launch` if this is the final migration to
 # production before a site goes live.

@@ -20,11 +20,11 @@ migration_version: "master"
 # install before blowing away that database.
 profile: "testing"
 #
-# These variables (sitefactory_environment, stanford_environment, and
+# These variables (ace_environment, stanford_environment, and
 # drush_environment) should be set to empty strings as defaults, in order to
 # avoid "undefined variable" error messages. They are set to appropriate values,
 # if needed, in get-sitename/tasks/main.yml.
-sitefactory_environment: ""
+ace_environment: ""
 stanford_environment: ""
 drush_environment: ""
 

@@ -36,7 +36,7 @@
 # https://sunetid(-env).people.stanford.edu.                                 #
 #                                                                            #
 # Text fields should replace http(s)://sites.stanford.edu/sitename with      #
-# https://(acsf_site_name|vhost)(-env).sites.stanford.edu.                   #
+# https://(ace_site_name|vhost)(-env).sites.stanford.edu.                   #
 #                                                                            #
 # 1. Find and replace full paths (sites.stanford.edu/foo,                    #
 #     people.stanford.edu/sunetid). See "Update full paths in text" in the   #

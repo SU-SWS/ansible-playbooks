@@ -9,9 +9,9 @@
 # role fails for a site, start from the top with a fresh download of the site.
 #
 # INPUTS:
-#   acsf_site_name
+#   ace_site_name
 #   inventory_hostname
-#   sitefactory_environment
+#   site_environment
 #   drush_alias
 #   drush_environment
 #   stack
@@ -28,7 +28,7 @@
 # KNOWN ISSUES:
 # --
 
-- name: Drop database in Site Factory and install new database
+- name: Drop database in ACE and install new database
   shell: "{{drush_alias }} {{ item }}"
   with_items:
     - "-y sql-drop"

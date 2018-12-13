@@ -35,5 +35,5 @@
 
 - name: Update drush aliases
   template:
-    src: "acsf.aliases.drushrc.php"
-    dest: "~/.drush/acsf.aliases.drushrc.php"
+    src: "stanfordpro.aliases.drushrc.php"
+    dest: "~/.drush/stanfordpro.aliases.drushrc.php"
