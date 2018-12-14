@@ -83,7 +83,7 @@
 # Ex: sites.stanford.edu/g2scd7
 - name: Set absolute non-vhost path from sites service
   set_fact:
-    absolute_path_sites_service: "{{ sites_service }}.stanford.edu/{{ inventory_hostname }}"
+    absolute_path_sites_service: "sites.stanford.edu/{{ inventory_hostname }}"
 
 # Ex: g2sc-dev.sites-pro.stanford.edu
 - name: Set absolute path for testing

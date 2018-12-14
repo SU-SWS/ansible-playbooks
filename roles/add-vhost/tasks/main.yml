@@ -26,16 +26,10 @@
 # KNOWN ISSUES:
 # --
 
-- name: Add sites-pro dev domain
-  shell: "drush @stanfordpro.dev ac-domain-add {{ inventory_hostname }}-dev.sites-pro.stanford.edu"
-
-- name: Add sites-pro test domain
-  shell: "drush @stanfordpro.test ac-domain-add {{ inventory_hostname }}-test.sites-pro.stanford.edu"
-
-- name: Add sites-pro prod domain
-  shell: "drush @stanfordpro.prod ac-domain-add {{ inventory_hostname }}.sites-pro.stanford.edu"
+- name: Add sites-pro environment domain
+  shell: "{{ drush_alias }} ac-domain-add {{ inventory_hostname }}{{ stanford_environment }}.sites-pro.stanford.edu"
 
 # We only do this for production sites with vhosts.
-- name: Add custom domain
-  shell: "drush @stanfordpro.prod ac-domain-add {{ new_absolute_path }}"
-  when: new_absolute_path !== ""
+# - name: Add custom domain
+#   shell: "drush @stanfordpro.prod ac-domain-add {{ new_absolute_path }}"
+#   when: new_absolute_path !== ""

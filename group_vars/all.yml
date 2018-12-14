@@ -10,7 +10,7 @@
 # said, should we discover problems with a particular version or
 # versions of the script, this variable will give us the option to find
 # and re-migrate only those affected sites.
-migration_version: "master"
+migration_version: "ace-master"
 #
 # Enter the profile you would like Site Factory to install initially, when
 # creating the site. Note, this value is kind of irrelevant because all
@@ -27,24 +27,27 @@ profile: "testing"
 ace_environment: ""
 stanford_environment: ""
 drush_environment: ""
-
+#
 # This variable (ignore_updb_errors) should be set to an empty string by
 # default, in order to avoid "undefined variable" error messages. It can be
 # set on a per-site basis to "TRUE" in the inventory file. It is case-sensitive.
 ignore_updb_errors: ""
-
+#
 # Set site_exists to FALSE initially to avoid undefined variable errors. See
 # roles/setup-site/tasks/main.yml.
 site_exists: "FALSE"
-
+#
 # Set enable_maintenance_mode_source to FALSE initially, to avoid undefined
 # variable errors. It can be overridden in migration_vars.yml
 enable_maintenance_mode_source: "FALSE"
-
+#
 # Set disable_maintenance_mode_dest to TRUE initially, to avoid undefined
 # variable errors. It can be overridden in migration_vars.yml
 disable_maintenance_mode_dest: "FALSE"
-
+#
 # This is a little-used variable; only used when there are file permissions
 # issues from files that were not created/saved by Drupal.
 chmod: "FALSE"
+#
+# Enable debug
+print_debug_messages: "TRUE"

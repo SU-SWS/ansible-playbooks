@@ -26,14 +26,11 @@
 #
 # PLAY 1: Add custom domains to sites on Site Factory
 # =============================================================
-- hosts: products
+- hosts: ace
   connection: local
 
   vars_files:
-    - migration_vars.yml
-    - ansible-sync/prod-sites.yml
+    - ../migration_vars.yml
 
   roles:
-    - { role: setup-local }
-    - { role: add-vhost }
-  serial: 12
+    - { role: roles/add-vhost }
