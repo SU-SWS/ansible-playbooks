@@ -57,18 +57,6 @@
     - { module: 'stanford_jumpstart_engineering', profile: 'stanford_sites_jumpstart_engineering' }
   when: product_site == "TRUE"
 
-- name: Set site up as a Department site
-  shell: "{{ drush_alias }} {{ item }}"
-  with_items:
-    - "-y vset install_profile stanford_dept"
-    - "cc all"
-    - "sqlq 'update system set status=\"1\" where name=\"stanford_dept\"'"
-    - "sqlq 'update system set schema_version=\"0\" where name=\"stanford_dept\"'"
-    - "-y en acsf"
-    - "rr"
-  when: dept_site == "TRUE"
-  notify: Clear site cache
-
 - name: Do post-database-restore tasks
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
@@ -78,8 +66,8 @@
     - "-y --exact vset stanford_ssp_role_map_source workgroup"
     - "-y --exact vset stanford_ssp_workgroup_api_cert {{ certs_dir }}stanford_ssp.cert"
     - "-y --exact vset stanford_ssp_workgroup_api_key {{ certs_dir }}stanford_ssp.key"
-    - "-y dis stanford_afs_quota acsf_openid openid mollom xmlrpc statistics"
-    - "-y pm-uninstall stanford_afs_quota acsf_openid mollom xmlrpc statistics"
+    - "-y dis stanford_afs_quota openid mollom xmlrpc statistics"
+    - "-y pm-uninstall stanford_afs_quota mollom xmlrpc statistics"
     - "-y pm-uninstall openid"
     # Must truncate this table otherwise users will lose roles in WMD->SSP upgrade path.
     - "sqlq 'truncate table webauth_roles_history'"

@@ -42,7 +42,6 @@
     - ansible-sync/prod-sites.yml
 
   roles:
-    - { role: protect-prod }
     - { role: setup-local }
     - { role: download-site }
     - { role: setup-site }
@@ -51,6 +50,6 @@
     - { role: post-db-restore }
     - { role: change-paths }
     - { role: add-vhost }
-    - { role: acsf-optimizations }
+    - { role: ace-optimizations }
     - { role: cleanup-local }
   serial: 12

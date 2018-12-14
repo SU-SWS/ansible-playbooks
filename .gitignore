@@ -4,6 +4,5 @@
 ansible-sync
 migration_vars.yml
 server_vars.yml
-roles/setup-local/templates/acsf.aliases.drushrc.php
+roles/setup-local/templates/ace.aliases.drushrc.php
 *.sql
-
