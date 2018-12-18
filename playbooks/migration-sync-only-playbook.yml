@@ -37,13 +37,13 @@
 
   roles:
     - { role: roles/setup-local }
-    # - { role: roles/download-site }
+    - { role: roles/download-site }
     - { role: roles/css-injector }
     - { role: roles/upload-site }
     - { role: roles/post-db-restore }
-    # - { role: roles/change-paths }
-    # - { role: roles/ace-optimizations }
-    # - { role: roles/add-vhost }
-    # - { role: roles/cleanup-local }
+    - { role: roles/change-paths }
+    - { role: roles/ace-optimizations }
+    - { role: roles/add-vhost }
+    - { role: roles/cleanup-local }
   serial: 3
   max_fail_percentage: 100
