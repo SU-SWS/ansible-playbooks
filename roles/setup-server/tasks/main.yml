@@ -48,6 +48,11 @@
     src: "acapi.drush.inc"
     dest: "~/.drush/acapi.drush.inc"
 
+- name: Drush Acquia API config.
+  template:
+    src: "cloudapi.conf"
+    dest: "~/.acquia/cloudapi.conf"
+
 - name: Clone drush registry_rebuild
   git:
     repo: "https://git.drupal.org/project/registry_rebuild.git"

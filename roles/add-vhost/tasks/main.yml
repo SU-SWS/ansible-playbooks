@@ -37,6 +37,6 @@
   when: vanity_exists_check.stdout is search('Resource not found')
 
 # We only do this for production sites with vhosts.
-# - name: Add custom domain
-#   shell: "drush @stanfordpro.prod ac-domain-add {{ new_absolute_path }}"
-#   when: new_absolute_path !== ""
+- name: Add custom domain
+  shell: "drush @stanfordpro.prod ac-domain-add {{ new_absolute_path }}"
+  when: new_absolute_path != "" and launch_tasks == "launch"

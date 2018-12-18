@@ -34,4 +34,12 @@
 # KNOWN ISSUES:
 # --
 
-# TODO: CREATE DATABASE
+- name: Check for if DB exits as they exist across all environments
+  shell: "{{ drush_alias }} ac-database-info {{ inventory_hostname }}"
+  register: db_exists_check
+  ignore_errors: "yes"
+
+# This will cause a fail if the vhost already exists.
+- name: Add sites-pro database
+  shell: "{{ drush_alias }} ac-database-add {{ inventory_hostname }}"
+  when: db_exists_check.stdout is search('Resource not found')

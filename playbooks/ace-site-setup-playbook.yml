@@ -26,18 +26,15 @@
 #
 # PLAY 1: Create sites on Site Factory
 # =============================================================
-- hosts: products
+- hosts: ace
   connection: local
 
   vars_files:
-    - migration_vars.yml
-    - ansible-sync/prod-sites.yml
+    - ../migration_vars.yml
 
   roles:
-    - { role: get-sitename }
-    - { role: protect-prod }
-    - { role: setup-local }
-    - { role: setup-site }
-    - { role: add-vhost }
+    - { role: roles/setup-local }
+    - { role: roles/setup-site }
+    - { role: roles/add-vhost }
   serial: 6
   max_fail_percentage: 100
