@@ -64,3 +64,11 @@
     cacheable: TRUE
   when:
     ace_environment != ""
+
+# Ex. ".prod" for production.
+- name: Create token for drush environment
+  set_fact:
+    drush_environment: ".prod"
+    cacheable: TRUE
+  when:
+    ace_environment == ""

@@ -39,7 +39,10 @@
   register: db_exists_check
   ignore_errors: "yes"
 
-# This will cause a fail if the vhost already exists.
 - name: Add sites-pro database
   shell: "{{ drush_alias }} ac-database-add {{ inventory_hostname }}"
   when: db_exists_check.stdout is search('Resource not found')
+
+- name: Install a minimal profile.
+  shell: "{{ drush_alias }} si minimal -y"
+  when: db_exists_check.stdout is not search('Resource not found')

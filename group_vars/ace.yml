@@ -24,3 +24,11 @@ site_prefix: "ds"
 # Jumpstart product flag. Set this to true to have the script automagically
 # find and set the installation profile variable.
 product_site: "TRUE"
+#
+# ace_environment
+#
+ace_environment: "dev"
+#
+# ignore_updb_errors
+#
+ignore_updb_errors: "TRUE"

@@ -26,7 +26,7 @@
 #
 # PLAY 1: Create sites on Site Factory
 # =============================================================
-- hosts: ace
+- hosts: dev,test,prod,ode1,ode2,ode3,ode4,ode5
   connection: local
 
   vars_files:

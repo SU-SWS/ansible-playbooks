@@ -48,6 +48,12 @@
     src: "acapi.drush.inc"
     dest: "~/.drush/acapi.drush.inc"
 
+- name: Create .aquia directory in user home dir.
+  file:
+    path: "~/.acquia"
+    state: directory
+    mode: 0755
+
 - name: Drush Acquia API config.
   template:
     src: "cloudapi.conf"

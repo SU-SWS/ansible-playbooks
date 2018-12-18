@@ -1,7 +1,7 @@
 # Default inventory file. Copy this and put it in the "inventory" directory.
 
-[ace]
+[dev]
 # Add sitenames here
 
-[ace:vars]
+[dev:vars]
 ignore_updb_errors="TRUE"

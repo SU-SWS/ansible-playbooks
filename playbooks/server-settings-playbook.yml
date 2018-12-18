@@ -15,10 +15,10 @@
 # PLAY 1: Set up server customizations
 # ====================================
 # - hosts: dev,test,prod
-- hosts: all
+- hosts: ace,dev,test,prod,ra,ode1,ode2,ode3,ode4,ode5
 
   vars_files:
-    - server_vars.yml
+    - ../server_vars.yml
 
   roles:
-    - setup-server
+    - roles/setup-server

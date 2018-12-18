@@ -1,4 +1,4 @@
 ---
 dependencies:
-  - { role: get-public-files-path }
-  - { role: define-paths }
+  - { role: roles/get-public-files-path }
+  - { role: roles/define-paths }

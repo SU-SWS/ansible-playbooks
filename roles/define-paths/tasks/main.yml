@@ -43,26 +43,24 @@
 # Ex. /var/www/html/cardinald7.02dev/scripts
 - name: Set scripts_dir variable
   set_fact:
-    scripts_dir: "/var/www/html/stanfordpro.{% if ace_environment=='' %}prod{% elif ace_environment=='test' %}test{% elif ace_environment=='dev' %}dev{% endif %}/scripts"
+    scripts_dir: "/var/www/html/stanfordpro.{% if ace_environment=='' %}prod{% else %}{{ ace_environment }}{% endif %}/scripts"
 
 - name: What is the scripts_dir variable
   debug:
     msg: "scripts_dir is: {{ scripts_dir }}"
   when: print_debug_messages == "TRUE"
 
-# Ex. cardinald7.02live
-# Ex. leland.03dev
+  # eg: stanfordpro.dev
 - name: Set remote_username
   set_fact:
-    remote_username: "stanfordpro.{% if ace_environment=='' %}prod{% elif ace_environment=='test' %}test{% elif ace_environment=='dev' %}dev{% endif %}"
+    remote_username: "stanfordpro.{% if ace_environment=='' %}prod{% else %}{{ ace_environment }}{% endif %}"
 
 - name: What is the remote_username variable
   debug:
     msg: "remote_username is: {{ remote_username }}"
   when: print_debug_messages == "TRUE"
 
-# Ex. cardinald702live.ssh.enterprise-g1.acquia-sites.com
-# Ex. leland03dev.ssh.enterprise-g1.acquia-sites.com
+# Ex. stanfordprodev.ssh.enterprise-g1.acquia-sites.com
 - name: Set remote_hostname
   set_fact:
     remote_hostname: "stanfordpro{% if ace_environment=='' %}{% elif ace_environment=='test' %}stg{% elif ace_environment=='dev' %}dev{% endif %}.ssh.prod.acquia-sites.com"
@@ -115,3 +113,13 @@
 - name: Set drush alias
   set_fact:
     drush_alias: "drush @stanfordpro{{ drush_environment }}.{{ ace_site_name }}"
+
+# Certs dir.
+- name: Set certs_dir path
+  set_fact:
+    certs_dir: /var/www/html/stanfordpro{{ drush_environment }}/simplesamlphp/cert
+
+- name: Debug certs_dir
+  debug:
+    msg: "Stanford SSP Certs Directory: {{ certs_dir }}"
+  when: print_debug_messages == "TRUE"
