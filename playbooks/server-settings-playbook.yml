@@ -1,9 +1,9 @@
 ---
-# Ansible playbook that recreates in Site Factory sites on our infrastructure.
+# Ansible playbook that recreates in Enterprise sites on our infrastructure.
 # https://github.com/SU-SWS/ansible-playbooks
 # ============================================================================
 #
-# This playbook will customize our servers on Acquia Cloud Site Factory with
+# This playbook will customize our servers on Acquia Cloud Enterprise with
 # drush plugins and preferences that we define.
 #
 # Can be run with:

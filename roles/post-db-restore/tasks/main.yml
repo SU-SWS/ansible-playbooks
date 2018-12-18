@@ -1,9 +1,9 @@
 ---
-# Ansible role for uploading the database and files to Site Factory.
+# Ansible role for uploading the database and files to Enterprise.
 # https://github.com/SU-SWS/ansible-playbooks
 # ==================================================================
 #
-# This role uploads the database and files from local to Site Factory. It also
+# This role uploads the database and files from local to Enterprise. It also
 # runs a number of tasks to transform the database in such a way that images
 # and absolute paths will work in the new ACSF environment. If any part of this
 # role fails for a site, start from the top with a fresh download of the site.
@@ -95,30 +95,29 @@
     afs_available == "TRUE" and chmod == "TRUE"
 
 # Copy public files so that they exist and Drupal can find them if needed
-- name: Copy public files from local to Site Factory
+- name: Copy public files from local to Enterprise
   shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @stanfordpro{{ drush_environment }}.{{ ace_site_name }}:%files/ --exclude-paths=sites/default/files/js_injector/"
   notify: Clear site cache
   when:
     afs_available != "TRUE"
 
 # Copy private files so that they exist and Drupal can find them if needed
-- name: Copy private files from local to Site Factory
+- name: Copy private files from local to Enterprise
   shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/private/ @stanfordpro{{ drush_environment }}.{{ ace_site_name }}:%private/"
   notify: Clear site cache
   when:
     afs_available != "TRUE"
 
 # Copy public files from AFS so that they exist and Drupal can find them if needed
-- name: Copy public files from AFS to Site Factory
+- name: Copy public files from AFS to Enterprise
   shell: "drush -y rsync '/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/' @stanfordpro{{ drush_environment }}.{{ ace_site_name }}:%files/ --exclude-paths=sites/default/files/js_injector/"
   notify: Clear site cache
   when:
     afs_available == "TRUE"
 
 # Copy private files from AFS so that they exist and Drupal can find them if needed
-- name: Copy private files from AFS to Site Factory
+- name: Copy private files from AFS to Enterprise
   shell: "drush -y rsync '/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/private/' @stanfordpro{{ drush_environment }}.{{ ace_site_name }}:%private/"
-  notify: Clear site cache
   when:
     afs_available == "TRUE"
 

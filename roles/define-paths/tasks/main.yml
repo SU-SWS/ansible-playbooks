@@ -117,7 +117,7 @@
 # Certs dir.
 - name: Set certs_dir path
   set_fact:
-    certs_dir: /var/www/html/stanfordpro{{ drush_environment }}/simplesamlphp/cert
+    certs_dir: /var/www/html/stanfordpro{{ drush_environment }}/simplesamlphp/cert/
 
 - name: Debug certs_dir
   debug:

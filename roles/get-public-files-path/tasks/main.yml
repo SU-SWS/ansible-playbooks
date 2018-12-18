@@ -23,6 +23,11 @@
   shell: "{{ drush_alias }} status --fields='File directory path' --field-labels=0 --strict=0"
   register: file_public_path
 
+- name: Be sure response does not go to default
+  fail:
+    msg: "Public file path cannot be default."
+  when: file_public_path.stdout is search('sites/default/files')
+
 - name: Print file_public_path
   debug:
     msg: "File public path: {{ file_public_path.stdout }}"

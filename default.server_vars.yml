@@ -10,9 +10,9 @@
 # Example: "John Doe"
 acquia_username: ""
 #
-# Enter your Site Factory API Key for the environment against which you
-# will run the migration playbook. API Key's may differ between the Site Factory
-# environments. This is found in Site Factory, by going
+# Enter your Enterprise API Key for the environment against which you
+# will run the migration playbook. API Key's may differ between the Enterprise
+# environments. This is found in Enterprise, by going
 # to your profile and then clicking Security.
 acquia_api_key: ""
 #

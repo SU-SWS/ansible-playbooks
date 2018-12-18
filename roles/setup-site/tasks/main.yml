@@ -1,10 +1,10 @@
 ---
-# Ansible role for creating a site on Site Factory.
+# Ansible role for creating a site on Enterprise.
 # https://github.com/SU-SWS/ansible-playbooks
 # =================================================
 #
 # The purpose of this role is to instantiate a STATE, in this case the
-# existence of a site in Site Factory.
+# existence of a site in Enterprise.
 #
 # INPUTS:
 #   acquia_api_key

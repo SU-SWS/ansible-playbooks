@@ -1,5 +1,5 @@
 ---
-# Ansible playbook that recreates in Site Factory sites on our infrastructure.
+# Ansible playbook that recreates in Enterprise sites on our infrastructure.
 # https://github.com/SU-SWS/ansible-playbooks
 # ============================================================================
 #
@@ -24,7 +24,7 @@
 # KNOWN ISSUES:
 # --
 #
-# PLAY 1: Add custom domains to sites on Site Factory
+# PLAY 1: Add custom domains to sites on Enterprise
 # =============================================================
 - hosts: ace
   connection: local

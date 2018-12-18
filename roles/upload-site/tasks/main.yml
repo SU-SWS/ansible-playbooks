@@ -1,9 +1,9 @@
 ---
-# Ansible role for uploading the database and files to Site Factory.
+# Ansible role for uploading the database and files to Enterprise.
 # https://github.com/SU-SWS/ansible-playbooks
 # ==================================================================
 #
-# This role uploads the database and files from local to Site Factory. It also
+# This role uploads the database and files from local to Enterprise. It also
 # runs a number of tasks to transform the database in such a way that images
 # and absolute paths will work in the new ACSF environment. If any part of this
 # role fails for a site, start from the top with a fresh download of the site.

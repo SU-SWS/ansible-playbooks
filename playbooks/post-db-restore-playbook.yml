@@ -1,5 +1,5 @@
 ---
-# Ansible playbook that recreates in Site Factory sites on our infrastructure.
+# Ansible playbook that recreates in Enterprise sites on our infrastructure.
 # https://github.com/SU-SWS/ansible-playbooks
 # ============================================================================
 #
@@ -21,7 +21,7 @@
 # KNOWN ISSUES:
 # --
 #
-# PLAY 1: Migrate sites from SWS infrastructure to Site Factory
+# PLAY 1: Migrate sites from SWS infrastructure to Enterprise
 # =============================================================
 - hosts: groups,depts,people,products
   connection: local

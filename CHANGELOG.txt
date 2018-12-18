@@ -1,26 +1,5 @@
 SU-SWS Ansible Playbooks
 
-Version 0.0.2                                                        2018-10-09
+Version 0.0.1                                                        2019-XX-XX
 -------------------------------------------------------------------------------
-- Split up roles so that they could be run more independently
-- Added several new playbooks that can run different parts of the migration independently
-- Added support for rsyncing directly from AFS if available
-- Added ability to conditionally display debug messages
-- Added ability to migrate "people" sites to the "leland" stack
-- Added website performance optimizations for the ACSF environment
-- Refactored method of getting the numerical site_id to use the sites.json file (instead of the API)
-- Updated multiple tasks to ignore errors
-- Randomize User 1 password on migration
-- Set cache-per-host on production web heads
-- Better error handling on order-of-operations issues with drush "registry-rebuild" and "updb"
-- Set install_profile variable if it is not set
-- Set stanford_ssp to use Workgroup API for role mapping
-- Various other bug fixes, new features, and performance improvements
-
-Version 0.0.1                                                        2018-07-25
--------------------------------------------------------------------------------
-- Initial release of playbooks and roles to setup servers on ACSF and migrate
-  sites from on premise infrastructure to Acquia Cloud Site Factory.
-- Checks for PHP in the database and logs results to /tmp/sitename/.
-- Attempts to change absolute and relative paths to match ACSF domains
-  and individual site file paths.
+- Initial release of playbooks

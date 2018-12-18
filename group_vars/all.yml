@@ -12,9 +12,9 @@
 # and re-migrate only those affected sites.
 migration_version: "ace-master"
 #
-# Enter the profile you would like Site Factory to install initially, when
+# Enter the profile you would like Enterprise to install initially, when
 # creating the site. Note, this value is kind of irrelevant because all
-# Site Factory sites on the same stack run off the same codebase.  And which
+# Enterprise sites on the same stack run off the same codebase.  And which
 # profile a site uses will be saved in the database we load from production.
 # So there's not point in waiting for `stanford_sites_jumpstart_academic` to
 # install before blowing away that database.
