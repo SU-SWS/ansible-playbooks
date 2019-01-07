@@ -23,6 +23,10 @@
   shell: "{{ drush_alias }} status --fields='File directory path' --field-labels=0 --strict=0"
   register: file_public_path
 
+- name: Get private files directory
+  set_fact:
+    file_private_path: "sites/{{ inventory_hostname }}/files-private"
+
 - name: Be sure response does not go to default
   fail:
     msg: "Public file path cannot be default."

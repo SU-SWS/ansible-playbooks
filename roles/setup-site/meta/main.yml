@@ -1,4 +1,5 @@
 ---
 dependencies:
-  - { role: define-paths }
-  - { role: get-sitename }
+  - { role: roles/define-paths }
+  - { role: roles/get-sitename }
+  - { role: roles/get-public-files-path }
