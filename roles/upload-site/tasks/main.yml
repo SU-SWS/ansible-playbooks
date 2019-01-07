@@ -40,7 +40,6 @@
 # classes are registered and in the right place before we try to run updates.
 - name: Run drush rr before running anything else if we're having issues
   shell: "{{ drush_alias }} {{ item }}"
-  ignore_errors: yes
   with_items:
     - "-y rr"
   ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"

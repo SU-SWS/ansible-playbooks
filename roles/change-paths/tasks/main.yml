@@ -201,7 +201,7 @@
   notify: Clear site cache
   ignore_errors: yes
 
-# Ex. drush @acsf.test.cardinald7.eao scr /var/www/html/cardinald7.02test/scripts/js-injector.php
+# Ex. drush @acsf.test.cardinald7.eao scr /var/www/html/cardinald7.02test/scriptsmigration/js-injector.php
 - name: Save modified JS Injector rules to disk
-  shell: "{{ drush_alias }} scr {{ scripts_dir }}/js-injector.php"
+  shell: "{{ drush_alias }} scr {{ scripts_dir }}/migration/js-injector.php"
   notify: Clear site cache
