@@ -35,3 +35,7 @@
     msg: "{{ acsf_site_name }} conflicts with an inventory hostname on our list of protected production sites."
   # Only fail for production environment
   when: acsf_site_name in prod_sites and acsf_environment == ""
+
+- name: Look up DNS for vhost
+  set_fact:
+    dns_lookup: {{ lookup('dig', absolute_vhost_path_sites_service )}}
