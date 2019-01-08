@@ -45,9 +45,18 @@
   set_fact:
     scripts_dir: "/var/www/html/stanfordpro.{% if ace_environment=='' %}prod{% else %}{{ ace_environment }}{% endif %}/scripts"
 
+- name: Set SAML Install Dir variable
+  set_fact:
+    saml_dir: "/var/www/html/stanfordpro.{% if ace_environment=='' %}prod{% else %}{{ ace_environment }}{% endif %}/simplesamlphp"
+
 - name: What is the scripts_dir variable
   debug:
     msg: "scripts_dir is: {{ scripts_dir }}"
+  when: print_debug_messages == "TRUE"
+
+- name: What is the saml_dir variable
+  debug:
+    msg: "saml_dir is: {{ saml_dir }}"
   when: print_debug_messages == "TRUE"
 
   # eg: stanfordpro.dev
