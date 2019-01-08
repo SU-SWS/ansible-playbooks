@@ -1,0 +1,39 @@
+---
+# Ansible playbook that recreates in Enterprise sites on our infrastructure.
+# https://github.com/SU-SWS/ansible-playbooks
+# ============================================================================
+#
+# This playbook will create a new site in Acquia Cloud Enterprise, and
+# (optionally) add a vhost as a custom domain in ACSF.
+#
+# Can be run with: ansible-playbook -i inventory/sites acsf-site-setup-playbook.yml
+#
+# SEE ALSO:
+#
+# full-migration-playbook.yml to create a new site on ACSF and sync from the
+# existing infrastructure.
+#
+# migration-sync-only-playbook.yml to run the download and syncing tasks,
+# given the site is already set up on ACSF.
+#
+# post-db-restore-playbook.yml to only run the tasks that happen after the ACSF
+# site has been restored from the database dump.
+#
+# add-vhost-playbook.yml if you wish only to add a vhost as a custom domain.
+#
+# KNOWN ISSUES:
+# --
+#
+# PLAY 1: Create sites on Enterprise
+# =============================================================
+- hosts: dev,test,prod,ode1,ode2,ode3,ode4,ode5
+  connection: local
+
+  vars_files:
+    - ../migration_vars.yml
+
+  roles:
+    - { role: roles/setup-install }
+
+  serial: 6
+  max_fail_percentage: 100
