@@ -7,9 +7,10 @@
 # in which acsf_site_name and existing_sites have values.
 #
 # INPUTS:
-#   inventory_hostname
+#   absolute_vhost_path_sites_service
 #   acsf_site_name
 #   acsf_environment
+#   inventory_hostname
 #   prod_sites
 #
 # OUTPUTS:
@@ -35,3 +36,22 @@
     msg: "{{ acsf_site_name }} conflicts with an inventory hostname on our list of protected production sites."
   # Only fail for production environment
   when: acsf_site_name in prod_sites and acsf_environment == ""
+
+- name: Look up DNS for vhost
+  shell: "dig +short {{ absolute_vhost_path_sites_service }}"
+  register: dig_output
+
+- name: Debug dns_lookup variable
+  debug:
+    msg: "DNS lookup is: {{ dig_output.stdout_lines }}"
+  when:
+    print_debug_messages == "TRUE"
+
+# If DNS for <hostname>.stanford.edu already is pointed to ACSF (i.e., the
+# results of "dig" return "*.cardinalsites.acsitefactory.com"), then fail.
+# This protects production sites from being wiped out.
+# See https://stanfordits.atlassian.net/browse/SITES-734.
+- name: Fail if DNS for hostname is already on ACSF
+  fail:
+    msg: "{{ absolute_vhost_path_sites_service }} is already pointed to ACSF. You cannot migrate over a production site."
+  when: dig_output.stdout is search("cardinalsites.acsitefactory.com") and acsf_environment == ""
