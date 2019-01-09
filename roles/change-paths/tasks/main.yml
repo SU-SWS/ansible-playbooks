@@ -70,7 +70,7 @@
     - "{{ protocols }}"
   notify: Clear site cache
   ignore_errors: yes
-  when: skip_sarl == "TRUE"
+  when: run_sarl == "TRUE"
 
 # Note: I don't think this will ever get run, because we've already replaced
 # https://sites.stanford.edu/g2scd7/ with https://g2sc.sites.stanford.edu/
@@ -107,7 +107,7 @@
   when: vhost is defined
   notify: Clear site cache
   ignore_errors: yes
-  when: skip_sarl == "TRUE"
+  when: run_sarl == "TRUE"
 
 # Note: I don't think we ever get to this either, because we've already replaced
 # https://g2sc.stanford.edu/ with https://g2sc.sites.stanford.edu/

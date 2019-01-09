@@ -48,3 +48,5 @@ disable_maintenance_mode_dest: "FALSE"
 # This is a little-used variable; only used when there are file permissions
 # issues from files that were not created/saved by Drupal.
 chmod: "FALSE"
+
+run_sarl: "TRUE"
