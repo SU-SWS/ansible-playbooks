@@ -56,6 +56,11 @@ sites_drush_prefix: "default"
 # --extra-vars "print_debug_messages=TRUE"
 print_debug_messages: "FALSE"
 
+# Rebuild content permissions. Set to FALSE by default; you can set it to
+# TRUE in migration_vars.yml, or set it at runtime with
+# --extra-vars "rebuild_permissions=TRUE"
+rebuild_permissions: "FALSE"
+
 #
 # Enable direct AFS access when running ansible on an AFS ready environment.
 # Example: TRUE
