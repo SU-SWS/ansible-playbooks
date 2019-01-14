@@ -121,7 +121,7 @@
 # Ex: drush @acsf.dev.cardinald7.g2scd7
 - name: Set drush alias
   set_fact:
-    drush_alias: "drush @stanfordpro{{ drush_environment }}.{{ ace_site_name }}"
+    drush_alias: "drush @stanfordpro{{ drush_environment }}.{{ inventory_hostname }}"
 
 # Certs dir.
 - name: Set certs_dir path

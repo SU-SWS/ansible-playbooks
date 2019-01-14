@@ -35,7 +35,7 @@
 # --
 
 - name: Check for if DB exits as they exist across all environments
-  shell: "{{ drush_alias }} ac-database-info {{ inventory_hostname }}"
+  shell: "{{ drush_alias }} ac-database-info {{ ace_site_name }}"
   register: db_exists_check
   ignore_errors: "yes"
 
