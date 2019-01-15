@@ -207,3 +207,8 @@
 - name: Save modified JS Injector rules to disk
   shell: "{{ drush_alias }} scr {{ scripts_dir }}/js-injector.php"
   notify: Clear site cache
+
+# Ex. drush @acsf.test.cardinald7.eao scr /var/www/html/cardinald7.02test/scripts/admin-shortcuts.php
+- name: Hide reports menu links from admin shortcuts
+  shell: "{{ drush_alias }} scr {{ scripts_dir }}/admin-shortcuts.php"
+  notify: Clear site cache
