@@ -57,6 +57,14 @@
     - "-y updb"
   ignore_errors: "{% if ignore_updb_errors == 'TRUE' %}yes{% endif %}"
 
+# Sometimes we want to skip ahead of the stanford_person_views_update_7500()
+# update hook.
+- name: Skip stanford_person_views_update_7500 update hook
+  shell: "{{ drush_alias }} {{ item }}"
+  with_items:
+    - "sqlq 'update system set schema_version=\"7500\" where name=\"stanford_person_views\"'"
+  when: ignore_updb_errors == "TRUE" and skip_stanford_person_views_update_7500 == "TRUE"
+
 # This only runs "drush rr" if ignore_updb_errors == "TRUE"
 - name: Run drush rr before running drush updb a second time for recalcitrant sites
   shell: "{{ drush_alias }} {{ item }}"
