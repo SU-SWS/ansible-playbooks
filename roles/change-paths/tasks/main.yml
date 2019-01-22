@@ -212,3 +212,4 @@
 - name: Hide reports menu links from admin shortcuts
   shell: "{{ drush_alias }} scr {{ scripts_dir }}/admin-shortcuts.php"
   notify: Clear site cache
+  when: disable_top_reports_menu_items == "TRUE"

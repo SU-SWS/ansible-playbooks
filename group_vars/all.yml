@@ -55,3 +55,11 @@ chmod: "FALSE"
 # See roles/change-paths/tasks/main.yml, the "Remove absolute paths for links
 # and menus" and "Remove absolute vhost paths for links and menus" tasks.
 run_sarl: "TRUE"
+
+# stanford_jumpstart_shortcuts defines permissions to allow access to "top
+# reports" menu items ("Recent log messages", "Top 'access denied' errors",
+# "Top 'page not found' errors", and "Top search phrases"). It also places
+# these items in the Site Actions menu. To disable (not delete) these items
+# from the Site Actions menu, set disable_top_reports_menu_items: "TRUE"
+# in migration_vars.yml or in an inventory file.
+disable_top_reports_menu_items: "FALSE"
