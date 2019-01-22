@@ -40,12 +40,12 @@
 - name: Look up DNS for vhost
   shell: "dig +short {{ absolute_vhost_path_sites_service }}"
   register: dig_output
+  when: acsf_environment == ""
 
 - name: Debug dns_lookup variable
   debug:
     msg: "DNS lookup is: {{ dig_output.stdout_lines }}"
-  when:
-    print_debug_messages == "TRUE"
+  when: print_debug_messages == "TRUE" and acsf_environment == ""
 
 # If DNS for <hostname>.stanford.edu already is pointed to ACSF (i.e., the
 # results of "dig" return "*.cardinalsites.acsitefactory.com"), then fail.
