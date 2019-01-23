@@ -160,3 +160,9 @@
 
 - name: Randomize User 1 password
   shell: "{{ drush_alias }} user-password 1 --password=\"{{ random_pw }}\""
+
+# Ex. drush @acsf.test.cardinald7.jseicme scr /var/www/html/cardinald7.02test/scripts/jse-contexts.php
+- name: Disable newer JSE homepage contexts
+  shell: "{{ drush_alias }} scr {{ scripts_dir }}/jse-contexts.php"
+  notify: Clear site cache
+  when: disable_newer_jse_contexts == "TRUE"

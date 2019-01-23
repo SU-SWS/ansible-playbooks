@@ -63,3 +63,11 @@ run_sarl: "TRUE"
 # from the Site Actions menu, set disable_top_reports_menu_items: "TRUE"
 # in migration_vars.yml or in an inventory file.
 disable_top_reports_menu_items: "FALSE"
+
+# stanford_jumpstart_home on JSE introduces some new homepage Contexts that do
+# not exist on older sites. These get enabled during the migration. Set
+# disable_newer_jse_contexts: "TRUE" in migration_vars.yml or in an inventory
+# file in order to disable these Contexts. See the "Disable newer JSE homepage
+# contexts" task in the "post-db-restore" role. This will not disable the active
+# homepage Context.
+disable_newer_jse_contexts: "FALSE"
