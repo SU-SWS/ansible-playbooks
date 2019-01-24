@@ -27,7 +27,7 @@ product_site: "TRUE"
 #
 # ace_environment
 #
-ace_environment: "dev"
+ace_environment: ""
 #
 # ignore_updb_errors
 #

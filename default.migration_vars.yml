@@ -11,6 +11,8 @@
 # test: enter "test"
 # prod: enter ""
 ace_environment: "dev"
+stanford_environment: ""
+
 #
 # Set this variable to `launch` if this is the final migration to
 # production before a site goes live.
