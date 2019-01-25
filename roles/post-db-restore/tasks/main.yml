@@ -47,6 +47,27 @@
 # to be sure to set "install_profile" to "stanford_sites_jumpstart_academic" for
 # JSA sites (so that they get all the correct code).
 - name: Find and set the install profile by helper modules.
+  shell: "FOUND=$({{ drush_alias }} php-eval \"var_dump(module_exists('{{ item.module }}'));\"); if [[ \"$FOUND\" =~ 'true' ]]; then {{ drush_alias }} -y vset install_profile '{{ item.profile }}'; {{ drush_alias }} -y sqlq 'update system set status=\"1\" where name=\"{{ item.profile }}\"'; {{ drush_alias }} -y sqlq 'update system set status=\"0\" where name=\"stanford\"'; {{ drush_alias }} -y en stanford_jumpstart_shortcuts stanford_jumpstart_site_actions; fi;"
+  with_items:
+    - { module: 'stanford_jumpstart', profile: 'stanford_sites_jumpstart' }
+    - { module: 'stanford_jumpstart_plus', profile: 'stanford_sites_jumpstart_plus' }
+    - { module: 'stanford_jumpstart_academic', profile: 'stanford_sites_jumpstart_academic' }
+    - { module: 'stanford_jumpstart_vpsa', profile: 'stanford_sites_jumpstart_vpsa' }
+    - { module: 'stanford_jumpstart_lab', profile: 'stanford_sites_jumpstart_lab' }
+    - { module: 'stanford_jumpstart_engineering', profile: 'stanford_sites_jumpstart_engineering' }
+  when: product_site == "TRUE" and duplicate_code_in_profile != "TRUE"
+
+# Set the install profile by looking for the enabled supporting module.
+# Order of operations is important here, because a JSA site may have BOTH
+# "stanford_jumpstart" and "stanford_jumpstart_academic" enabled, yet we want
+# to be sure to set "install_profile" to "stanford_sites_jumpstart_academic" for
+# JSA sites (so that they get all the correct code).
+#
+# Some profiles have modules in the "modules" directory and this task will fail
+# with a "cannot redeclare" fatal error. Set duplicate_code_in_profile: "TRUE"
+# in migration_vars.yml or on a per-host basis in the inventory to rebuild the
+# registry during this task.
+- name: Find and set the install profile by helper modules (and rebuild registry).
   shell: "FOUND=$({{ drush_alias }} php-eval \"var_dump(module_exists('{{ item.module }}'));\"); if [[ \"$FOUND\" =~ 'true' ]]; then {{ drush_alias }} -y vset install_profile '{{ item.profile }}'; {{ drush_alias }} -y sqlq 'update system set status=\"1\" where name=\"{{ item.profile }}\"'; {{ drush_alias }} -y sqlq 'update system set status=\"0\" where name=\"stanford\"'; {{ drush_alias }} rr; {{ drush_alias }} -y en stanford_jumpstart_shortcuts stanford_jumpstart_site_actions; fi;"
   with_items:
     - { module: 'stanford_jumpstart', profile: 'stanford_sites_jumpstart' }
@@ -55,7 +76,7 @@
     - { module: 'stanford_jumpstart_vpsa', profile: 'stanford_sites_jumpstart_vpsa' }
     - { module: 'stanford_jumpstart_lab', profile: 'stanford_sites_jumpstart_lab' }
     - { module: 'stanford_jumpstart_engineering', profile: 'stanford_sites_jumpstart_engineering' }
-  when: product_site == "TRUE"
+  when: product_site == "TRUE" and duplicate_code_in_profile == "TRUE"
 
 - name: Set site up as a Department site
   shell: "{{ drush_alias }} {{ item }}"

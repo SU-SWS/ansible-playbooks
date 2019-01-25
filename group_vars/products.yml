@@ -37,3 +37,10 @@ stack_id: "2"
 #
 # Drupal 7 product sites go on the `cardinald7` stack.
 stack: "cardinald7"
+
+# Some profiles have modules in the "modules" directory and the "Find and set
+# the install profile by helper modules" task in the post-db-restore role will
+# fail with a "cannot redeclare" fatal error.
+# Set duplicate_code_in_profile: "TRUE" in migration_vars.yml or on a per-host
+# basis in the inventory to rebuild the registry during this task.
+duplicate_code_in_profile: "FALSE"
