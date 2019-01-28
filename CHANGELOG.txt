@@ -1,5 +1,20 @@
 SU-SWS Ansible Playbooks
 
+Version 0.0.4                                                        2019-01-28
+-------------------------------------------------------------------------------
+- Provide option to rebuild content access permissions
+- Provide option to chmod files on the source site (in AFS), to avoid access issues
+- Provide option to skip the sarl/sarm tasks
+- Provide option to disable the "top reports" Site Actions Menu items
+- Ignore drush updb errors by default
+- Use DNS lookup to protect prod sites from being overwritten
+
+Version 0.0.3                                                        2018-11-06
+-------------------------------------------------------------------------------
+- Provide option to enable maintenance mode on source site
+- Provide option to disable maintenance mode on destination site
+- Use API instead of drush to determine that site is available
+
 Version 0.0.2                                                        2018-10-09
 -------------------------------------------------------------------------------
 - Split up roles so that they could be run more independently
