@@ -1,5 +1,9 @@
 SU-SWS Ansible Playbooks
 
+Version 0.0.5                                                        2019-02-04
+-------------------------------------------------------------------------------
+- Force loading through the canonical URL at launch by setting the acsf_helper_canonical_url variable
+
 Version 0.0.4                                                        2019-01-28
 -------------------------------------------------------------------------------
 - Provide option to rebuild content access permissions

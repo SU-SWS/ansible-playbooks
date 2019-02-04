@@ -59,8 +59,10 @@
     register: inventory_hostname_domain_response
   when: inventory_hostname != acsf_site_name and sites_service == "sites"
 
-# Force loading through the canonical URL by setting the "acsf_helper_canonical_url"
-# variable to (e.g.) "foo.stanford.edu"
+# Force loading through the canonical URL by setting the
+# "acsf_helper_canonical_url" variable to (e.g.) "foo.stanford.edu". This will
+# only take affect on sites on the prod environment, because the acsf_helper
+# module restricts that functionality to prod
 - name: Set acsf_helper_canonical_url variable prior to launch
   shell: "{{ drush_alias }} -y --exact vset acsf_helper_canonical_url {{ new_absolute_path }}"
   when: launch_tasks == "launch"
