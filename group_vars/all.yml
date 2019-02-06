@@ -24,7 +24,7 @@ profile: "testing"
 # drush_environment) should be set to empty strings as defaults, in order to
 # avoid "undefined variable" error messages. They are set to appropriate values,
 # if needed, in get-sitename/tasks/main.yml.
-ace_environment: ""
+#ace_environment: ""
 stanford_environment: ""
 drush_environment: ""
 #
