@@ -152,7 +152,7 @@
 - name: Make files directory writable on AFS
   file:
     path: "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/"
-    recurse: no
+    recurse: yes
     mode: "777"
   when:
     afs_available == "TRUE" and chmod == "TRUE"
