@@ -151,14 +151,9 @@
 # chmod the files directory on AFS back to 777.
 - name: Make files directory writable on AFS
   file:
-    path: "{{ item }}"
-    recurse: no
+    path: "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/"
+    recurse: yes
     mode: "777"
-  with_items:
-    - "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/"
-    - "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/private/"
-    - "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/css/"
-    - "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/js/"
   when:
     afs_available == "TRUE" and chmod == "TRUE"
 
