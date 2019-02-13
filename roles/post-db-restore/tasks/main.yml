@@ -136,7 +136,7 @@
 
 # Copy public files from AFS so that they exist and Drupal can find them if needed
 - name: Copy public files from AFS to Site Factory
-  shell: "drush -y rsync '/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/' @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/ --exclude-paths=sites/default/files/js_injector/"
+  shell: "drush -y --exclude-paths=sites/default/files/js_injector/:sites/default/files/css/:sites/default/files/js/ rsync '/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/' @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/"
   notify: Clear site cache
   when:
     afs_available == "TRUE"
