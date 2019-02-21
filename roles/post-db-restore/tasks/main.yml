@@ -122,7 +122,7 @@
 
 # Copy public files from AFS so that they exist and Drupal can find them if needed
 - name: Copy public files from AFS to Enterprise
-  shell: "drush -y rsync '/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/' @stanfordpro{{ drush_environment }}.{{ inventory_hostname }}:%files/ --exclude-paths=sites/default/files/js_injector/"
+  shell: "drush -y --exclude-paths=sites/default/files/js_injector/:sites/default/files/css/:sites/default/files/js/ rsync '/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/' @stanfordpro{{ drush_environment }}.{{ inventory_hostname }}:%files/"
   notify: Clear site cache
   when:
     afs_available == "TRUE"
@@ -130,8 +130,18 @@
 # Copy private files from AFS so that they exist and Drupal can find them if needed
 - name: Copy private files from AFS to Enterprise
   shell: "drush -y rsync '/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/private/' @stanfordpro{{ drush_environment }}.{{ inventory_hostname }}:%private/"
+  notify: Clear site cache
   when:
     afs_available == "TRUE"
+
+# chmod the files directory on AFS back to 777.
+- name: Make files directory writable on AFS
+  file:
+    path: "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/"
+    recurse: yes
+    mode: "777"
+  when:
+    afs_available == "TRUE" and chmod == "TRUE"
 
 - name: Generate random password
 # See https://stackoverflow.com/a/45080709
