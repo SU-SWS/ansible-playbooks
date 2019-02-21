@@ -26,6 +26,11 @@
 # KNOWN ISSUES:
 # --
 
+- name: Debug new_absolute_path
+  debug:
+    var: new_absolute_path
+  when: print_debug_messages == "TRUE"
+
 - name: Check for if name exits
   shell: "{{ drush_alias }} ac-domain-info {{ inventory_hostname | lower | regex_replace('[^a-z0-9-]') }}{{ stanford_environment }}.sites-pro.stanford.edu"
   register: vanity_exists_check
@@ -40,3 +45,11 @@
 - name: Add custom domain
   shell: "drush @stanfordpro.prod ac-domain-add {{ new_absolute_path }}"
   when: new_absolute_path != "" and launch_tasks == "launch"
+
+# Force loading through the canonical URL by setting the
+# "stanfordpro_helper_canonical_url" variable to (e.g.) "foo.stanford.edu". This
+# will only take affect on sites on the prod environment, because the
+# stanfordpro_helper module restricts that functionality to prod
+- name: Set stanfordpro_helper_canonical_url variable prior to launch
+  shell: "{{ drush_alias }} -y --exact vset stanfordpro_helper_canonical_url {{ new_absolute_path }}"
+  when: launch_tasks == "launch"
