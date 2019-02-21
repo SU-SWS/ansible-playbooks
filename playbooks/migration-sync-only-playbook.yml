@@ -34,6 +34,7 @@
     - ../server_vars.yml
     - ../group_vars/all.yml
     - ../group_vars/ace.yml
+    - ../ansible-sync/prod-sites.yml
 
   roles:
     - { role: roles/setup-local }
