@@ -51,3 +51,10 @@ chmod: "FALSE"
 #
 # Enable debug
 print_debug_messages: "TRUE"
+#
+# Set run_sarl="FALSE" in migration_vars.yml or on a per-host basis in an
+# inventory to skip the steps that strip absolute paths in menus and links.
+# Use case: URLs in links and menus that link to anchors or fragments.
+# See roles/change-paths/tasks/main.yml, the "Remove absolute paths for links
+# and menus" and "Remove absolute vhost paths for links and menus" tasks.
+run_sarl: "TRUE"
