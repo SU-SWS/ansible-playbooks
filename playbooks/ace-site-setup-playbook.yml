@@ -33,6 +33,7 @@
     - ../migration_vars.yml
 
   roles:
+    - { role: roles/protect-prod }
     - { role: roles/setup-local }
     - { role: roles/setup-site }
     - { role: roles/add-vhost }

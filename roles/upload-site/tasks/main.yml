@@ -33,6 +33,7 @@
   with_items:
     - "-y sql-drop"
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
+  notify: Clear site cache
 
 # BEANS, FEEDS, and probably bears too!
 # The change in where the entity class exists can cause fatal errors and not

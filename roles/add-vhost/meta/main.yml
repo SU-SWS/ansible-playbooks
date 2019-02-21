@@ -2,3 +2,4 @@
 dependencies:
   - { role: setup-local }
   - { role: define-paths }
+  - { role: roles/protect-prod }
