@@ -78,6 +78,16 @@
   notify: Clear site cache
   ignore_errors: "yes"
 
+# Rebuild permissions. This resolves the "The content access permissions need
+# to be rebuilt" message. NOTE: this is a slow task, so only run this as
+# needed on a per-host basis
+- name: Rebuild content permissions
+  shell: "{{ drush_alias }} {{ item }}"
+  with_items:
+    - 'php-eval "node_access_rebuild();"'
+  when: rebuild_permissions == "TRUE"
+  notify: Clear site cache
+
 - name: Post-database-restore tasks if not launch
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
