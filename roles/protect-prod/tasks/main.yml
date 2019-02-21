@@ -4,11 +4,11 @@
 # ===========================================================
 #
 # The purpose of this role is to instantiate a STATE, in this case the state
-# in which acsf_site_name and existing_sites have values.
+# in which inventory_hostname and existing_sites have values.
 #
 # INPUTS:
 #   absolute_vhost_path_sites_service
-#   acsf_site_name
+#   inventory_hostname
 #   acsf_environment
 #   inventory_hostname
 #   prod_sites
@@ -31,11 +31,11 @@
   # Only fail for production environment
   when: inventory_hostname in prod_sites and ace_environment == ""
 
-- name: Fail if acsf name conflicts with prod sites
+- name: Fail if inventory_hostname conflicts with prod sites
   fail:
-    msg: "{{ acsf_site_name }} conflicts with an inventory hostname on our list of protected production sites."
+    msg: "{{ inventory_hostname }} conflicts with an inventory hostname on our list of protected production sites."
   # Only fail for production environment
-  when: acsf_site_name in prod_sites and ace_environment == ""
+  when: inventory_hostname in prod_sites and ace_environment == ""
 
 - name: Look up DNS for vhost
   shell: "dig +short {{ absolute_vhost_path_sites_service }}"
