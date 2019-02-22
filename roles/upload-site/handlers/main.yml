@@ -1,0 +1,4 @@
+---
+- name: Clear site cache
+  shell: "{{ drush_alias }} "
+  with_items: "cc all"

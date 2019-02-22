@@ -1,3 +1,4 @@
 ---
 dependencies:
   - { role: roles/define-paths }
+  - { role: roles/protect-prod }

@@ -42,6 +42,7 @@
     - ansible-sync/prod-sites.yml
 
   roles:
+    - { role: protect-prod }
     - { role: setup-local }
     - { role: download-site }
     - { role: setup-site }

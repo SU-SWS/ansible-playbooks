@@ -2,3 +2,4 @@
 dependencies:
   - { role: roles/get-public-files-path }
   - { role: roles/define-paths }
+  - { role: roles/protect-prod }
