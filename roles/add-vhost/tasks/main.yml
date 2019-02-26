@@ -31,7 +31,7 @@
     var: new_absolute_path
   when: print_debug_messages == "TRUE"
 
-- name: Check if inventory_hostname exists as a custom domain
+- name: Check if inventory_hostname.sites-pro.stanford.edu exists as a custom domain
   shell: "{{ drush_alias }} ac-domain-info {{ inventory_hostname | lower | regex_replace('[^a-z0-9-]') }}{{ stanford_environment }}.sites-pro.stanford.edu"
   register: inventory_hostname_exists_check
   ignore_errors: "yes"
@@ -44,9 +44,9 @@
   shell: "{{ drush_alias }} ac-domain-add {{ inventory_hostname | lower | regex_replace('[^a-z0-9-]') }}{{ stanford_environment }}.sites-pro.stanford.edu"
   when: inventory_hostname_exists_check.stdout is search('Resource not found')
 
-- name: Check if vhost exists as a custom domain
+- name: Check if vhost.sites-pro.stanford.edu exists as a custom domain
   shell: "{{ drush_alias }} ac-domain-info {{ vhost }}{{ stanford_environment }}.sites-pro.stanford.edu"
-  register: vhost_custom_domain_exists_check
+  register: vhost_sitespro_custom_domain_exists_check
   ignore_errors: "yes"
 
 # Add the vhost as a custom domain.
@@ -55,12 +55,18 @@
 # Ex. sites-jumpstart.sites-pro.stanford.edu
 - name: Add vhost as sites-pro environment domain
   shell: "{{ drush_alias }} ac-domain-add {{ vhost }}{{ stanford_environment }}.sites-pro.stanford.edu"
-  when: vhost_custom_domain_exists_check.stdout is search('Resource not found')
+  when: vhost_sitespro_custom_domain_exists_check.stdout is search('Resource not found')
+
+- name: Check if vhost.stanford.edu exists as a custom domain
+  shell: "{{ drush_alias }} ac-domain-info {{ vhost }}{{ stanford_environment }}.sites-pro.stanford.edu"
+  register: vhost_custom_domain_exists_check
+  ignore_errors: "yes"
+
 
 # We only do this for production sites with vhosts.
 - name: Add vhost as custom domain
   shell: "drush @stanfordpro.prod ac-domain-add {{ new_absolute_path }}"
-  when: new_absolute_path != "" and launch_tasks == "launch"
+  when: new_absolute_path != "" and launch_tasks == "launch" and vhost_custom_domain_exists_check.stdout is search('Resource not found')
 
 # Force loading through the canonical URL by setting the
 # "stanfordpro_helper_canonical_url" variable to (e.g.) "foo.stanford.edu". This
