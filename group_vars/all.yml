@@ -63,3 +63,9 @@ run_sarl: "TRUE"
 # from the Site Actions menu, set disable_top_reports_menu_items: "TRUE"
 # in migration_vars.yml or in an inventory file.
 disable_top_reports_menu_items: "FALSE"
+
+# Some sites fail on the stanford_person_views_update_7500() update hook.
+# We want to selectively skip over that hook on a per-site basis.
+# Set this variable to "TRUE" in an inventory or in migration_vars.yml to
+# skip past that update hook.
+skip_stanford_person_views_update_7500: "FALSE"
