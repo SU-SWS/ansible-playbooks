@@ -58,7 +58,7 @@
   when: vhost_sitespro_custom_domain_exists_check.stdout is search('Resource not found')
 
 - name: Check if vhost.stanford.edu exists as a custom domain
-  shell: "{{ drush_alias }} ac-domain-info {{ vhost }}{{ stanford_environment }}.sites-pro.stanford.edu"
+  shell: "{{ drush_alias }} ac-domain-info {{ vhost }}.stanford.edu"
   register: vhost_custom_domain_exists_check
   ignore_errors: "yes"
 
