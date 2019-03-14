@@ -23,17 +23,17 @@
 #
 # PLAY 1: Migrate sites from SWS infrastructure to Enterprise
 # =============================================================
-- hosts: groups,depts,people,products
+- hosts: ace,dev,test,prod,ode1,ode2,ode3,ode4,ode5
   connection: local
 
   vars_files:
-    - migration_vars.yml
-    - ansible-sync/prod-sites.yml
+    - ../migration_vars.yml
+    - ../ansible-sync/prod-sites.yml
 
   roles:
-    - { role: post-db-restore }
-    - { role: change-paths }
-    - { role: acsf-optimizations }
-    - { role: add-vhost }
-    - { role: cleanup-local }
+    - { role: roles/post-db-restore }
+    - { role: roles/change-paths }
+    - { role: roles/ace-optimizations }
+    - { role: roles/add-vhost }
+    - { role: roles/cleanup-local }
   serial: 12
