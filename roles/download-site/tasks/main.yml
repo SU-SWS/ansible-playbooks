@@ -35,6 +35,11 @@
   shell: "drush @{{ anchorage_drush_alias }} -y --exact vget s3fs_bucket"
   register: s3_bucket
 
+- name: Debug s3_bucket variable
+  debug:
+    msg: "s3_bucket variable is: {{ s3_bucket.stdout }}"
+  when:
+    print_debug_messages == "TRUE"
 # Per internal conversation, John and Shea decided that it was a risk tradeoff
 # to put the site in maintenance mode *before* making the database dump vs.
 # *after*. See conversation in https://github.com/SU-SWS/ansible-playbooks/pull/72
