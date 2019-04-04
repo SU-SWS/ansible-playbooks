@@ -53,4 +53,4 @@
   shell: "drush @{{ anchorage_drush_alias }} sql-dump --structure-tables-key=common > /tmp/{{ inventory_hostname }}/dbdump.sql"
 
 - name: Copy files from S3 to local
-  shell: "aws --profile anchorage s3 sync s3://{{ s3_bucket }}/ /tmp/{{ inventory_hostname }}/files/"
+  shell: "aws --profile anchorage s3 sync s3://{{ s3_bucket.stdout | regex_replace('s3fs_bucket: \"', '') | regex_replace('\"', '') }}/ /tmp/{{ inventory_hostname }}/files/"
