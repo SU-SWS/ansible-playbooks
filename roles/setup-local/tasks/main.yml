@@ -33,6 +33,18 @@
     state: directory
     mode: 0755
 
+- name: Create inventory_hostname/files/s3fs-public directory in tmp
+  file:
+    path: "/tmp/{{ inventory_hostname }}/files/s3fs-public"
+    state: directory
+    mode: 0755
+
+- name: Create inventory_hostname/files/s3fs-private directory in tmp
+  file:
+    path: "/tmp/{{ inventory_hostname }}/files/s3fs-private"
+    state: directory
+    mode: 0755
+
 - name: Update ACSF drush aliases
   template:
     src: "acsf.aliases.drushrc.php"
