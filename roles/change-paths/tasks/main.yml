@@ -148,6 +148,8 @@
 # See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
 ##############################################################################
 
+# TODO: Update comments for these for S3.
+
 # We already did a global find/replace of vhost.stanford.edu and
 # sites.stanford.edu with https://acsf_site_name.sites.stanford.edu,
 # so we just need to find/replace the "sites/default/files" string with
@@ -156,14 +158,12 @@
 # in "Update full paths in text" or "Update full vhost paths in text". But it's
 # cheap to loop through.
 # Ex. drush sar -y 'src="https://wow.stanford.edu/s3/files' 'src="https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
-# Ex. drush sar -y 'src="https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com' 'src="https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
-- name: Replace absolute s3 links with path to files directory
-  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ item[3] }}' '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
+- name: Replace absolute /s3/files links with path to files directory
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/s3/files' '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
     - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
     - "{{ protocols }}"
-    - "{{ s3_file_prefixes }}"
   notify: Clear site cache
   ignore_errors: yes
 
@@ -171,27 +171,11 @@
 # attributes, so we only need to replace the "sites/default/files" string
 # with the ACSF file_public_path value.
 # Ex. drush sar -y 'src="/sites/default/files' 'src="/sites/g/files/sbiybj5000986/f'
-- name: Replace relative sites/default/files paths with path to files directory
-  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/{{ item[2] }}' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
+- name: Replace relative S3 paths with path to files directory
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/s3/files' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
     - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
-    - "{{ s3_file_prefixes }}"
-  notify: Clear site cache
-  ignore_errors: yes
-
-# We already replaced relative references in href and src attributes (like
-# src="/methane/), but we only did it if the vhost is defined, because of the
-# edge case where inventory_hostname also is a legitimate path for an href.
-# Here we more broadly replace the "/inventory_hostname/sites/default/files" string
-# with the ACSF file_public_path value.
-# Ex. drush sar -y 'src="/methane/sites/default/files' 'src="/sites/g/sbiybj5000986/f'
-- name: Replace relative /inventory_hostname/default/files paths with path to files directory
-  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/{{ inventory_hostname }}/{{ item[2]}}' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
-  with_nested:
-    - "{{ sar_fulltext_commands }}"
-    - "{{ link_attributes }}"
-    - "{{ s3_file_prefixes }}"
   notify: Clear site cache
   ignore_errors: yes
 
@@ -201,10 +185,38 @@
 # The --regex option limits replacement to only those fields that match the
 # regular expression.
 - name: Replace link and menu items with new files path
-  shell: "{{ drush_alias }} {{ item[0] }} -y --regex='^{{ item[1] }}' '{{ file_public_path.stdout | replace(' ','') }}'"
-  with_nested:
+  shell: "{{ drush_alias }} {{ item[0] }} -y --regex='^s3/files' '{{ file_public_path.stdout | replace(' ','') }}'"
+  with_together:
     - "{{ sarl_commands }}"
-    - "{{ s3_file_prefixes }}"
+  notify: Clear site cache
+  ignore_errors: yes
+
+# We already did a global find/replace of vhost.stanford.edu and
+# sites.stanford.edu with https://acsf_site_name.sites.stanford.edu,
+# so we just need to find/replace the "sites/default/files" string with
+# the ACSF file_public_path value. We probably don't need to loop through
+# {{ protocols }} here (http and https), as we should have already handled that
+# in "Update full paths in text" or "Update full vhost paths in text". But it's
+# cheap to loop through.
+# Ex. drush sar -y 'src="https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-public' 'src="https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
+- name: Replace absolute S3 bucket links with path to files directory
+  shell: "{{ drush_alias }} {{ item[0] }} -y 'https://{{ s3_bucket }}.s3-us-west-2.amazonaws.com/s3fs-public' '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
+  with_nested:
+    - "{{ sar_fulltext_commands }}"
+    - "{{ link_attributes }}"
+    - "{{ protocols }}"
+  notify: Clear site cache
+  ignore_errors: yes
+
+# We already replaced absolute references in menus and links
+# attributes, so we only need to replace relative references to
+# the "sites/default/files" string with the ACSF file_public_path value.
+# The --regex option limits replacement to only those fields that match the
+# regular expression.
+- name: Replace link and menu S3 bucket items with new files path
+  shell: "{{ drush_alias }} {{ item[0] }} -y --regex='^https://{{ s3_bucket }}.s3-us-west-2.amazonaws.com/s3fs-public' '{{ file_public_path.stdout | replace(' ','') }}'"
+  with_together:
+    - "{{ sarl_commands }}"
   notify: Clear site cache
   ignore_errors: yes
 
