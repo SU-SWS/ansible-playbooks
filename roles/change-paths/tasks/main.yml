@@ -155,13 +155,15 @@
 # {{ protocols }} here (http and https), as we should have already handled that
 # in "Update full paths in text" or "Update full vhost paths in text". But it's
 # cheap to loop through.
-# Ex. drush sar -y 'src="https://g2sc.stanford.edu/sites/default/files' 'src="https://g2sc.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
-- name: Replace absolute sites/default/files with path to files directory
-  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/sites/default/files' '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
+# Ex. drush sar -y 'src="https://wow.stanford.edu/s3/files' 'src="https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
+# Ex. drush sar -y 'src="https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com' 'src="https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
+- name: Replace absolute s3 links with path to files directory
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ item[3] }}' '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
     - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
     - "{{ protocols }}"
+    - "{{ s3_file_prefixes }}"
   notify: Clear site cache
   ignore_errors: yes
 
@@ -170,10 +172,11 @@
 # with the ACSF file_public_path value.
 # Ex. drush sar -y 'src="/sites/default/files' 'src="/sites/g/files/sbiybj5000986/f'
 - name: Replace relative sites/default/files paths with path to files directory
-  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/sites/default/files' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/{{ item[2] }}' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
     - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
+    - "{{ s3_file_prefixes }}"
   notify: Clear site cache
   ignore_errors: yes
 
@@ -184,10 +187,11 @@
 # with the ACSF file_public_path value.
 # Ex. drush sar -y 'src="/methane/sites/default/files' 'src="/sites/g/sbiybj5000986/f'
 - name: Replace relative /inventory_hostname/default/files paths with path to files directory
-  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/{{ inventory_hostname }}/sites/default/files' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/{{ inventory_hostname }}/{{ item[2]}}' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
     - "{{ sar_fulltext_commands }}"
     - "{{ link_attributes }}"
+    - "{{ s3_file_prefixes }}"
   notify: Clear site cache
   ignore_errors: yes
 
@@ -197,9 +201,10 @@
 # The --regex option limits replacement to only those fields that match the
 # regular expression.
 - name: Replace link and menu items with new files path
-  shell: "{{ drush_alias }} {{ item[0] }} -y --regex='^sites/default/files' '{{ file_public_path.stdout | replace(' ','') }}'"
-  with_together:
+  shell: "{{ drush_alias }} {{ item[0] }} -y --regex='^{{ item[1] }}' '{{ file_public_path.stdout | replace(' ','') }}'"
+  with_nested:
     - "{{ sarl_commands }}"
+    - "{{ s3_file_prefixes }}"
   notify: Clear site cache
   ignore_errors: yes
 
