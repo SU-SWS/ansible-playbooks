@@ -148,15 +148,12 @@
 # See https://stanfordits.atlassian.net/browse/SITES-248 for details.        #
 ##############################################################################
 
-# TODO: Update comments for these for S3.
-
-# We already did a global find/replace of vhost.stanford.edu and
-# sites.stanford.edu with https://acsf_site_name.sites.stanford.edu,
-# so we just need to find/replace the "sites/default/files" string with
-# the ACSF file_public_path value. We probably don't need to loop through
-# {{ protocols }} here (http and https), as we should have already handled that
-# in "Update full paths in text" or "Update full vhost paths in text". But it's
-# cheap to loop through.
+# We already did a global find/replace of vhost.stanford.edu with
+# https://acsf_site_name.sites.stanford.edu, so we just need to find/replace the
+# "s3/files" string with the ACSF file_public_path value. We probably don't need
+# to loop through {{ protocols }} here (http and https), as we should have
+# already handled that in "Update full paths in text" or "Update full vhost
+# paths in text".
 # Ex. drush sar -y 'src="https://wow.stanford.edu/s3/files' 'src="https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
 - name: Replace absolute /s3/files links with path to files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/s3/files' '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
@@ -168,9 +165,9 @@
   ignore_errors: yes
 
 # Same here: we already replaced absolute references in href and src
-# attributes, so we only need to replace the "sites/default/files" string
+# attributes, so we only need to replace the "s3/files" string
 # with the ACSF file_public_path value.
-# Ex. drush sar -y 'src="/sites/default/files' 'src="/sites/g/files/sbiybj5000986/f'
+# Ex. drush sar -y 'src="/s3/files' 'src="/sites/g/files/sbiybj5000986/f'
 - name: Replace relative S3 paths with path to files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/s3/files' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
@@ -184,7 +181,9 @@
 # Due to interactions between the S3FS module and the Insert module, it's
 # possible for there to be direct links to the S3 bucket. Replace those
 # sitewide. See https://www.drupal.org/node/2663674.
-# Ex. drush sar -y 'src="https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-public' 'src="https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
+# This is a unique string, so we can just do a blanket replacement sitewide
+# (e.g., with sar, sarl, sarm, sarv, sarjs).
+# Ex. drush sar -y 'https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-public' 'https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
 - name: Replace absolute S3 bucket links with path to files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ s3_bucket }}.s3-us-west-2.amazonaws.com/s3fs-public' 'https://{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_together:
