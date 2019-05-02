@@ -88,6 +88,10 @@
   notify: Clear site cache
   ignore_errors: "yes"
 
+- name: Enable Stanford SAML Login Block module
+  shell: "{{ drush_alias }} -y en stanford_saml_block"
+  when: enable_stanford_saml_block == "TRUE"
+
 # Rebuild permissions. This resolves the "The content access permissions need
 # to be rebuilt" message. NOTE: this is a slow task, so only run this as
 # needed on a per-host basis
