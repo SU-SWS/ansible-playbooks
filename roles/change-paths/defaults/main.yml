@@ -23,6 +23,3 @@ link_attributes:
   - href='\''
   - src='\''
   - url='\''
-s3_file_prefixes:
-  - s3/files
-  - https://{{ s3_bucket }}.s3-us-west-2.amazonaws.com/s3fs-public
