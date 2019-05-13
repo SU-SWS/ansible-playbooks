@@ -69,3 +69,13 @@ disable_top_reports_menu_items: "FALSE"
 # Set this variable to "TRUE" in an inventory or in migration_vars.yml to
 # skip past that update hook.
 skip_stanford_person_views_update_7500: "FALSE"
+
+# We download a database dump and files to /tmp. It's good practice to remove
+# these when finished. However, when iterating on a migration, you can save
+# bandwidth and time by setting cleanup_local: "FALSE" in an inventory or in
+# migration_vars.yml.
+cleanup_local: "TRUE"
+
+# Enable the Stanford SAML Login Block module to place the "SUNetID Login"
+# link in the global header. See the post-db-restore role.
+enable_stanford_saml_block: "FALSE"

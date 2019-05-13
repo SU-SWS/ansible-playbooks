@@ -76,7 +76,7 @@
 - name: Do post-database-restore tasks
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
-    - "-y en acsf acsf_helper stanford_ssp paranoia syslog"
+    - "-y en acquia_purge acsf acsf_helper expire stanford_ssp paranoia syslog"
     - 'ev "_paranoia_remove_risky_permissions();"'
     - "-y --exact vset sws_migration_version {{ migration_version }}"
     - "-y --exact vset stanford_ssp_role_map_source workgroup"
@@ -85,12 +85,12 @@
     - "-y dis stanford_afs_quota acsf_openid openid mollom xmlrpc statistics"
     - "-y pm-uninstall stanford_afs_quota acsf_openid mollom xmlrpc statistics"
     - "-y pm-uninstall openid"
-    # Must truncate this table otherwise users will lose roles in WMD->SSP upgrade path.
-    - "sqlq 'truncate table webauth_roles_history'"
-    - "sspwmd"
-    - "-y pm-uninstall webauth_extras"
   notify: Clear site cache
   ignore_errors: "yes"
+
+- name: Enable Stanford SAML Login Block module
+  shell: "{{ drush_alias }} -y en stanford_saml_block"
+  when: enable_stanford_saml_block == "TRUE"
 
 # Rebuild permissions. This resolves the "The content access permissions need
 # to be rebuilt" message. NOTE: this is a slow task, so only run this as
@@ -110,52 +110,15 @@
   when: launch_tasks == ""
   notify: Clear site cache
 
-# chmod files directory so that there are not permissions issues when going from
-# AFS ACLs to Unix file permissions
-- name: Make all files readable on AFS
-  file:
-    path: "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/"
-    recurse: yes
-    mode: "u=rwX,g=rX,o=rX"
-  when:
-    afs_available == "TRUE" and chmod == "TRUE"
-
 # Copy public files so that they exist and Drupal can find them if needed
 - name: Copy public files from local to Site Factory
-  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/ --exclude-paths=sites/default/files/js_injector/"
+  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/s3fs-public/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/ --exclude-paths=sites/default/files/js_injector/"
   notify: Clear site cache
-  when:
-    afs_available != "TRUE"
 
 # Copy private files so that they exist and Drupal can find them if needed
 - name: Copy private files from local to Site Factory
-  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/private/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%private/"
+  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/s3fs-private/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%private/"
   notify: Clear site cache
-  when:
-    afs_available != "TRUE"
-
-# Copy public files from AFS so that they exist and Drupal can find them if needed
-- name: Copy public files from AFS to Site Factory
-  shell: "drush -y --exclude-paths=sites/default/files/js_injector/:sites/default/files/css/:sites/default/files/js/ rsync '/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/' @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/"
-  notify: Clear site cache
-  when:
-    afs_available == "TRUE"
-
-# Copy private files from AFS so that they exist and Drupal can find them if needed
-- name: Copy private files from AFS to Site Factory
-  shell: "drush -y rsync '/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/private/' @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%private/"
-  notify: Clear site cache
-  when:
-    afs_available == "TRUE"
-
-# chmod the files directory on AFS back to 777.
-- name: Make files directory writable on AFS
-  file:
-    path: "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/"
-    recurse: yes
-    mode: "777"
-  when:
-    afs_available == "TRUE" and chmod == "TRUE"
 
 - name: Generate random password
 # See https://stackoverflow.com/a/45080709
