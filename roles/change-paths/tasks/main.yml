@@ -186,7 +186,7 @@
 # Ex. drush sar -y 'https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-public' 'https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
 - name: Replace absolute S3 bucket links with path to files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ s3_bucket }}.s3-us-west-2.amazonaws.com/s3fs-public' 'https://{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
-  with_together:
+  with_nested:
     - "{{ all_sar_commands }}"
     - "{{ protocols }}"
   notify: Clear site cache
@@ -196,7 +196,7 @@
 # Ex. drush sar -y 'https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-public' 'https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
 - name: Replace absolute S3 bucket links of a different syntax with path to files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}s3-us-west-2.amazonaws.com/{{ s3_bucket }}/s3fs-public' 'https://{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
-  with_together:
+  with_nested:
     - "{{ all_sar_commands }}"
     - "{{ protocols }}"
   notify: Clear site cache
