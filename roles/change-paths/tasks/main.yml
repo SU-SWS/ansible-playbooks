@@ -176,15 +176,13 @@
   notify: Clear site cache
   ignore_errors: yes
 
-# TODO: Do we need to do this for private files?
-
 # Due to interactions between the S3FS module and the Insert module, it's
 # possible for there to be direct links to the S3 bucket. Replace those
 # sitewide. See https://www.drupal.org/node/2663674.
 # This is a unique string, so we can just do a blanket replacement sitewide
 # (e.g., with sar, sarl, sarm, sarv, sarjs).
 # Ex. drush sar -y 'https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-public' 'https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
-- name: Replace absolute S3 bucket links with path to files directory
+- name: Replace absolute S3 bucket links with path to public files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ s3_bucket }}.s3-us-west-2.amazonaws.com/s3fs-public' 'https://{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
     - "{{ all_sar_commands }}"
@@ -194,8 +192,29 @@
 
 # Same as above, but for different S3 syntax
 # Ex. drush sar -y 'https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-public' 'https://wow.sites.stanford.edu/sites/g/files/sbiybj5000986/f'
-- name: Replace absolute S3 bucket links of a different syntax with path to files directory
+- name: Replace absolute S3 bucket links of a different syntax with path to public files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}s3-us-west-2.amazonaws.com/{{ s3_bucket }}/s3fs-public' 'https://{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
+  with_nested:
+    - "{{ all_sar_commands }}"
+    - "{{ protocols }}"
+  notify: Clear site cache
+  ignore_errors: yes
+
+# Now for private files. This probably isn't necessary, as the Insert module
+# inserts private links with the syntax <a href="/system/files/filename.pdf".
+# Ex. drush sar -y 'https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-private' 'https://wow.sites.stanford.edu/system/files'
+- name: Replace absolute S3 bucket links with path to private files directory
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ s3_bucket }}.s3-us-west-2.amazonaws.com/s3fs-private' 'https://{{ new_absolute_path }}/system/files'"
+  with_nested:
+    - "{{ all_sar_commands }}"
+    - "{{ protocols }}"
+  notify: Clear site cache
+  ignore_errors: yes
+
+# Same as above, but for different S3 syntax
+# Ex. drush sar -y 'https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-private' 'https://wow.sites.stanford.edu/system/files'
+- name: Replace absolute S3 bucket links of a different syntax with path to private files directory
+  shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}s3-us-west-2.amazonaws.com/{{ s3_bucket }}/s3fs-private' 'https://{{ new_absolute_path }}/system/files'"
   with_nested:
     - "{{ all_sar_commands }}"
     - "{{ protocols }}"
