@@ -56,7 +56,7 @@
     msg: "{{ absolute_vhost_path_sites_service }} is already pointed to ACSF. You cannot migrate over a production site."
   when: dig_output.stdout is search("cardinalsites.acsitefactory.com") and acsf_environment == ""
 
-# If DNS for <hostname>.stanford.edu already is pointed to ACSF (i.e., the
+# If DNS for <hostname>.stanford.edu already is pointed to ACE (i.e., the
 # results of "dig" return "hs-mrc-prod.stanford.edu"), then fail.
 # This protects production sites from being wiped out.
 # See https://stanfordits.atlassian.net/browse/SITES-734.
