@@ -65,4 +65,4 @@
 # module restricts that functionality to prod
 - name: Set acsf_helper_canonical_url variable prior to launch
   shell: "{{ drush_alias }} -y --exact vset acsf_helper_canonical_url {{ new_absolute_path }}"
-  when: launch_tasks == "launch"
+  when: launch_tasks == "launch" and set_acsf_helper_canonical_url == "TRUE"

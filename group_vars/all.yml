@@ -79,3 +79,8 @@ cleanup_local: "TRUE"
 # Enable the Stanford SAML Login Block module to place the "SUNetID Login"
 # link in the global header. See the post-db-restore role.
 enable_stanford_saml_block: "FALSE"
+
+# Sometimes we do final migration and want to do a manual check before
+# cutover. If this variable is set to TRUE, the acsf_helper_canonical_url
+# variable will be set to vhost.stanford.edu in roles/add-vhost.
+set_acsf_helper_canonical_url: "FALSE"
