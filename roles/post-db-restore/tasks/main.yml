@@ -78,6 +78,7 @@
   with_items:
     - "-y en acquia_purge acsf acsf_helper expire stanford_ssp paranoia syslog"
     - 'ev "_paranoia_remove_risky_permissions();"'
+    - "-y --exact vset file_default_scheme public"
     - "-y --exact vset sws_migration_version {{ migration_version }}"
     - "-y --exact vset stanford_ssp_role_map_source workgroup"
     - "-y --exact vset stanford_ssp_workgroup_api_cert {{ certs_dir }}stanford_ssp.cert"
