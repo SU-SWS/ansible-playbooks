@@ -58,3 +58,27 @@ print_debug_messages: "TRUE"
 # See roles/change-paths/tasks/main.yml, the "Remove absolute paths for links
 # and menus" and "Remove absolute vhost paths for links and menus" tasks.
 run_sarl: "TRUE"
+
+# stanford_jumpstart_shortcuts defines permissions to allow access to "top
+# reports" menu items ("Recent log messages", "Top 'access denied' errors",
+# "Top 'page not found' errors", and "Top search phrases"). It also places
+# these items in the Site Actions menu. To disable (not delete) these items
+# from the Site Actions menu, set disable_top_reports_menu_items: "TRUE"
+# in migration_vars.yml or in an inventory file.
+disable_top_reports_menu_items: "FALSE"
+
+# Some sites fail on the stanford_person_views_update_7500() update hook.
+# We want to selectively skip over that hook on a per-site basis.
+# Set this variable to "TRUE" in an inventory or in migration_vars.yml to
+# skip past that update hook.
+skip_stanford_person_views_update_7500: "FALSE"
+
+# We download a database dump and files to /tmp. It's good practice to remove
+# these when finished. However, when iterating on a migration, you can save
+# bandwidth and time by setting cleanup_local: "FALSE" in an inventory or in
+# migration_vars.yml.
+cleanup_local: "TRUE"
+
+# Enable the Stanford SAML Login Block module to place the "SUNetID Login"
+# link in the global header. See the post-db-restore role.
+enable_stanford_saml_block: "FALSE"

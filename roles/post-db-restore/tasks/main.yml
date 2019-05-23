@@ -47,7 +47,7 @@
 # to be sure to set "install_profile" to "stanford_sites_jumpstart_academic" for
 # JSA sites (so that they get all the correct code).
 - name: Find and set the install profile by helper modules.
-  shell: "FOUND=$({{ drush_alias }} php-eval \"var_dump(module_exists('{{ item.module }}'));\"); if [[ \"$FOUND\" =~ 'true' ]]; then {{ drush_alias }} -y vset install_profile '{{ item.profile }}'; {{ drush_alias }} -y sqlq 'update system set status=\"1\" where name=\"{{ item.profile }}\"'; fi;"
+  shell: "FOUND=$({{ drush_alias }} php-eval \"var_dump(module_exists('{{ item.module }}'));\"); if [[ \"$FOUND\" =~ 'true' ]]; then {{ drush_alias }} -y vset install_profile '{{ item.profile }}'; {{ drush_alias }} -y sqlq 'update system set status=\"1\" where name=\"{{ item.profile }}\"'; {{ drush_alias }} -y sqlq 'update system set status=\"0\" where name=\"stanford\"'; {{ drush_alias }} rr; {{ drush_alias }} -y en stanford_jumpstart_shortcuts stanford_jumpstart_site_actions; fi;"
   with_items:
     - { module: 'stanford_jumpstart', profile: 'stanford_sites_jumpstart' }
     - { module: 'stanford_jumpstart_plus', profile: 'stanford_sites_jumpstart_plus' }
@@ -78,6 +78,10 @@
   notify: Clear site cache
   ignore_errors: "yes"
 
+- name: Enable Stanford SAML Login Block module
+  shell: "{{ drush_alias }} -y en stanford_saml_block"
+  when: enable_stanford_saml_block == "TRUE"
+
 # Rebuild permissions. This resolves the "The content access permissions need
 # to be rebuilt" message. NOTE: this is a slow task, so only run this as
 # needed on a per-host basis
@@ -96,52 +100,15 @@
   when: launch_tasks == ""
   notify: Clear site cache
 
-# chmod files directory so that there are not permissions issues when going from
-# AFS ACLs to Unix file permissions
-- name: Make all files readable on AFS
-  file:
-    path: "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/"
-    recurse: yes
-    mode: "u=rwX,g=rX,o=rX"
-  when:
-    afs_available == "TRUE" and chmod == "TRUE"
-
 # Copy public files so that they exist and Drupal can find them if needed
 - name: Copy public files from local to Enterprise
-  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/ @stanfordpro{{ drush_environment }}.{{ inventory_hostname }}:%files/ --exclude-paths=sites/default/files/js_injector/"
+  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/s3fs-public/ @stanfordpro{{ drush_environment }}.{{ inventory_hostname }}:%files/ --exclude-paths=sites/default/files/js_injector/"
   notify: Clear site cache
-  when:
-    afs_available != "TRUE"
 
 # Copy private files so that they exist and Drupal can find them if needed
 - name: Copy private files from local to Enterprise
-  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/private/ @stanfordpro{{ drush_environment }}.{{ inventory_hostname }}:%private/"
+  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/s3fs-private/ @stanfordpro{{ drush_environment }}.{{ inventory_hostname }}:%private/"
   notify: Clear site cache
-  when:
-    afs_available != "TRUE"
-
-# Copy public files from AFS so that they exist and Drupal can find them if needed
-- name: Copy public files from AFS to Enterprise
-  shell: "drush -y --exclude-paths=sites/default/files/js_injector/:sites/default/files/css/:sites/default/files/js/ rsync '/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/' @stanfordpro{{ drush_environment }}.{{ inventory_hostname }}:%files/"
-  notify: Clear site cache
-  when:
-    afs_available == "TRUE"
-
-# Copy private files from AFS so that they exist and Drupal can find them if needed
-- name: Copy private files from AFS to Enterprise
-  shell: "drush -y rsync '/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/private/' @stanfordpro{{ drush_environment }}.{{ inventory_hostname }}:%private/"
-  notify: Clear site cache
-  when:
-    afs_available == "TRUE"
-
-# chmod the files directory on AFS back to 777.
-- name: Make files directory writable on AFS
-  file:
-    path: "/afs/ir/dist/drupal/{{ site_prefix }}_{{ inventory_hostname }}/files/"
-    recurse: yes
-    mode: "777"
-  when:
-    afs_available == "TRUE" and chmod == "TRUE"
 
 - name: Generate random password
 # See https://stackoverflow.com/a/45080709
