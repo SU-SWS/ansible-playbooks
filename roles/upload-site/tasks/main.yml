@@ -33,6 +33,7 @@
   with_items:
     - "-y sql-drop"
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
+    - "sqlq 'update system set status=\"0\" where name=\"s3fs\"'"
   notify: Clear site cache
 
 # BEANS, FEEDS, and probably bears too!
