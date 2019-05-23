@@ -29,13 +29,13 @@
   fail:
     msg: "{{ inventory_hostname }} appears to be on our list of protected production sites."
   # Only fail for production environment
-  when: inventory_hostname in prod_sites and acsf_environment == ""
+  when: inventory_hostname in prod_sites and ace_environment == ""
 
-- name: Fail if acsf name conflicts with prod sites
+- name: Fail if inventory_hostname conflicts with prod sites
   fail:
-    msg: "{{ acsf_site_name }} conflicts with an inventory hostname on our list of protected production sites."
+    msg: "{{ inventory_hostname }} conflicts with an inventory hostname on our list of protected production sites."
   # Only fail for production environment
-  when: acsf_site_name in prod_sites and acsf_environment == ""
+  when: inventory_hostname in prod_sites and ace_environment == ""
 
 - name: Look up DNS for vhost
   shell: "dig +short {{ absolute_vhost_path_sites_service }}"
@@ -54,7 +54,7 @@
 - name: Fail if DNS for hostname is already on ACSF
   fail:
     msg: "{{ absolute_vhost_path_sites_service }} is already pointed to ACSF. You cannot migrate over a production site."
-  when: dig_output.stdout is search("cardinalsites.acsitefactory.com") and acsf_environment == ""
+  when: dig_output.stdout is search("cardinalsites.acsitefactory.com") and ace_environment == ""
 
 # If DNS for <hostname>.stanford.edu already is pointed to ACE (i.e., the
 # results of "dig" return "hs-mrc-prod.stanford.edu"), then fail.
@@ -63,4 +63,4 @@
 - name: Fail if DNS for hostname is already on ACE
   fail:
     msg: "{{ absolute_vhost_path_sites_service }} is already pointed to ACE. You cannot migrate over a production site."
-  when: dig_output.stdout is search("hs-mrc-prod.stanford.edu") and acsf_environment == ""
+  when: dig_output.stdout is search("sites-pro.stanford.edu") and ace_environment == ""
