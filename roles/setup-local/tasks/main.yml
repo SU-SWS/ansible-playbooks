@@ -33,7 +33,24 @@
     state: directory
     mode: 0755
 
-- name: Update drush aliases
+- name: Create inventory_hostname/files/s3fs-public directory in tmp
+  file:
+    path: "/tmp/{{ inventory_hostname }}/files/s3fs-public"
+    state: directory
+    mode: 0755
+
+- name: Create inventory_hostname/files/s3fs-private directory in tmp
+  file:
+    path: "/tmp/{{ inventory_hostname }}/files/s3fs-private"
+    state: directory
+    mode: 0755
+
+- name: Update StanfordPro drush aliases
   template:
     src: "stanfordpro.aliases.drushrc.php"
     dest: "~/.drush/stanfordpro.aliases.drushrc.php"
+
+- name: Update Anchorage drush aliases
+  template:
+    src: "anc.aliases.drushrc.php"
+    dest: "~/.drush/anc.aliases.drushrc.php"

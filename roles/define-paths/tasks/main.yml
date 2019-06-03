@@ -132,3 +132,21 @@
   debug:
     msg: "Stanford SSP Certs Directory: {{ certs_dir }}"
   when: print_debug_messages == "TRUE"
+
+- name: Set Anchorage drush alias
+  set_fact:
+    anchorage_drush_alias: 'anc.{{ inventory_hostname }}'
+
+- name: Get S3 bucket name
+  shell: "drush @{{ anchorage_drush_alias }} -y --exact vget s3fs_bucket"
+  register: s3_bucket_raw
+
+- name: Set s3_bucket variable
+  set_fact:
+    s3_bucket: "{{ s3_bucket_raw.stdout | regex_replace('s3fs_bucket: \"', '') | regex_replace('\"', '') }}"
+
+- name: Debug s3_bucket variable
+  debug:
+    msg: "s3_bucket variable is: {{ s3_bucket }}"
+  when:
+    print_debug_messages == "TRUE"

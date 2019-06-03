@@ -6,4 +6,5 @@ migration_vars.yml
 server_vars.yml
 roles/setup-local/templates/ace.aliases.drushrc.php
 roles/setup-local/templates/stanfordpro.aliases.drushrc.php
+roles/setup-local/templates/acsf.aliases.drushrc.php
 *.sql
