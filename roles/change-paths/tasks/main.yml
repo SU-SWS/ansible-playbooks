@@ -235,11 +235,11 @@
 
 # Ex. drush @stanfordpro.test.hopkinsmarinestation scr /var/www/html/stanfordpro.test/scripts/migration/js-injector.php
 - name: Save modified JS Injector rules to disk
-  shell: "{{ drush_alias }} scr {{ scripts_dir }}/js-injector.php"
+  shell: "{{ drush_alias }} scr {{ scripts_dir }}/migration/js-injector.php"
   notify: Clear site cache
 
 # Ex. drush @stanfordpro.test.hopkinsmarinestation scr /var/www/html/stanfordpro.test/scripts/migration/admin-shortcuts.php
 - name: Hide reports menu links from admin shortcuts
-  shell: "{{ drush_alias }} scr {{ scripts_dir }}/admin-shortcuts.php"
+  shell: "{{ drush_alias }} scr {{ scripts_dir }}/migration/admin-shortcuts.php"
   notify: Clear site cache
   when: disable_top_reports_menu_items == "TRUE"
