@@ -54,3 +54,7 @@ afs_available: "FALSE"
 # TRUE in migration_vars.yml, or set it at runtime with
 # --extra-vars "rebuild_permissions=TRUE"
 rebuild_permissions: "FALSE"
+
+# Enter your AWS credentials here.
+aws_access_key_id: ""
+aws_secret_access_key: ""

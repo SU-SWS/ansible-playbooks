@@ -1,4 +1,6 @@
 ---
 - name: Clear site cache
-  shell: "{{ drush_alias }} "
-  with_items: "cc all"
+  shell: "{{ drush_alias }} {{ item }}"
+  with_items:
+    - "cc all"
+    - "ac-domain-purge {{ new_absolute_path }}"

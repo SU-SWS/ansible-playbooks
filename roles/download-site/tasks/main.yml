@@ -41,3 +41,6 @@
 
 - name: Copy files from S3 to local
   shell: "aws --profile anchorage s3 sync s3://{{ s3_bucket }}/ /tmp/{{ inventory_hostname }}/files/"
+
+- name: Copy files from S3 prod to S3 migration bucket
+  shell: "aws --profile anchorage s3 sync s3://{{ s3_bucket }}/ s3://{{ s3_migration_bucket }}/"

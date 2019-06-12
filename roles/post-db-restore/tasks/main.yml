@@ -68,9 +68,9 @@
     - "-y --exact vset stanford_ssp_workgroup_api_key {{ certs_dir }}stanford_ssp.key"
     - "-y --exact vset stanford_ssp_role_map_source workgroup"
     - "-y --exact vset stanford_simplesamlphp_auth_installdir {{ saml_dir }}"
-    - "-y dis stanford_afs_quota openid mollom xmlrpc statistics"
-    - "-y pm-uninstall stanford_afs_quota mollom xmlrpc statistics"
-    - "-y pm-uninstall openid"
+    - "-y dis anchorage_helper stanford_afs_quota openid mollom s3fs stanford_s3fs_if statistics xmlrpc"
+    - "-y pm-uninstall anchorage_helper stanford_afs_quota mollom openid stanford_s3fs_if statistics xmlrpc"
+    - "-y pm-uninstall s3fs"
     # Must truncate this table otherwise users will lose roles in WMD->SSP upgrade path.
     - "sqlq 'truncate table webauth_roles_history'"
     - "sspwmd"

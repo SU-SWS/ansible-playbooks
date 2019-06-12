@@ -33,7 +33,6 @@
   with_items:
     - "-y sql-drop"
     - "sqlc < /tmp/{{ inventory_hostname }}/dbdump.sql"
-#    - "sqlq 'update system set status=\"0\" where name=\"s3fs\"'"
   notify: Clear site cache
 
 # BEANS, FEEDS, and probably bears too!
@@ -73,12 +72,14 @@
   when: ignore_updb_errors == "TRUE"
 
 # Rebuild the registry on all sites. Migrate files from s3fs to public.
-- name: Rebuild the registry after updating the database schema. Migrate files from s3fs to public.
+- name: Migrate files from s3fs to public. Rebuild the registry after updating the database schema.
   shell: "{{ drush_alias }} {{ item }}"
-  ignore_errors: yes
   with_items:
-    - "-y rr"
+    - "-y vset s3fs_bucket {{ s3_migration_bucket }}"
+    - "-y vset --exact s3fs_use_s3_for_private 0"
+    - "-y vset --exact s3fs_use_s3_for_public 0"
+    - "-y vset --exact s3fs_awssdk2_access_key {{ aws_access_key_id }}"
+    - "-y vset --exact s3fs_awssdk2_secret_key {{ aws_secret_access_key }}"
     - "-y s3fspublicize"
-    - "-y dis s3fs"
-    - "-y pm-uninstall stanford_s3fs_if"
-    - "-y pm-uninstall s3fs"
+    - "-y rr"
+  notify: Clear site cache
