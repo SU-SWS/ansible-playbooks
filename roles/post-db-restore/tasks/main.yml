@@ -76,7 +76,7 @@
 - name: Do post-database-restore tasks
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
-    - "-y en acquia_purge acsf acsf_helper expire stanford_ssp paranoia syslog"
+    - "-y en acsf acsf_helper expire stanford_ssp paranoia syslog"
     - 'ev "_paranoia_remove_risky_permissions();"'
     - "-y --exact vset file_default_scheme public"
     - "-y --exact vset sws_migration_version {{ migration_version }}"
