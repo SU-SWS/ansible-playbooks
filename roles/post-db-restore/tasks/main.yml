@@ -76,9 +76,10 @@
 - name: Do post-database-restore tasks
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
-    - "-y en acsf acsf_helper expire stanford_ssp paranoia syslog"
+    - "-y en acsf acsf_helper stanford_ssp paranoia syslog"
     - 'ev "_paranoia_remove_risky_permissions();"'
     - "-y --exact vset file_default_scheme public"
+    - "-y vdel file_public_schema"
     - "-y --exact vset sws_migration_version {{ migration_version }}"
     - "-y --exact vset stanford_ssp_role_map_source workgroup"
     - "-y --exact vset stanford_ssp_workgroup_api_cert {{ certs_dir }}stanford_ssp.cert"
@@ -111,6 +112,11 @@
   when: launch_tasks == ""
   notify: Clear site cache
 
+# Copy public files that were in the root of the S3 bucket to the root of the public files directory.
+- name: Copy root S3 files from local to Site Factory
+  shell: "drush -y rsync --delete /tmp/{{ inventory_hostname }}/files/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/ --exclude-paths=s3fs-public --exclude=paths=s3fs-private"
+  notify: Clear site cache
+
 # Copy public files so that they exist and Drupal can find them if needed
 - name: Copy public files from local to Site Factory
   shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/s3fs-public/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%files/ --exclude-paths=sites/default/files/js_injector/"
@@ -118,8 +124,14 @@
 
 # Copy private files so that they exist and Drupal can find them if needed
 - name: Copy private files from local to Site Factory
-  shell: "drush -y rsync /tmp/{{ inventory_hostname }}/files/s3fs-private/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%private/"
+  shell: "drush -y rsync --delete /tmp/{{ inventory_hostname }}/files/s3fs-private/ @acsf{{ drush_environment }}.{{ stack }}.{{ acsf_site_name }}:%private/"
   notify: Clear site cache
+
+# Replace "s3://" with "public://" in the file_managed table
+- name: Convert s3 to public files in file_managed table
+  shell: "{{ drush_alias}} sqlq 'UPDATE file_managed SET uri = REPLACE(uri,\"s3://\",\"public://\") where uri like \"s3://%\";'"
+  notify: Clear site cache
+  when: clobber_s3 == "TRUE"
 
 - name: Generate random password
 # See https://stackoverflow.com/a/45080709
