@@ -39,6 +39,6 @@
   register: db_exists_check
   ignore_errors: "yes"
 
-- name: Add sites-pro database
+- name: Add stanfordhr database
   shell: "{{ drush_alias }} ac-database-add {{ ace_site_name }}"
   when: db_exists_check.stdout is search('Resource not found')

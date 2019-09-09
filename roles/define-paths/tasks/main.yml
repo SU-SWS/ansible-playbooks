@@ -43,11 +43,11 @@
 # Ex. /var/www/html/cardinald7.02dev/scripts
 - name: Set scripts_dir variable
   set_fact:
-    scripts_dir: "/var/www/html/stanfordpro.{% if ace_environment=='' %}prod{% else %}{{ ace_environment }}{% endif %}/scripts"
+    scripts_dir: "/var/www/html/stanfordhr.{% if ace_environment=='' %}prod{% else %}{{ ace_environment }}{% endif %}/scripts"
 
 - name: Set SAML Install Dir variable
   set_fact:
-    saml_dir: "/var/www/html/stanfordpro.{% if ace_environment=='' %}prod{% else %}{{ ace_environment }}{% endif %}/simplesamlphp"
+    saml_dir: "/var/www/html/stanfordhr.{% if ace_environment=='' %}prod{% else %}{{ ace_environment }}{% endif %}/simplesamlphp"
 
 - name: What is the scripts_dir variable
   debug:
@@ -59,20 +59,20 @@
     msg: "saml_dir is: {{ saml_dir }}"
   when: print_debug_messages == "TRUE"
 
-  # eg: stanfordpro.dev
+  # eg: stanfordhr.dev
 - name: Set remote_username
   set_fact:
-    remote_username: "stanfordpro.{% if ace_environment=='' %}prod{% else %}{{ ace_environment }}{% endif %}"
+    remote_username: "stanfordhr.{% if ace_environment=='' %}prod{% else %}{{ ace_environment }}{% endif %}"
 
 - name: What is the remote_username variable
   debug:
     msg: "remote_username is: {{ remote_username }}"
   when: print_debug_messages == "TRUE"
 
-# Ex. stanfordprodev.ssh.enterprise-g1.acquia-sites.com
+# Ex. stanfordhrdev.ssh.enterprise-g1.acquia-sites.com
 - name: Set remote_hostname
   set_fact:
-    remote_hostname: "stanfordpro{% if ace_environment=='' %}{% elif ace_environment=='test' %}stg{% elif ace_environment=='dev' %}dev{% endif %}.ssh.prod.acquia-sites.com"
+    remote_hostname: "stanfordhr{% if ace_environment=='' %}{% elif ace_environment=='test' %}stg{% elif ace_environment=='dev' %}dev{% endif %}.ssh.prod.acquia-sites.com"
 
 - name: What is the remote_hostname variable
   debug:
@@ -92,15 +92,15 @@
   set_fact:
     absolute_path_sites_service: "sites.stanford.edu/{{ inventory_hostname }}"
 
-# Ex: g2sc-dev.sites-pro.stanford.edu
+# Ex: cardinalatwork-dev.stanford.edu
 - name: Set absolute path for testing
   set_fact:
-    absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ inventory_hostname }}{% endif %}-{{ ace_environment }}.sites-pro.stanford.edu"
+    absolute_path_testing: "{% if vhost is defined %}{{ vhost }}{% else %}{{ inventory_hostname }}{% endif %}-{{ ace_environment }}.stanford.edu"
 
-# Ex: g2sc.sites-pro.stanford.edu
+# Ex: cardinalatwork.stanford.edu
 - name: Set absolute path for production pre-launch
   set_fact:
-    absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ inventory_hostname }}{% endif %}.sites-pro.stanford.edu"
+    absolute_path_prod: "{% if vhost is defined %}{{ vhost }}{% else %}{{ inventory_hostname }}{% endif %}.stanford.edu"
 
 # Ex: g2sc.stanford.edu
 - name: Set absolute path for production at launch
@@ -121,12 +121,12 @@
 # Ex: drush @acsf.dev.cardinald7.g2scd7
 - name: Set drush alias
   set_fact:
-    drush_alias: "drush @stanfordpro{{ drush_environment }}.{{ inventory_hostname }}"
+    drush_alias: "drush @stanfordhr{{ drush_environment }}.{{ inventory_hostname }}"
 
 # Certs dir.
 - name: Set certs_dir path
   set_fact:
-    certs_dir: /var/www/html/stanfordpro{{ drush_environment }}/simplesamlphp/cert/
+    certs_dir: /var/www/html/stanfordhr{{ drush_environment }}/simplesamlphp/cert/
 
 - name: Debug certs_dir
   debug:

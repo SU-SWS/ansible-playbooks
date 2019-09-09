@@ -57,10 +57,10 @@
   when: dig_output.stdout is search("cardinalsites.acsitefactory.com") and ace_environment == ""
 
 # If DNS for <hostname>.stanford.edu already is pointed to ACE (i.e., the
-# results of "dig" return "hs-mrc-prod.stanford.edu"), then fail.
+# results of "dig" return "stanfordhr.stanford.edu"), then fail.
 # This protects production sites from being wiped out.
 # See https://stanfordits.atlassian.net/browse/SITES-734.
 - name: Fail if DNS for hostname is already on ACE
   fail:
     msg: "{{ absolute_vhost_path_sites_service }} is already pointed to ACE. You cannot migrate over a production site."
-  when: dig_output.stdout is search("sites-pro.stanford.edu") and ace_environment == ""
+  when: dig_output.stdout is search("stanfordhr.stanford.edu") and ace_environment == ""

@@ -154,7 +154,7 @@
 # to loop through {{ protocols }} here (http and https), as we should have
 # already handled that in "Update full paths in text" or "Update full vhost
 # paths in text".
-# Ex. drush sar -y 'src="https://hopkinsmarinestation.stanford.edu/s3/files' 'src="https://hopkinsmarinestation.sites-pro.stanford.edu/sites/hopkinsmarinestation/files'
+# Ex. drush sar -y 'src="https://cardinalatwork.stanford.edu/s3/files' 'src="https://cardinalatwork-dev.stanford.edu/sites/cardinalatwork/files'
 - name: Replace absolute /s3/files links with path to files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/s3/files' '{{ item[1] }}{{ item[2] }}{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
@@ -167,7 +167,7 @@
 # Same here: we already replaced absolute references in href and src
 # attributes, so we only need to replace the "s3/files" string
 # with the ACSF file_public_path value.
-# Ex. drush sar -y 'src="/s3/files' 'src="/sites/hopkinsmarinestation/files'
+# Ex. drush sar -y 'src="/s3/files' 'src="/sites/cardinalatwork/files'
 - name: Replace relative S3 paths with path to files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}/s3/files' '{{ item[1] }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
@@ -181,7 +181,7 @@
 # sitewide. See https://www.drupal.org/node/2663674.
 # This is a unique string, so we can just do a blanket replacement sitewide
 # (e.g., with sar, sarl, sarm, sarv, sarjs).
-# Ex. drush sar -y 'https://files-hopkinsmarinestation-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-public' 'https://hopkinsmarinestation.sites-pro.stanford.edu/sites/hopkinsmarinestation/files'
+# Ex. drush sar -y 'https://files-cardinalatwork-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-public' 'https://cardinalatwork-dev.stanford.edu/sites/cardinalatwork/files'
 - name: Replace absolute S3 bucket links with path to public files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ s3_bucket }}.s3-us-west-2.amazonaws.com/s3fs-public' 'https://{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
@@ -191,7 +191,7 @@
   ignore_errors: yes
 
 # Same as above, but for different S3 syntax
-# Ex. drush sar -y 'https://files-hopkinsmarinestation-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-public' 'https://hopkinsmarinestation.sites-pro.stanford.edu/sites/hopkinsmarinestation/files'
+# Ex. drush sar -y 'https://files-cardinalatwork-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-public' 'https://cardinalatwork-dev.stanford.edu/sites/cardinalatwork/files'
 - name: Replace absolute S3 bucket links of a different syntax with path to public files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}s3-us-west-2.amazonaws.com/{{ s3_bucket }}/s3fs-public' 'https://{{ new_absolute_path }}/{{ file_public_path.stdout | replace(' ','') }}'"
   with_nested:
@@ -202,7 +202,7 @@
 
 # Now for private files. This probably isn't necessary, as the Insert module
 # inserts private links with the syntax <a href="/system/files/filename.pdf".
-# Ex. drush sar -y 'https://files-hopkinsmarinestation-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-private' 'https://hopkinsmarinestation.sites-pro.stanford.edu/system/files'
+# Ex. drush sar -y 'https://files-cardinalatwork-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-private' 'https://cardinalatwork-dev.stanford.edu/system/files'
 - name: Replace absolute S3 bucket links with path to private files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}{{ s3_bucket }}.s3-us-west-2.amazonaws.com/s3fs-private' 'https://{{ new_absolute_path }}/system/files'"
   with_nested:
@@ -212,7 +212,7 @@
   ignore_errors: yes
 
 # Same as above, but for different S3 syntax
-# Ex. drush sar -y 'https://files-wow-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-private' 'https://wow.sites.stanford.edu/system/files'
+# Ex. drush sar -y 'https://files-dev-cardinalatwork-stanford-edu.s3-us-west-2.amazonaws.com/s3fs-private' 'https://cardinalatwork-dev.stanford.edu/system/files'
 - name: Replace absolute S3 bucket links of a different syntax with path to private files directory
   shell: "{{ drush_alias }} {{ item[0] }} -y '{{ item[1] }}s3-us-west-2.amazonaws.com/{{ s3_bucket }}/s3fs-private' 'https://{{ new_absolute_path }}/system/files'"
   with_nested:
@@ -233,12 +233,12 @@
   notify: Clear site cache
   ignore_errors: yes
 
-# Ex. drush @stanfordpro.test.hopkinsmarinestation scr /var/www/html/stanfordpro.test/scripts/migration/js-injector.php
+# Ex. drush @stanfordhr.test.cardinalatwork scr /var/www/html/stanfordhr.test/scripts/migration/js-injector.php
 - name: Save modified JS Injector rules to disk
   shell: "{{ drush_alias }} scr {{ scripts_dir }}/migration/js-injector.php"
   notify: Clear site cache
 
-# Ex. drush @stanfordpro.test.hopkinsmarinestation scr /var/www/html/stanfordpro.test/scripts/migration/admin-shortcuts.php
+# Ex. drush @stanfordhr.test.cardinalatwork scr /var/www/html/stanfordhr.test/scripts/migration/admin-shortcuts.php
 - name: Hide reports menu links from admin shortcuts
   shell: "{{ drush_alias }} scr {{ scripts_dir }}/migration/admin-shortcuts.php"
   notify: Clear site cache
