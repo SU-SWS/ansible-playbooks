@@ -60,7 +60,7 @@
 - name: Do post-database-restore tasks
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
-    - "-y en acquia_agent acquia_spi stanfordpro_helper stanford_ssp paranoia syslog"
+    - "-y en acquia_agent acquia_spi stanfordpro_helper stanford_simplesamlphp_auth stanford_ssp paranoia syslog"
     - 'ev "_paranoia_remove_risky_permissions();"'
     - "-y --exact vset sws_migration_version {{ migration_version }}"
     - "-y --exact vset stanford_ssp_role_map_source workgroup"
@@ -68,7 +68,7 @@
     - "-y --exact vset stanford_ssp_workgroup_api_key {{ certs_dir }}stanford_ssp.key"
     - "-y --exact vset stanford_ssp_role_map_source workgroup"
     - "-y --exact vset stanford_simplesamlphp_auth_installdir {{ saml_dir }}"
-    - "-y dis anchorage_helper stanford_afs_quota openid mollom s3fs stanford_s3fs_if statistics xmlrpc"
+    - "-y dis anchorage_helper dblog stanford_afs_quota openid mollom s3fs stanford_s3fs_if statistics xmlrpc"
     - "-y pm-uninstall anchorage_helper stanford_afs_quota mollom openid stanford_s3fs_if statistics xmlrpc"
     - "-y pm-uninstall s3fs"
     # Must truncate this table otherwise users will lose roles in WMD->SSP upgrade path.
