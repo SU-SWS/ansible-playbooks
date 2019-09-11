@@ -25,10 +25,10 @@
 
 - name: Print file_public_path
   debug:
-    msg: "File public path: {{ file_public_path.stdout }}"
+    msg: "File public path is: \"{{ file_public_path.stdout }}\""
   when: print_debug_messages == "TRUE"
 
 - name: Be sure response does not include drush warnings
   fail:
     msg: "There appear to be drush warning messages cluttering the file_public_path variable"
-  when: file_public_path.stdout is search('The following module is missing')
+  when: file_public_path.stdout is not regex('^ sites/.*/files $')
