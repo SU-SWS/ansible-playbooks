@@ -60,6 +60,8 @@
 - name: Do post-database-restore tasks
   shell: "{{ drush_alias }} {{ item }}"
   with_items:
+    - "-y dis simplesamlphp_auth"
+    - "-y pm-uninstall simplesamlphp_auth"
     - "-y en acquia_agent acquia_spi stanfordpro_helper stanford_simplesamlphp_auth stanford_ssp paranoia syslog"
     - 'ev "_paranoia_remove_risky_permissions();"'
     - "-y --exact vset sws_migration_version {{ migration_version }}"
@@ -98,7 +100,8 @@
   with_items:
     - "-y en nobots"
     - "-y dis googleanalytics pingdom_rum"
-  when: launch_tasks == ""
+    - "sqlq 'update search_api_index set read_only=\"1\"'"
+  when: launch_tasks !== "launch"
   notify: Clear site cache
 
 # Copy public files so that they exist and Drupal can find them if needed
