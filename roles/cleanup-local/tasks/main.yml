@@ -25,3 +25,4 @@
   file:
     path: "/tmp/{{ inventory_hostname }}"
     state: absent
+  when: cleanup_local == "TRUE"
