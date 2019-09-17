@@ -31,4 +31,4 @@
 - name: Be sure response does not include drush warnings
   fail:
     msg: "There appear to be drush warning messages cluttering the file_public_path variable"
-  when: file_public_path.stdout is not regex('^ sites/.*/files $')
+  when: file_public_path.stdout is not regex('^ sites/g/files/.*/f $')
