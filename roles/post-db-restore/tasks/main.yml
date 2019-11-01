@@ -89,6 +89,7 @@
     - "sqlq 'truncate table webauth_roles_history'"
     - "sspwmd"
     - "-y pm-uninstall webauth_extras"
+    - "sqlq 'update block set status=\"0\" where delta=\"firststeps\"'"
   notify: Clear site cache
   ignore_errors: "yes"
 
