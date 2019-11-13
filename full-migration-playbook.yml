@@ -44,7 +44,8 @@
   roles:
     - { role: protect-prod }
     - { role: setup-local }
-    - { role: download-site }
+    # This role is not needed on the pangea-master branch, as we are sourcing local copies.
+    # - { role: download-site }
     - { role: setup-site }
     - { role: css-injector }
     - { role: upload-site }
